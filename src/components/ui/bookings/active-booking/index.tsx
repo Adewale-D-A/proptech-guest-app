@@ -1,0 +1,217 @@
+/** @format */
+"use client";
+import React, { useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/_shared/table";
+import SearchInput from "@/components/search-input";
+import { Card } from "@/components/_shared/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/_shared/select";
+import { faker } from "@faker-js/faker";
+import { House, MapPin, X } from "lucide-react";
+import { Bed, Bath } from "lucide-react";
+
+import { DatePicker } from "@/components/date-picker";
+import BackButton from "@/components/back-btn";
+import ActionsDropdown from "../actions";
+import { Modal } from "@/components/_shared/modal";
+import ExtendModal from "../extend-modal";
+import TransferModal from "../transfer-modal";
+import Image from "next/image";
+import { Button } from "@/components/_shared/button";
+const ActiveBookingComponent = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [type, setType] = useState("");
+  const [extendConfirm, setExtendConfirm] = useState(false);
+  const handleShowModal = (open: boolean, types: string) => {
+    setShowModal(open);
+    setType(types);
+  };
+
+  const handleActionSelect = (selectedType: string) => {
+    handleShowModal(true, selectedType);
+  };
+  const handleExtend = () => {
+    setExtendConfirm(true);
+    handleShowModal(false, "");
+  };
+  const headers = [
+    "S/N",
+    "Apartment Info",
+    "Booking cost",
+    "Date of Booking",
+    "No of Nights",
+    "Action",
+  ];
+  return (
+    <div>
+      <BackButton className="mt-6 " />
+      <Card className="shadow-sm mt-6  p-4">
+        <div className="flex items-center justify-between">
+          <h1 className="font-medium">Booking List</h1>
+          <SearchInput
+            className="w-[28rem]"
+            placeholder="Search apartment by  name, apartment type, No of Nights"
+          />
+          <section className="flex  items-center gap-3">
+            <div className="flex items-center gap-1">
+              <p className="text-xs">Filter:</p>
+              <DatePicker className="w-60 mt-0 h-9" />
+            </div>
+            <div className="flex items-center  gap-1">
+              <p className="text-xs">Sort by:</p>
+              <Select>
+                <SelectTrigger className="h-9 w-20 border-black/10 shadow-none text-gray-100 ">
+                  <SelectValue placeholder="" className="text-xs " />
+                </SelectTrigger>
+                <SelectContent className="border-none">
+                  {[
+                    { id: "all", name: "All" },
+                    { id: "newest-oldest", name: "Newest - Oldest" },
+                    { id: "oldest", name: "Oldest - Newest" },
+                  ].map((tag) => (
+                    <SelectItem
+                      key={tag.id}
+                      value={tag.id}
+                      className="border-none"
+                    >
+                      {tag.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </section>
+        </div>
+        <Table className="mt-4 rounded-md">
+          {/* <TableCaption>A list of your recent bookings.</TableCaption> */}
+          <TableHeader className="rounded-md">
+            <TableRow className="bg-[#EAEAEA] rounded-md ">
+              {headers.map((h) => (
+                <TableHead className="text-xs text-gray-100 "> {h}</TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {[1, 2, 3, 4, 5, 6].map((invoice, index) => (
+              <TableRow key={invoice}>
+                <TableCell className="font-medium text-xs">
+                  {index + 1}
+                </TableCell>
+                <TableCell>
+                  <div className="flex gap-4 items-center">
+                    <img
+                      src={faker.image.avatar()}
+                      alt=""
+                      className="w-9 h-9 rounded"
+                    />
+                    <div>
+                      <p className="text-xs">Sunshine - 2 Bedroom</p>
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1">
+                          <MapPin color="#6d6d6d" size={12} />
+                          <p className="text-[10px] text-gray-100">
+                            Lekki Phase II
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Bed color="#6d6d6d" size={12} />
+                          <p className="text-[10px] text-gray-100">2 bed(s)</p>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Bath color="#6d6d6d" size={12} />
+                          <p className="text-[10px] text-gray-100">
+                            2 bathroom
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TableCell>
+                <TableCell className="font-medium text-xs">
+                  #116,100.00
+                </TableCell>
+                <TableCell className="font-medium text-xs">
+                  28 Mar, 2024 5:25 AM
+                </TableCell>
+                <TableCell className="font-medium text-xs">1 Night</TableCell>
+                <TableCell className="font-medium text-xs">
+                  <ActionsDropdown onActionSelect={handleActionSelect} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Card>
+      <Modal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        onClose={() => setShowModal(false)}
+        className="relative"
+      >
+        {type === "extend" ? (
+          <ExtendModal
+            onClickExtend={handleExtend}
+            onClose={() => setShowModal(false)}
+          />
+        ) : type === "transfer" ? (
+          <TransferModal onClose={() => setShowModal(false)} />
+        ) : null}
+      </Modal>
+      <Modal
+        showModal={extendConfirm}
+        setShowModal={setExtendConfirm}
+        onClose={() => setExtendConfirm(false)}
+        className="relative h-80 "
+      >
+        <section>
+          <div className="border-b flex items-center justify-between px-4 py-3">
+            <div className="bg-[#E7EAEC] border-gray-100 w-10 h-10 rounded-sm flex items-center justify-center">
+              <House size={24} />
+            </div>
+            <X
+              className="text-gray-100 cursor-pointer"
+              size={18}
+              onClick={() => setExtendConfirm(false)}
+            />
+          </div>
+          <div className="w-full px-8 pt-4 flex-col flex justify-center items-center h-full">
+            <Image
+              src={"/images/box.png"}
+              width={80}
+              height={80}
+              alt="success"
+            />
+            <h1 className="mt-6 font-medium">Confirm Extension</h1>
+            <p className="text-gray-100 font-light text-xs mt-1">
+              Are you sure you want to proceed with extending your stay?
+            </p>
+            <div className="w-full gap-3 flex items-center mt-6">
+              <Button className="w-full">Yes, I want to</Button>
+              <Button
+                onClick={() => setExtendConfirm(false)}
+                className="w-full"
+                variant={"text"}
+              >
+                No, Cancel
+              </Button>
+            </div>
+          </div>
+        </section>
+      </Modal>
+    </div>
+  );
+};
+
+export default ActiveBookingComponent;
