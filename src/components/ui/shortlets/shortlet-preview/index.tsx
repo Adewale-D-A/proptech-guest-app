@@ -3,7 +3,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { apartments, roomOptions } from "@/_shared/data";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/_shared/button";
 import { MdArrowBack } from "react-icons/md";
 import { IoArrowForward } from "react-icons/io5";
@@ -29,6 +29,7 @@ import BackButton from "@/components/back-btn";
 
 const ShortLetPreviewComponent = () => {
   const { id } = useParams();
+  const router = useRouter();
   const [apartmentDetails, setApartmentDetails] = useState<any>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -247,7 +248,12 @@ const ShortLetPreviewComponent = () => {
                       </Button>
                     </div>
                   </section>
-                  <Button className="mt-6">Sign in to continue</Button>
+                  <Button
+                    onClick={() => router.push("/dashboard")}
+                    className="mt-6"
+                  >
+                    Sign in to continue
+                  </Button>
                 </div>
               </section>
             </Card>

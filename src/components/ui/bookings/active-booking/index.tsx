@@ -30,6 +30,9 @@ import ExtendModal from "../extend-modal";
 import TransferModal from "../transfer-modal";
 import Image from "next/image";
 import { Button } from "@/components/_shared/button";
+import RescheduleModal from "../reshedule-modal";
+import GenerateVisitor from "../generate-visitor";
+import VisitorsCode from "../generate-visitor/copy-code";
 const ActiveBookingComponent = () => {
   const [showModal, setShowModal] = useState(false);
   const [type, setType] = useState("");
@@ -167,6 +170,15 @@ const ActiveBookingComponent = () => {
           />
         ) : type === "transfer" ? (
           <TransferModal onClose={() => setShowModal(false)} />
+        ) : type === "reschedule" ? (
+          <RescheduleModal onClose={() => setShowModal(false)} />
+        ) : type === "generate" ? (
+          <GenerateVisitor
+            onClose={() => setShowModal(false)}
+            onClick={() => handleActionSelect("generate-true")}
+          />
+        ) : type === "generate-true" ? (
+          <VisitorsCode onClose={() => setShowModal(false)} />
         ) : null}
       </Modal>
       <Modal

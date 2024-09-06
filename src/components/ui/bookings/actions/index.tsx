@@ -38,13 +38,19 @@ const ActionsDropdown = ({
         >
           Transfer Booking
         </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem className=" text-xs cursor-pointer ">
-          Reshedule Booking
+        <DropdownMenuCheckboxItem
+          className=" text-xs cursor-pointer "
+          onClick={() => onActionSelect("reschedule")}
+        >
+          Reschedule Booking
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem className=" text-xs cursor-pointer ">
           Change Apartment
         </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem className=" text-xs cursor-pointer ">
+        <DropdownMenuCheckboxItem
+          onClick={() => onActionSelect("generate")}
+          className=" text-xs cursor-pointer "
+        >
           Generate Visitors Code
         </DropdownMenuCheckboxItem>
       </DropdownMenuContent>

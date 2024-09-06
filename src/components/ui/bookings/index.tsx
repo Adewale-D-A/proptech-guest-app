@@ -1,18 +1,17 @@
 /** @format */
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import ReusableCard from "../reusable-card";
 import {
   Table,
   TableBody,
   TableCaption,
   TableCell,
-  
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/_shared/table";
-import { Calendar,  } from "lucide-react";
+import { Calendar, House, X } from "lucide-react";
 import { Card } from "@/components/_shared/card";
 import SearchInput from "@/components/search-input";
 import { DatePicker } from "@/components/date-picker";
@@ -32,6 +31,12 @@ import { Bed } from "lucide-react";
 import { Bath } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import ActionsDropdown from "./actions";
+import HomeActionsDropdown from "./home-actions";
+import { Modal } from "@/components/_shared/modal";
+import { Label } from "@/components/_shared/label";
+import CautionForm from "./caution-form";
+import SuccessfulMessage from "./success-message";
+import Rating from "./rate";
 
 const headers = [
   "S/N",
@@ -45,6 +50,12 @@ const headers = [
 const BookingsComponent = () => {
   const router = useRouter();
   const pathName = usePathname();
+  const [show, setShow] = useState(false);
+  const [modalType, setModalType] = useState("");
+  const handleClickModal = (type: string) => {
+    setShow(true);
+    setModalType(type);
+  };
   const handleNavigate = () => {
     router.push(`${pathName}/active-bookings`);
   };
@@ -171,13 +182,81 @@ const BookingsComponent = () => {
                 </TableCell>
                 <TableCell className="font-medium text-xs">1 Night</TableCell>
                 <TableCell className="font-medium text-xs">
-                  <ActionsDropdown onActionSelect={() => {}} />
+                  {pathName === "/bookings" ? (
+                    <HomeActionsDropdown handleClickModal={handleClickModal} />
+                  ) : (
+                    <ActionsDropdown onActionSelect={() => {}} />
+                  )}
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </Card>
+      <Modal
+        showModal={show}
+        setShowModal={setShow}
+        onClose={() => setShow(false)}
+        className={`relative   rounded-none max-w-md `}
+      >
+        <section>
+          {modalType === "rate" ? (
+            <div>
+              <div className="border-b flex items-center justify-between px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <div className="bg-[#E7EAEC] border-gray-100 w-10 h-10 rounded-sm flex items-center justify-center">
+                    <House size={24} />
+                  </div>
+                  <p>Rate your Stay with 99Apartment</p>
+                </div>
+                <X
+                  className="text-gray-100 cursor-pointer"
+                  size={18}
+                  onClick={() => setShow(false)}
+                />
+              </div>{" "}
+            </div>
+          ) : modalType === "caution" ? (
+            <div className="flex items-center justify-between border-b p-4">
+              <h1 className="text-lg ">Caution Fee refund</h1>
+              <X
+                className="cursor-pointer "
+                size={18}
+                onClick={() => setShow(false)}
+              />
+            </div>
+          ) : null}
+
+          {modalType === "caution" && (
+            <CautionForm onSuccess={() => handleClickModal("success")} />
+          )}
+          {modalType === "success" && (
+            <SuccessfulMessage
+              heading="  Thank You for Reaching Out"
+              text="   Your message has been received, and your request will be addressed
+          shortly, Kindly check your notifications for update on your request."
+              onClose={() => setShow(false)}
+            />
+          )}
+          {modalType === "rate-success" && (
+            <SuccessfulMessage
+              heading=" Thanks for the Review"
+              text="  Thank you for your valuable feedback! Your review means a lot to us and helps us improve to better 
+serve you."
+              onClose={() => setShow(false)}
+              src="/images/success.png"
+            />
+          )}
+          {modalType === "rate" && (
+            <Rating
+              onClose={() => setShow(false)}
+              handleClickModalSuccessRate={() =>
+                handleClickModal("rate-success")
+              }
+            />
+          )}
+        </section>
+      </Modal>
     </div>
   );
 };

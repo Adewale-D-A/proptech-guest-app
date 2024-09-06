@@ -36,12 +36,6 @@ export const navigationOptions: NavLink[] = [
     icon: <CgAddR />,
   },
   {
-    id: "5",
-    title: "Adventures",
-    href: `/adventures`,
-    icon: <LiaMountainSolid />,
-  },
-  {
     id: "6",
     title: "Referrals",
     href: `/referrals`,

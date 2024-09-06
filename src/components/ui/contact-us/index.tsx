@@ -7,6 +7,7 @@ import { PhoneIncoming, MoveRight, ChevronUp, ChevronDown } from "lucide-react";
 import React, { ReactNode, useState } from "react";
 import { RiChatSmile2Line } from "react-icons/ri";
 import { usePathname, useRouter } from "next/navigation";
+import { useToast } from "@/components/_shared/toast/use-toast";
 const faqData = [
   {
     question: "What amenities are included in the short let apartments?",
@@ -31,11 +32,19 @@ const faqData = [
 ];
 
 const ContactPageComponent = () => {
+  const { toast } = useToast();
   const router = useRouter();
   const pathName = usePathname();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const toggleAnswer = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
+  };
+  const handleClickChat = () => {
+    toast({
+      variant: "default",
+      title: "Chat",
+      description: "Chat Initiated 💬 ",
+    });
   };
   const ReusableCard = ({
     icon,
@@ -64,7 +73,11 @@ const ContactPageComponent = () => {
         <div
           className="text-primary-1 text-xs font-medium flex items-center gap-2 underline cursor-pointer"
           onClick={() => {
-            chatOption ? router.push(`${pathName}/chat-with-us`) : null;
+            if (chatOption) {
+              router.push(`${pathName}/chat-with-us`);
+              handleClickChat();
+            }
+            return;
           }}
         >
           {chatOption ? "Send a message" : "+234-000-000-0000"}{" "}

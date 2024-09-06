@@ -271,11 +271,11 @@ const MakeRequestComponent = () => {
               </div>
             </section>
           </div>
-          <Table>
+          <Table className="mt-6">
             <TableHeader>
-              <TableRow>
+              <TableRow className="bg-[#EAEAEA] rounded-md">
                 {headers.map((header) => (
-                  <TableHead className="text-xs text-gray-500 font-light">
+                  <TableHead className="text-xs font-medium text-gray-500 ">
                     {header}
                   </TableHead>
                 ))}
@@ -290,14 +290,13 @@ const MakeRequestComponent = () => {
                   <TableCell>True_</TableCell>
                   <TableCell>Maintenance</TableCell>
                   <TableCell>
-                    <Button variant="secondary">Pending</Button>
+                    <Button variant="secondary" className="h-8 text-xs">
+                      Pending
+                    </Button>
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Button className="border-none bg-[#e6f2ff] text-[#087cdd] h-8 rounded-lg w-20 text-xs">
-                        View Details
-                      </Button>
-                      <Button variant="secondary">Delete</Button>
+                    <div className="w-9 bg-[#E6F2FF] h-9 flex items-center justify-center cursor-pointer rounded">
+                      <ScanSearch size={18} />
                     </div>
                   </TableCell>
                 </TableRow>

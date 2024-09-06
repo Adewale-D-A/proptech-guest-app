@@ -15,7 +15,7 @@
   :root {
     --foreground-rgb: 255, 255, 255;
     --background: 255, 255, 255;
-  --background-start-rgb: #252525;
+    --background-start-rgb: #252525;
     --background-end-rgb: 0, 0, 0;
   }
 }
@@ -45,7 +45,7 @@ div {
 ::-webkit-scrollbar {
   display: none;
 }
-input{
+input {
   background: white;
 }
 .border-dash-custom {
@@ -58,3 +58,6 @@ input{
   border-image-width: 10px; /* Dash length */
 }
 
+textarea {
+  scroll-padding-block: 15px;
+}

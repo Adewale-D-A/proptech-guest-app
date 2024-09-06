@@ -4,6 +4,7 @@
 import ScrollToTopButton from "@/components/scroll-to-top";
 import "../styles/globals.css";
 import type { Metadata } from "next";
+import { Toaster } from "@/components/_shared/toast/toaster";
 
 export const metadata: Metadata = {
   title: "99Apartment  ",
@@ -21,8 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={" scroll-smooth  "}>{children}</body>
-      <ScrollToTopButton />
+      <body className="scroll-smooth">{children}</body>
     </html>
   );
 }
