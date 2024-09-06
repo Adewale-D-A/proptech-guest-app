@@ -22,7 +22,7 @@ const OurProduct = () => {
         </div>
         <div className="grid mt-10 sm:grid-cols-2 lg:grid-cols-4 w-full gap-4 ">
           {allInOneData.map((apt) => (
-            <Card className="p-2 pb-6 border-gray-50 ">
+            <Card key={apt.id} className="p-2 pb-6 border-gray-50 ">
               <Image
                 width={0}
                 height={0}

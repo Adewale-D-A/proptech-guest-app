@@ -18,7 +18,7 @@ const Rating = ({
       <p className="text-sm">Rate your Stay</p>
       <section className="flex gap-3 items-center mt-4">
         {[1, 2, 3, 4, 5].map((data) => (
-          <div>
+          <div key={data}>
             <Star />
           </div>
         ))}

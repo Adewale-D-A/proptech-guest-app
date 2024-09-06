@@ -17,7 +17,7 @@ const AnythingElse = () => {
           <div className="flex items-center justify-between p-6">
             <AnimatedContainer direction="left" className="w-1/2">
               <h1 className="text-4xl leading-[45px] w-full lg:w-3/4">
-                Anything else you'd like to know?
+                Anything else you&apos;d like to know?
               </h1>
 
               <div className="flex mt-6 items-stretch">

@@ -137,7 +137,7 @@ const MakeRequestComponent = () => {
                 </TooltipProvider>
               </div>
               <p className="text-xs mt-2 text-[#515151]">
-                We are all ears! Tell us what you need, and we'll make it
+                We are all ears! Tell us what you need, and we&apos;ll make it
                 happen.
               </p>
             </div>
@@ -275,7 +275,7 @@ const MakeRequestComponent = () => {
             <TableHeader>
               <TableRow className="bg-[#EAEAEA] rounded-md">
                 {headers.map((header) => (
-                  <TableHead className="text-xs font-medium text-gray-500 ">
+                  <TableHead key={header} className="text-xs font-medium text-gray-500 ">
                     {header}
                   </TableHead>
                 ))}

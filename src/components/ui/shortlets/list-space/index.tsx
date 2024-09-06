@@ -138,7 +138,7 @@ const ListSpace = ({ setShowModal, showModal }: ShortletType) => {
           <h1 className="text-3xl font-medium">Listed Spaces</h1>
           <div className="grid grid-cols-3 gap-4 mt-8">
             {apartments.map((apartment) => (
-              <AnimatedContainer>
+              <AnimatedContainer key={apartment.id}>
                 <Card key={apartment.id} className="relative shadow-sm pb-4">
                   <Image
                     width={0}

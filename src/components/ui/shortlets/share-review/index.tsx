@@ -24,7 +24,7 @@ const ShareReview = () => {
         <h1 className="text-sm">SHARE</h1>
         <section className="flex items-center gap-6 mt-4">
           {shareImage.map((img) => (
-            <Image width={24} height={24} alt="share" src={img} />
+            <Image key={img} width={24} height={24} alt="share" src={img} />
           ))}
         </section>
         <section className="mt-20">

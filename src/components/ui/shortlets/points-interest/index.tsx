@@ -28,7 +28,7 @@ const PointInterest = () => {
       <div className="p-4 flex justify-between">
         <div className="flex flex-col gap-3">
           {interest.map((data) => (
-            <div className="flex gap-2 items-center">
+            <div key={data} className="flex gap-2 items-center">
               <TbPointerPin />
               <p className="text-[#707070] text-[13px]  leading-relaxed font-light ">
                 {data}
@@ -38,7 +38,7 @@ const PointInterest = () => {
         </div>
         <div className="flex flex-col gap-3">
           {distance.map((data) => (
-            <div className="flex gap-2 items-center">
+            <div key={data} className="flex gap-2 items-center">
               <Car size={14} />
               <p className="text-[#707070] text-[13px] font-light  leading-relaxed">
                 {data}

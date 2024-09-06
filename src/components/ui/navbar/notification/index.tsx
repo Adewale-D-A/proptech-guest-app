@@ -32,7 +32,7 @@ const NotificationDropDown = () => {
         </section>
         <section className="flex flex-col gap-2  h-96 overflow-y-auto">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 23, 4, 5].map((data) => (
-            <section>
+            <section key={data}>
               <section
                 className="flex justify-between hover:bg-[#E9E9E9] py-2 cursor-pointer px-2"
                 key={data}

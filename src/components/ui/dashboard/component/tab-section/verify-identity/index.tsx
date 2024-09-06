@@ -95,12 +95,19 @@ const VerifyAccount = () => {
         className="relative max-w-96 h-72 rounded-none"
       >
         <div className="w-full px-8 flex-col flex justify-center items-center h-full">
-          <Image src={"/images/file.png"} width={80} height={80} alt="success" />
+          <Image
+            src={"/images/file.png"}
+            width={80}
+            height={80}
+            alt="success"
+          />
           <h1 className="mt-6">File Uploaded Successfully</h1>
           <p className="text-gray-100 text-xs mt-1">
-            We've received your submission, and our team is currently verifying
-            the information. Expect an email shortly with updates on the
-            verification process.
+            We&apos;ve received your submission, and our team is currently
+            verifying We&apos;ve received your submission, and our team is
+            currently verifying We&apos;ve received your submission, and our
+            team is currently verifying the information. Expect an email shortly
+            with updates on the verification process.
           </p>
           <Button className="w-full mt-6">Done</Button>
         </div>

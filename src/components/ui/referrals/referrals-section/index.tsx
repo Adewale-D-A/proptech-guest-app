@@ -93,7 +93,7 @@ const ReferralsSection = () => {
           <TableHeader className="rounded-md">
             <TableRow className="bg-[#EAEAEA] rounded-md ">
               {headers.map((h) => (
-                <TableHead className="text-xs text-gray-100 "> {h}</TableHead>
+                <TableHead key={h} className="text-xs text-gray-100 "> {h}</TableHead>
               ))}
             </TableRow>
           </TableHeader>
