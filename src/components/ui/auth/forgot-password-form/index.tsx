@@ -1,6 +1,7 @@
 /** @format */
+
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Logo from "../../logo";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -16,38 +17,63 @@ import { useForm } from "react-hook-form";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import { Button } from "@/components/_shared/button";
 import { LoadingButton } from "@/components/_shared/loading-button";
+import { useForgotPasswordMutation } from "@/redux/services/auth/auth";
+import { z } from "zod";
+import { use99Dispatch } from "@/redux/hooks/hooks";
+import { setEmail } from "@/redux/slices/emailSlice";
+
+const forgotPasswordSchema = z.object({
+  email: z
+    .string()
+    .email("Invalid email address")
+    .nonempty("Email is required"),
+});
 
 const ForgotPasswordForm = ({
   onClickLogin,
-  onClickOtp,
+  handleOpen,
 }: {
   onClickLogin: () => void;
-  onClickOtp: () => void;
+  handleOpen: (open: boolean, modalType: string, email: string) => void;
 }) => {
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
+  const dispatch = use99Dispatch();
   const { toast } = useToast();
-  const form = useForm({
+  const form = useForm<z.infer<typeof forgotPasswordSchema>>({
+    resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
       email: "",
     },
   });
-  function onSubmit(values: any) {
-    console.log(values);
-    if (values) {
+
+  const onSubmit = async (values: z.infer<typeof forgotPasswordSchema>) => {
+    try {
+      const response = await forgotPassword(values).unwrap();
+
       toast({
         variant: "default",
-        title: "Login successful!",
-        description: "Welcome to 99Apartment 🚀",
+        title: response?.message || "otp sent!",
+        description:
+          "Please check your email for instructions to reset your password.",
       });
-    } else if (!values) {
+      const userEmail = encodeURIComponent(values.email);
+      dispatch(setEmail(userEmail));
+      handleOpen(true, "forget-password-otp", userEmail);
+    } catch (err) {
+      const errorMessage =
+        (err as any)?.data?.message ||
+        "Failed to send password reset code. Please try again.";
       toast({
         variant: "destructive",
-        title: "Error login!",
+        title: "Error!",
+        description: errorMessage,
       });
     }
-  }
+  };
+
   return (
     <div className="w-full h-full">
-      <div className=" w-full h-full">
+      <div className="w-full h-full">
         <div className="flex justify-center">
           <Logo default height={31} width={180} />
         </div>
@@ -57,19 +83,19 @@ const ForgotPasswordForm = ({
         </p>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="mt-6 h-full">
-            <div className="flex flex-col justify-between h-full ">
+            <div className="flex flex-col justify-between h-full">
               <div className="flex flex-col gap-2 flex-1">
                 <FormField
                   control={form.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-xs   font-light">
+                      <FormLabel className="text-xs font-light">
                         Email Address
                       </FormLabel>
                       <FormControl className="bg-transparent">
                         <Input
-                          className="bg-white font-light w-full   "
+                          className="bg-white font-light w-full"
                           placeholder="Enter email address"
                           {...field}
                         />
@@ -80,18 +106,18 @@ const ForgotPasswordForm = ({
                 />
               </div>
               <div className="h-full flex-1">
-                <LoadingButton className="w-full " onClick={onClickOtp}>
+                <LoadingButton className="w-full" loading={isLoading}>
                   Continue
                 </LoadingButton>
-                <p className="text-xs text-center font-light ">
-                  Back to {"  "}
+                <p className="text-xs text-center font-light">
+                  Back to{" "}
                   <Button
                     className="p-0 text-xs font-light text-primary hover:underline"
                     variant={"text"}
                     onClick={onClickLogin}
                   >
                     Log in
-                  </Button>{" "}
+                  </Button>
                 </p>
               </div>
             </div>

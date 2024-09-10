@@ -13,11 +13,13 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import rootReducer from "./reducer";
+import { apiMiddleware } from "../services/base/base";
+import { useDispatch } from "react-redux";
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["persisted", "auth"],
+  whitelist: ["auth", "auth-email"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -28,7 +30,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(),
+    }).concat(apiMiddleware),
   reducer: persistedReducer,
 });
 

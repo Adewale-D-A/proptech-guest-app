@@ -1,22 +1,52 @@
 /** @format */
 
+import { GeneralResponse } from "@/types/type";
 import { injectEndpoints } from "../base/base";
 import { Endpoints } from "../base/service";
 
 const authEndpoints = injectEndpoints({
   endpoints: (builder) => ({
-    signIn: builder.mutation<{ data: any }, any>({
+    signIn: builder.mutation<GeneralResponse, any>({
       query: (body) => ({
         body,
         method: "POST",
-        url: `${Endpoints.api}signin`,
+        url: `${Endpoints.api}auth/login`,
       }),
     }),
-    signUp: builder.mutation<void, any>({
+    signUp: builder.mutation<GeneralResponse, any>({
       query: (body) => ({
         body,
         method: "POST",
-        url: `${Endpoints.api}signup`,
+        url: `${Endpoints.api}auth/register`,
+      }),
+    }),
+
+    verifyOtp: builder.mutation<GeneralResponse, any>({
+      query: (body) => ({
+        body,
+        method: "POST",
+        url: `${Endpoints.api}auth/register/verify`,
+      }),
+    }),
+    resendOtp: builder.mutation<GeneralResponse, any>({
+      query: (body) => ({
+        body,
+        method: "POST",
+        url: `${Endpoints.api}auth/register/resend-otp`,
+      }),
+    }),
+    forgotPassword: builder.mutation<GeneralResponse, any>({
+      query: (body) => ({
+        body,
+        method: "POST",
+        url: `${Endpoints.api}auth/forgot-password`,
+      }),
+    }),
+    verifyForgetPassword: builder.mutation<GeneralResponse, any>({
+      query: (body) => ({
+        body,
+        method: "POST",
+        url: `${Endpoints.api}auth/forgot-password/verify`,
       }),
     }),
     getUsers: builder.mutation<any[], void>({
@@ -29,5 +59,12 @@ const authEndpoints = injectEndpoints({
   }),
 });
 
-export const { useSignInMutation, useSignUpMutation, useGetUsersMutation } =
-  authEndpoints;
+export const {
+  useSignInMutation,
+  useSignUpMutation,
+  useGetUsersMutation,
+  useVerifyOtpMutation,
+  useResendOtpMutation,
+  useForgotPasswordMutation,
+  useVerifyForgetPasswordMutation,
+} = authEndpoints;

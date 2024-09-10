@@ -7,21 +7,28 @@ import NavSectionTabs from "./nav-section";
 import { Modal } from "@/components/_shared/modal";
 import {
   ChangePasswordForm,
+  ForgetPasswordOtp,
   ForgotPasswordForm,
   OtpForm,
   SignInform,
   SignUpForm,
   SuccessfulModal,
 } from "../auth";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Menu } from "lucide-react";
+import { clearEmail, selectEmail } from "@/redux/slices/emailSlice";
+import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
 
 const HomeNavBar = () => {
   const router = useRouter();
+  const dispatch = use99Dispatch();
+  const searchParams = useSearchParams();
   const [scrolled, setScrolled] = useState(false);
   const pathName = usePathname();
   const [showModal, setShowModal] = useState(false);
   const [type, setType] = useState("");
+  const email = use99Selector(selectEmail);
+
   const isMainRoute = pathName === "/shortlets" || pathName === "/landing";
 
   useEffect(() => {
@@ -33,17 +40,36 @@ const HomeNavBar = () => {
       }
     };
 
-    // Add scroll event listener
     window.addEventListener("scroll", handleScroll);
     handleScroll();
-
-    // Clean up event listener on component unmount
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleOpen = (open: boolean, types: string) => {
+  useEffect(() => {
+    const modalType = searchParams.get("auth");
+    if (modalType) {
+      handleOpen(true, modalType, email);
+    }
+  }, [searchParams]);
+
+  const handleOpen = (open: boolean, modalType: string, params?: string) => {
     setShowModal(open);
-    setType(types);
+    setType(modalType);
+
+    if (open) {
+      router.push(`?auth=${modalType}${params ? `&email=${params}` : ""}`, {
+        shallow: true,
+      } as any);
+    } else {
+      router.push(window.location.pathname, {
+        shallow: true,
+      } as any);
+    }
+  };
+
+  const handleClose = () => {
+    dispatch(clearEmail());
+    handleOpen(false, type);
   };
 
   return (
@@ -57,7 +83,7 @@ const HomeNavBar = () => {
           scrolled ? " bg-white/75 backdrop-blur-xl " : "bg-transparent"
         }`}
       >
-        <div className=" h-16 flex items-center max-w-screen-custom mx-auto px-4 ">
+        <div className="h-16 flex items-center max-w-screen-custom mx-auto px-4">
           <div className="flex justify-between items-center w-full">
             <div>
               {isMainRoute ? (
@@ -99,12 +125,13 @@ const HomeNavBar = () => {
         </div>
         <Modal
           showModal={showModal}
-          onClose={() => setShowModal(false)}
+          onClose={handleClose}
           setShowModal={setShowModal}
           className={`relative p-6 ${
             type === "sign-in" ||
             type === "forgot-password" ||
             type === "otp" ||
+            type === "forget-password-otp" ||
             type === "change-password" ||
             type === "successful"
               ? "min-w-[400px]"
@@ -126,26 +153,35 @@ const HomeNavBar = () => {
           {type === "forgot-password" && (
             <ForgotPasswordForm
               onClickLogin={() => handleOpen(true, "sign-in")}
-              onClickOtp={() => handleOpen(true, "otp")}
+              handleOpen={handleOpen}
             />
           )}
           {type === "create" && (
-            <SignUpForm onClickLogin={() => handleOpen(true, "sign-in")} />
+            <SignUpForm
+              onClickLogin={() => handleOpen(true, "sign-in")}
+              handleOpen={handleOpen}
+            />
           )}
           {type === "otp" && (
             <OtpForm
               onClickChangePassword={() => handleOpen(true, "change-password")}
               onClickLogin={() => handleOpen(true, "sign-in")}
+              handleOpen={handleOpen}
             />
           )}
-
           {type === "change-password" && (
-            <ChangePasswordForm
-              onClickSuccess={() => handleOpen(true, "successful")}
-            />
+            <ChangePasswordForm handleOpen={handleOpen} />
           )}
           {type === "successful" && (
             <SuccessfulModal onClickLogin={() => handleOpen(true, "sign-in")} />
+          )}
+
+          {type === "forget-password-otp" && (
+            <ForgetPasswordOtp
+              onClickChangePassword={() => handleOpen(true, "change-password")}
+              onClickLogin={() => handleOpen(true, "sign-in")}
+              handleOpen={handleOpen}
+            />
           )}
         </Modal>
       </div>

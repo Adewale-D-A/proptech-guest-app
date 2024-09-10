@@ -37,3 +37,12 @@ interface ChatInputProps {
   handleMenuClicked: () => void;
   showMenu: boolean;
 }
+
+interface ToastResponse {
+  data: {
+    message?: string;
+  };
+}
+interface GeneralResponse {
+  message: string;
+}

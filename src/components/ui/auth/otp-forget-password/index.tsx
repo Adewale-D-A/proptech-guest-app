@@ -20,16 +20,13 @@ import {
   InputOTPSlot,
 } from "@/components/_shared/form/otp-input";
 import {
-  useResendOtpMutation,
-  useVerifyOtpMutation,
+  useForgotPasswordMutation,
+  useVerifyForgetPasswordMutation,
 } from "@/redux/services/auth/auth";
 import { useSearchParams } from "next/navigation";
 import { ToastResponse } from "@/types/type";
-import { triggerConfettiFireworks } from "@/components/_shared/animation/fire-work";
-import { use99Dispatch } from "@/redux/hooks/hooks";
-import { clearEmail } from "@/redux/slices/emailSlice";
 
-const OtpForm = ({
+const ForgetPasswordOtp = ({
   onClickLogin,
   handleOpen,
 }: {
@@ -37,12 +34,10 @@ const OtpForm = ({
   onClickLogin: () => void;
   handleOpen: (open: boolean, modalType: string) => void;
 }) => {
-  const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
-  const [resendOtp, { isLoading: resendLoading }] = useResendOtpMutation();
-  const dispatch = use99Dispatch();
+  const [verifyPasswordOtp, { isLoading }] = useVerifyForgetPasswordMutation();
+  const [resendOtp, { isLoading: resendLoading }] = useForgotPasswordMutation();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
-  console.log("email", email);
   const { toast } = useToast();
   const form = useForm({
     defaultValues: {
@@ -52,15 +47,14 @@ const OtpForm = ({
   async function onSubmit(values: any) {
     try {
       const verifyData = { ...values, email };
-      const response = await verifyOtp(verifyData).unwrap();
-      triggerConfettiFireworks();
-      dispatch(clearEmail());
+      const response = await verifyPasswordOtp(verifyData).unwrap();
+
       toast({
         variant: "default",
         title: response?.message || "Success!",
         description: "Welcome to 99Apartment 🚀",
       });
-      handleOpen(true, "sign-in");
+      handleOpen(true, "change-password");
     } catch (err) {
       const error = err as ToastResponse;
       toast({
@@ -167,4 +161,4 @@ const OtpForm = ({
   );
 };
 
-export default OtpForm;
+export default ForgetPasswordOtp;
