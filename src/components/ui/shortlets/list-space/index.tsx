@@ -10,6 +10,7 @@ import { SlidersHorizontal } from "lucide-react";
 import { FaStar } from "react-icons/fa";
 import { TbBed, TbPool, TbAirConditioning } from "react-icons/tb";
 import { LuMonitor } from "react-icons/lu";
+import { Heater } from "lucide-react";
 
 import {
   Select,
@@ -29,13 +30,20 @@ import SparkleEffect from "@/components/_shared/framer/sparkle-effect";
 import LoveSparkEffect from "@/components/_shared/framer/love-spark";
 import { usePathname, useRouter } from "next/navigation";
 import { Checkbox } from "@/components/_shared/check-box";
+import CardSkeleton from "@/components/card-skeleton";
 
-const ListSpace = ({ setShowModal, showModal }: ShortletType) => {
+const ListSpace = ({
+  setShowModal,
+  showModal,
+  shortletData,
+  isLoading,
+}: ShortletType) => {
   const router = useRouter();
   const pathName = usePathname();
   const handleRoute = (aptName: string, id: number) => {
     router.push(`${pathName}/${aptName}/${id}`);
   };
+  console.log("shortletData:::", shortletData);
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
 
   const handleAmenityChange = (amenityId: string) => {
@@ -59,15 +67,17 @@ const ListSpace = ({ setShowModal, showModal }: ShortletType) => {
     { id: "11", name: "Dedicated Workspace" },
     // Add more amenities here
   ];
-   const howLong = [
-     { id: "1", name: "Long Stay" },
-     { id: "2", name: "Short Stay" },
-   ];
-    const amount = [
-      { id: "1", name: "₦10,000 - ₦50,000  Per Night" },
-      { id: "2", name: "₦51,000 - ₦100,000  Per Night" },
-    ];
-
+  const howLong = [
+    { id: "1", name: "Long Stay" },
+    { id: "2", name: "Short Stay" },
+  ];
+  const amount = [
+    { id: "1", name: "₦10,000 - ₦50,000  Per Night" },
+    { id: "2", name: "₦51,000 - ₦100,000  Per Night" },
+  ];
+  const skeletonRows = Array.from({ length: 5 }, (_, index) => (
+    <CardSkeleton key={index} />
+  ));
   return (
     <div className=" relative bottom-10 z-40">
       <div className="max-w-screen-custom mx-auto px-4">
@@ -136,99 +146,131 @@ const ListSpace = ({ setShowModal, showModal }: ShortletType) => {
         </div>
         <div className="mt-24">
           <h1 className="text-3xl font-medium">Listed Spaces</h1>
-          <div className="grid grid-cols-3 gap-4 mt-8">
-            {apartments.map((apartment) => (
-              <AnimatedContainer key={apartment.id}>
-                <Card key={apartment.id} className="relative shadow-sm pb-4">
-                  <Image
-                    width={0}
-                    height={0}
-                    src={apartment.images[0]} // Display the first image initially
-                    alt={apartment.name}
-                    className="w-full rounded-t-md h-60 object-cover relative cursor-pointer "
-                    sizes="100vw"
-                    loading="eager"
-                  />
-                  <a
-                    href="#"
-                    className=" rounded-t-md absolute w-full h-60 top-0 left-0 bg-black opacity-0 z-10 transition-opacity duration-300 hover:opacity-30 "
-                  ></a>
-                  <div className="absolute top-2 px-2 flex justify-between items-center flex-1 w-full">
-                    <SparkleEffect>
-                      <div className="flex items-center gap-2 w-14 h-6 rounded justify-center bg-black/10 bg-opacity-60 cursor-pointer backdrop-blur-md z-40">
-                        <FaStar color="#FFA500" size={16} />
-                        <span className="text-xs font-medium text-white">
-                          {apartment.rating}
-                        </span>
-                      </div>
-                    </SparkleEffect>
-                    <LoveSparkEffect>
-                      <div className="bg-black/10 bg-opacity-60 z-40 cursor-pointer backdrop-blur-md w-[30px] h-[30px] rounded flex justify-center items-center hover:bg-red-500 text-white">
-                        <Heart size={18} />
-                      </div>
-                    </LoveSparkEffect>
-                  </div>
-                  <div className="px-4">
-                    <div className="flex justify-between items-center my-3">
-                      <h3 className="font-medium">{apartment.name}</h3>
-                      <h3 className="text-primary font-medium">
-                        ₦{apartment.price.toLocaleString()}/
-                        <span className="text-xs font-light text-gray-100">
-                          Night
-                        </span>
-                      </h3>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="text-gray-100 flex items-center gap-1">
-                        <MapPin size={12} />
-                        <p className="text-xs font-light text-gray-100">
-                          {apartment.location}
-                        </p>
-                      </div>
-                      <div className="text-gray-100 flex items-center gap-1">
-                        <TbBed size={12} />
-                        <p className="text-xs font-light">
-                          {apartment.bedrooms} Bedrooms
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex justify-between bg-[#F4F6FF] p-4 mt-4">
-                      <div className="flex flex-col items-center gap-y-1">
-                        <TbPool size={16} />
-                        <p className="text-xs font-light">Pool</p>
-                      </div>
-                      <div className="flex flex-col items-center gap-y-1">
-                        <TbAirConditioning size={16} />
-                        <p className="text-xs font-light">Air-Conditioner</p>
-                      </div>
-                      <div className="flex flex-col items-center gap-y-1">
-                        <LuMonitor size={16} />
-                        <p className="text-xs font-light">Television</p>
-                      </div>
-                      <div className="flex flex-col items-center gap-y-1">
-                        <Wifi size={16} />
-                        <p className="text-xs font-light">Internet</p>
-                      </div>
-                    </div>
-                    <div className="flex justify-between items-center mt-4">
-                      <div className="flex text-primary items-center gap-2">
-                        <CalendarCheck2 size={16} />
-                        <p className="text-sm">Check Availability</p>
-                      </div>
-                      <Button
-                        className="text-xs font-normal h-8 w-32"
-                        onClick={() =>
-                          handleRoute(apartment.name, apartment.id)
-                        }
-                      >
-                        View Details
-                      </Button>
-                    </div>
-                  </div>
-                </Card>
-              </AnimatedContainer>
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="grid grid-cols-3 gap-4  mt-8">{skeletonRows}</div>
+          ) : (
+            <div className="grid grid-cols-3 gap-4 mt-8">
+              {shortletData && shortletData.length < 0 ? (
+                <>
+                  <div>no data avaliable</div>
+                </>
+              ) : (
+                <>
+                  {shortletData &&
+                    shortletData.map((apartment) => (
+                      <AnimatedContainer key={apartment.id}>
+                        <Card
+                          key={apartment.id}
+                          className="relative shadow-sm pb-4"
+                        >
+                          <img
+                            width={0}
+                            height={0}
+                            src={apartment.images[0].path}
+                            alt={apartment.name}
+                            className="w-full rounded-t-md h-60 object-cover relative cursor-pointer "
+                            sizes="100vw"
+                            loading="eager"
+                          />
+                          <a
+                            href="#"
+                            className=" rounded-t-md absolute w-full h-60 top-0 left-0 bg-black opacity-0 z-10 transition-opacity duration-300 hover:opacity-30 "
+                          ></a>
+                          <div className="absolute top-2 px-2 flex justify-between items-center flex-1 w-full">
+                            <SparkleEffect>
+                              <div className="flex items-center gap-2 w-14 h-6 rounded justify-center bg-black/10 bg-opacity-60 cursor-pointer backdrop-blur-md z-40">
+                                <FaStar color="#FFA500" size={16} />
+                                <span className="text-xs font-medium text-white">
+                                  {/* {apartment.rating} */}*****
+                                </span>
+                              </div>
+                            </SparkleEffect>
+                            <LoveSparkEffect>
+                              <div className="bg-black/10 bg-opacity-60 z-40 cursor-pointer backdrop-blur-md w-[30px] h-[30px] rounded flex justify-center items-center hover:bg-red-500 text-white">
+                                <Heart size={18} />
+                              </div>
+                            </LoveSparkEffect>
+                          </div>
+                          <div className="px-4">
+                            <div className="flex justify-between items-center my-3">
+                              <h3 className="font-medium">{apartment.name}</h3>
+                              <h3 className="text-primary font-medium">
+                                ₦{apartment.price.toLocaleString()}/
+                                <span className="text-xs font-light text-gray-100">
+                                  Night
+                                </span>
+                              </h3>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <div className="text-gray-100 flex items-center gap-1">
+                                <MapPin size={12} />
+                                <p className="text-xs font-light text-gray-100">
+                                  {apartment.location}
+                                </p>
+                              </div>
+                              <div className="text-gray-100 flex items-center gap-1">
+                                <TbBed size={12} />
+                                <p className="text-xs font-light">
+                                  {apartment.no_of_bedrooms} Bedrooms
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex justify-between bg-[#F4F6FF] p-4 mt-4">
+                              {apartment.amenities[0]?.id === 4 && (
+                                <div className="flex flex-col items-center gap-y-1">
+                                  <TbPool size={16} />
+                                  <p className="text-xs font-light">
+                                    {apartment.amenities[0]?.name}
+                                  </p>
+                                </div>
+                              )}
+                              {apartment.amenities[2]?.id === 3 && (
+                                <div className="flex flex-col items-center gap-y-1">
+                                  <Heater size={16} />
+                                  <p className="text-xs font-light">
+                                    {apartment.amenities[2].name}
+                                  </p>
+                                </div>
+                              )}
+                              {apartment.amenities[1].id === 2 && (
+                                <div className="flex flex-col items-center gap-y-1">
+                                  <TbAirConditioning size={16} />
+                                  <p className="text-xs font-light">
+                                    {apartment.amenities[1]?.name}
+                                  </p>
+                                </div>
+                              )}
+                              {apartment.amenities[0].id === 1 && (
+                                <div className="flex flex-col items-center gap-y-1">
+                                  <Wifi size={16} />
+                                  <p className="text-xs font-light">
+                                    {apartment.amenities[0].name}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex justify-between items-center mt-4">
+                              <div className="flex text-primary items-center gap-2">
+                                <CalendarCheck2 size={16} />
+                                <p className="text-sm">Check Availability</p>
+                              </div>
+                              <Button
+                                className="text-xs font-normal h-8 w-32"
+                                onClick={() =>
+                                  handleRoute(apartment.name, apartment.id)
+                                }
+                              >
+                                View Details
+                              </Button>
+                            </div>
+                          </div>
+                        </Card>
+                      </AnimatedContainer>
+                    ))}
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
       <Modal

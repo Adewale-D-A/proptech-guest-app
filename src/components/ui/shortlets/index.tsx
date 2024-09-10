@@ -4,11 +4,21 @@ import React from "react";
 import { HeroSection, ListSpace } from "./component";
 import { ShortletType } from "@/types/type";
 
-const ShortletComponent = ({ setShowModal, showModal }: ShortletType) => {
+const ShortletComponent = ({
+  setShowModal,
+  showModal,
+  shortletData,
+  isLoading,
+}: ShortletType) => {
   return (
     <>
       <HeroSection />
-      <ListSpace setShowModal={setShowModal} showModal={showModal} />
+      <ListSpace
+        shortletData={shortletData}
+        setShowModal={setShowModal}
+        showModal={showModal}
+        isLoading={isLoading}
+      />
     </>
   );
 };
