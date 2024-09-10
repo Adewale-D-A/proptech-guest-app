@@ -37,7 +37,7 @@ const { actions, reducer } = authSlice;
 export const { setUserDetails, setUserToken } = actions;
 
 // selector to select user details from the store
-export const selectCurrentUser = (state: RootState) => state.authSlice.token;
+export const selectCurrentUser = (state: RootState) => state.auth.token;
 // export const selectToken = (state: RootState) => state.auth.token;
 
 export default reducer;

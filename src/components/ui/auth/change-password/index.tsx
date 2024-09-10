@@ -1,4 +1,5 @@
 /** @format */
+
 "use client";
 import React, { useState } from "react";
 import Logo from "../../logo";
@@ -15,38 +16,72 @@ import { Input } from "@/components/_shared/input";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import { LoadingButton } from "@/components/_shared/loading-button";
+import { useVerifyForgetPasswordMutation } from "@/redux/services/auth/auth";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useSearchParams } from "next/navigation";
+import { use99Dispatch } from "@/redux/hooks/hooks";
+import { clearEmail } from "@/redux/slices/emailSlice";
+
+const changePasswordSchema = z
+  .object({
+    password: z.string().min(6, "Password must be at least 6 characters long"),
+    password_confirmation: z
+      .string()
+      .min(6, "Password must be at least 6 characters long"),
+    otp: z.string(),
+  })
+  .refine((data) => data.password === data.password_confirmation, {
+    message: "Passwords must match",
+    path: ["password_confirmation"],
+  });
 
 const ChangePasswordForm = ({
-  onClickSuccess,
+  handleOpen,
 }: {
-  onClickSuccess: () => void;
+  handleOpen: (open: boolean, modalType: string) => void;
 }) => {
+  const [verifyPasswordOtp, { isLoading }] = useVerifyForgetPasswordMutation();
+  const dispatch = use99Dispatch();
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email");
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
-  const form = useForm({
+  const form = useForm<z.infer<typeof changePasswordSchema>>({
+    resolver: zodResolver(changePasswordSchema),
     defaultValues: {
-      newPassword: "",
       password: "",
+      password_confirmation: "",
+      otp: "",
     },
   });
-  function onSubmit(values: any) {
-    console.log(values);
-    if (values) {
+
+  const onSubmit = async (values: z.infer<typeof changePasswordSchema>) => {
+    const changePasswordValues = { ...values, email };
+    try {
+      const response = await verifyPasswordOtp(changePasswordValues).unwrap();
       toast({
         variant: "default",
-        title: "change password successful!",
-        description: "Welcome to 99Apartment 🚀",
+        title: response?.message || "Password changed successfully!",
+        description: "Your password has been updated.",
       });
-    } else if (!values) {
+      dispatch(clearEmail());
+      handleOpen(true, "successful");
+    } catch (err) {
+      const errorMessage =
+        (err as any)?.data?.message ||
+        "Failed to change password. Please try again.";
       toast({
         variant: "destructive",
-        title: "Error login!",
+        title: "Error!",
+        description: errorMessage,
       });
     }
-  }
+  };
+
   return (
     <div className="w-full">
-      <div className=" w-full">
+      <div className="w-full">
         <div className="flex justify-center">
           <Logo default height={31} width={180} />
         </div>
@@ -61,34 +96,46 @@ const ChangePasswordForm = ({
             <div className="flex flex-col gap-2">
               <FormField
                 control={form.control}
+                name="otp"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs font-light">Token</FormLabel>
+                    <FormControl className="bg-transparent">
+                      <Input
+                        className="bg-white font-light w-full"
+                        placeholder="Enter token"
+                        {...field}
+                        type="text"
+                      />
+                    </FormControl>
+                    <FormMessage className="text-xs text-red-500 font-light" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xs  font-light">
+                    <FormLabel className="text-xs font-light">
                       New Password
                     </FormLabel>
                     <FormControl className="bg-transparent">
                       <div className="relative">
                         <Input
-                          className="bg-white font-light   w-full   pr-10"
+                          className="bg-white font-light w-full pr-10"
                           placeholder="Enter password"
                           type={showPassword ? "text" : "password"}
                           {...field}
                         />
                         <div
-                          className="absolute right-2 top-2 "
+                          className="absolute right-2 top-2 cursor-pointer"
                           onClick={() => setShowPassword(!showPassword)}
                         >
                           {showPassword ? (
-                            <Eye
-                              size={18}
-                              className="text-black/50 cursor-pointer"
-                            />
+                            <Eye size={18} className="text-black/50" />
                           ) : (
-                            <EyeOff
-                              size={18}
-                              className="text-black/50 cursor-pointer"
-                            />
+                            <EyeOff size={18} className="text-black/50" />
                           )}
                         </div>
                       </div>
@@ -99,34 +146,28 @@ const ChangePasswordForm = ({
               />
               <FormField
                 control={form.control}
-                name="newPassword"
+                name="password_confirmation"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xs  font-light">
+                    <FormLabel className="text-xs font-light">
                       Confirm Password
                     </FormLabel>
                     <FormControl className="bg-transparent">
                       <div className="relative">
                         <Input
-                          className="bg-white font-light   w-full   pr-10"
-                          placeholder="Enter password"
+                          className="bg-white font-light w-full pr-10"
+                          placeholder="Confirm password"
                           type={showPassword ? "text" : "password"}
                           {...field}
                         />
                         <div
-                          className="absolute right-2 top-2 "
+                          className="absolute right-2 top-2 cursor-pointer"
                           onClick={() => setShowPassword(!showPassword)}
                         >
                           {showPassword ? (
-                            <Eye
-                              size={18}
-                              className="text-black/50 cursor-pointer"
-                            />
+                            <Eye size={18} className="text-black/50" />
                           ) : (
-                            <EyeOff
-                              size={18}
-                              className="text-black/50 cursor-pointer"
-                            />
+                            <EyeOff size={18} className="text-black/50" />
                           )}
                         </div>
                       </div>
@@ -136,7 +177,11 @@ const ChangePasswordForm = ({
                 )}
               />
             </div>
-            <LoadingButton onClick={onClickSuccess} className="w-full ">
+            <LoadingButton
+              onClick={form.handleSubmit(onSubmit)}
+              className="w-full"
+              loading={isLoading}
+            >
               Change Password
             </LoadingButton>
           </form>

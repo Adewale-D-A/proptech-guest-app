@@ -49,7 +49,7 @@ export const LoadingButton: React.FC<ButtonProps> = ({
       {loading ? (
         <div className={`${loadingClass} flex items-center`}>
           <Loader2 className={`mr-2 h-4 w-4 animate-spin `} />
-          {loadingText ? loadingText : "Please wait"}
+          {loadingText ? loadingText : "Please wait..."}
         </div>
       ) : (
         children

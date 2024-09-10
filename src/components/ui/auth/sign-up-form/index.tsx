@@ -14,46 +14,65 @@ import {
 import { Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/_shared/input";
 import { useForm } from "react-hook-form";
-import {
-  signInValidationSchema,
-  signUpValidationSchema,
-} from "@/_shared/validate";
+import { signUpValidationSchema } from "@/_shared/validate";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import { z } from "zod";
 import { Button } from "@/components/_shared/button";
 import { LoadingButton } from "@/components/_shared/loading-button";
 import { Checkbox } from "@/components/_shared/check-box";
 import PhoneNumberInput from "@/components/phoneNumber";
+import { useSignUpMutation } from "@/redux/services/auth/auth";
+import { ToastResponse } from "@/types/type";
+import { useDispatch } from "react-redux";
+import { setEmail } from "@/redux/slices/emailSlice";
+import { use99Dispatch } from "@/redux/hooks/hooks";
 
-const SignUpForm = ({ onClickLogin }: { onClickLogin: () => void }) => {
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+const SignUpForm = ({
+  onClickLogin,
+  handleOpen,
+}: {
+  handleOpen: (open: boolean, modalType: string, email: string) => void;
+  onClickLogin: () => void;
+}) => {
   const { toast } = useToast();
+  const dispatch = use99Dispatch();
+  const [signUp, { isLoading }] = useSignUpMutation();
+  const [phone, setPhone] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const form = useForm<z.infer<typeof signUpValidationSchema>>({
     resolver: zodResolver(signUpValidationSchema),
     defaultValues: {
       email: "",
       password: "",
-      confirmPassword: "",
-      firstName: "",
-      lastName: "",
+      password_confirmation: "",
+      first_name: "",
+      last_name: "",
     },
   });
-  function onSubmit(values: z.infer<typeof signInValidationSchema>) {
-    console.log(values);
-    if (values) {
+  const onSubmit = async (values: z.infer<typeof signUpValidationSchema>) => {
+    const userEmail = encodeURIComponent(values.email);
+    dispatch(setEmail(userEmail));
+    try {
+      const signUpData = { ...values, phone };
+      const response = await signUp(signUpData).unwrap();
       toast({
         variant: "default",
-        title: "Login successful!",
+        title: response?.message || "Success!",
         description: "Welcome to 99Apartment 🚀",
       });
-    } else if (!values) {
+      const userEmail = encodeURIComponent(values.email);
+      dispatch(setEmail(userEmail));
+      handleOpen(true, "otp", userEmail);
+    } catch (err) {
+      const error = err as ToastResponse;
       toast({
         variant: "destructive",
-        title: "Error login!",
+        title: error?.data?.message || "Sign Up Failed",
+        description: "An error occurred during sign-up.",
       });
     }
-  }
+  };
+
   return (
     <div className="w-full">
       <div className=" w-full">
@@ -73,7 +92,7 @@ const SignUpForm = ({ onClickLogin }: { onClickLogin: () => void }) => {
               <div className="flex  lg:flex-row flex-col w-full gap-4 ">
                 <FormField
                   control={form.control}
-                  name="firstName"
+                  name="first_name"
                   render={({ field }) => (
                     <FormItem className="w-full">
                       <FormLabel className="text-xs font-light">
@@ -92,7 +111,7 @@ const SignUpForm = ({ onClickLogin }: { onClickLogin: () => void }) => {
                 />
                 <FormField
                   control={form.control}
-                  name="lastName"
+                  name="last_name"
                   render={({ field }) => (
                     <FormItem className="w-full">
                       <FormLabel className="text-xs font-light">
@@ -134,8 +153,8 @@ const SignUpForm = ({ onClickLogin }: { onClickLogin: () => void }) => {
                   Phone Number
                 </FormLabel>
                 <PhoneNumberInput
-                  value={phoneNumber}
-                  onChange={setPhoneNumber}
+                  value={phone}
+                  onChange={setPhone}
                   includePlusPrefix
                   required={false}
                   classNames="rounded-md mt-2"
@@ -182,7 +201,7 @@ const SignUpForm = ({ onClickLogin }: { onClickLogin: () => void }) => {
                 />
                 <FormField
                   control={form.control}
-                  name="confirmPassword"
+                  name="password_confirmation"
                   render={({ field }) => (
                     <FormItem className="w-full">
                       <FormLabel className="text-xs font-light">
@@ -231,7 +250,9 @@ const SignUpForm = ({ onClickLogin }: { onClickLogin: () => void }) => {
                 and <span className="text-primary">Terms of Service</span>{" "}
               </p>
             </div>
-            <LoadingButton className="w-full ">Create account</LoadingButton>
+            <LoadingButton loading={isLoading} className="w-full ">
+              Create account
+            </LoadingButton>
             <p className="text-xs text-center font-light ">
               Already have an account?{" "}
               <Button
