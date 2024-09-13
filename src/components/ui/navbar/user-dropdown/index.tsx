@@ -10,8 +10,19 @@ import {
 } from "@/components/_shared/drop-down";
 import { faker } from "@faker-js/faker";
 import React from "react";
+import { LogOut } from "lucide-react";
+import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
+import { logout, selectCurrentUser } from "@/redux/slices/authSlice";
+import { useRouter } from "next/navigation";
 
 const UserDropDown = () => {
+  const router = useRouter();
+  const currentUser = use99Selector(selectCurrentUser);
+  const dispatch = use99Dispatch();
+  const handleLogout = () => {
+    dispatch(logout());
+    router.push("/landing");
+  };
   return (
     <div>
       <DropdownMenu>
@@ -23,15 +34,15 @@ const UserDropDown = () => {
               className="w-8 h-8 rounded-full"
             />
             <div>
-              <h1 className="text-xs font-semibold">John Doe</h1>
-              <p className="text-[10px] text-[#6D6D6D] font-light">
-                Super Admin
-              </p>
+              <h1 className="text-xs font-semibold">
+                {currentUser?.first_name} {currentUser?.last_name}{" "}
+              </h1>
+              <p className="text-[10px] text-[#6D6D6D] font-light">none</p>
             </div>
           </Card>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="w-40 bg-white/50 z-50"
+          className="w-40 bg-white z-50"
           align="end"
           forceMount
         >
@@ -39,8 +50,11 @@ const UserDropDown = () => {
             <DropdownMenuItem className="cursor-pointer flex items-center gap-x-2">
               Account Settings
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer flex items-center gap-x-2">
-              PNG
+            <DropdownMenuItem
+              className="cursor-pointer flex items-center gap-x-2"
+              onClick={handleLogout}
+            >
+              <LogOut size={20} /> Logout
             </DropdownMenuItem>{" "}
           </DropdownMenuGroup>
         </DropdownMenuContent>

@@ -67,7 +67,7 @@ const HeroSection = () => {
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
-        >sl
+        >
           {/* Black background overlay */}
           <div className="absolute inset-0 bg-black opacity-60 z-20" />
 
@@ -76,7 +76,9 @@ const HeroSection = () => {
               <GradualSpacing text={slide.title} />{" "}
             </h1>
             <AnimatedContainer>
-              <p className="text-white text-center sm:text-xl mt-4">{slide.text}</p>
+              <p className="text-white text-center sm:text-xl mt-4">
+                {slide.text}
+              </p>
             </AnimatedContainer>
             <AnimatedContainer className="flex mt-12 items-center gap-x-3">
               <Link href={"/shortlets"}>

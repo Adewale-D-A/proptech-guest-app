@@ -45,9 +45,6 @@ interface ToastResponse {
     message?: string;
   };
 }
-interface GeneralResponse {
-  message: string;
-}
 
 interface ShortletDataResponse {
   error: boolean;

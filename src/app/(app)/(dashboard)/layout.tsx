@@ -3,14 +3,29 @@
 
 import Navbar from "@/components/ui/navbar";
 import SideBarScreen from "@/components/ui/side-bar";
+import { use99Selector } from "@/redux/hooks/hooks";
+import { isAuthenticated, selectUserToken } from "@/redux/slices/authSlice";
+import { useRouter } from "next/navigation";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMediaQuery } from "react-responsive";
 
 const layout = ({ children }: { children: any }) => {
   let isTab = useMediaQuery({ query: "(max-width:768px)" });
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(!isTab);
 
+  const token = use99Selector(selectUserToken);
+  const userAuthenticated = use99Selector(isAuthenticated);
+  useEffect(() => {
+    if (!token) {
+      router.push("/landing");
+    }
+  }, [router]);
+
+  if (!userAuthenticated) {
+    return null;
+  }
   return (
     <div className="flex w-full bg-[#fcfcfc] h-screen">
       <div>

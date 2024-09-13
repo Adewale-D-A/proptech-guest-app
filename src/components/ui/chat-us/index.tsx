@@ -98,6 +98,8 @@ const ChatUsComponent = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showEmoji]);
+
+  
   useEffect(() => {
     scrollChatToBottom();
   }, [chatMessages]);

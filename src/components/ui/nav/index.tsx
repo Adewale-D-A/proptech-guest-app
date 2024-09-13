@@ -18,8 +18,10 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Menu } from "lucide-react";
 import { clearEmail, selectEmail } from "@/redux/slices/emailSlice";
 import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
+import { selectCurrentUser } from "@/redux/slices/authSlice";
 
 const HomeNavBar = () => {
+  const currentUser = use99Selector(selectCurrentUser);
   const router = useRouter();
   const dispatch = use99Dispatch();
   const searchParams = useSearchParams();
@@ -99,28 +101,55 @@ const HomeNavBar = () => {
             <div className="lg:flex hidden">
               <NavSectionTabs scrolled={scrolled} isMainRoute={isMainRoute} />
             </div>
-            <div className="hidden md:flex items-center gap-x-2">
-              <Button
-                variant={"outline"}
-                className={`text-xs h-8 ${
-                  isMainRoute
-                    ? `${scrolled ? "" : "text-white border-white"} `
-                    : "text-black"
-                } w-24`}
-                onClick={() => handleOpen(true, "sign-in")}
-              >
-                Sign In
-              </Button>
-              <Button
-                className="text-xs h-8"
-                onClick={() => handleOpen(true, "create")}
-              >
-                Create an account
-              </Button>
-            </div>
-            <div className="md:hidden flex">
-              <Menu color={scrolled ? "black" : "white"} />
-            </div>
+            {currentUser ? (
+              <div className="flex items-center gap-4">
+                {isMainRoute ? (
+                  <p
+                    className={`${
+                      scrolled ? "text-black" : "text-white"
+                    } text-sm`}
+                  >
+                    Hi {currentUser?.first_name}
+                  </p>
+                ) : (
+                  <p className={`text-black text-sm`}>
+                    Hi {currentUser?.first_name}
+                  </p>
+                )}
+                <Button
+                  className="text-xs h-8"
+                  onClick={() => router.push("/dashboard")}
+                >
+                  Goto Dashboard
+                </Button>
+              </div>
+            ) : (
+              <>
+                {" "}
+                <div className="hidden md:flex items-center gap-x-2">
+                  <Button
+                    variant={"outline"}
+                    className={`text-xs h-8 ${
+                      isMainRoute
+                        ? `${scrolled ? "" : "text-white border-white"} `
+                        : "text-black"
+                    } w-24`}
+                    onClick={() => handleOpen(true, "sign-in")}
+                  >
+                    Sign In
+                  </Button>
+                  <Button
+                    className="text-xs h-8"
+                    onClick={() => handleOpen(true, "create")}
+                  >
+                    Create an account
+                  </Button>
+                </div>
+                <div className="md:hidden flex">
+                  <Menu color={scrolled ? "black" : "white"} />
+                </div>
+              </>
+            )}
           </div>
         </div>
         <Modal
@@ -148,6 +177,7 @@ const HomeNavBar = () => {
             <SignInform
               onClick={() => handleOpen(true, "create")}
               onClickForgetPassword={() => handleOpen(true, "forgot-password")}
+              handleClose={handleClose}
             />
           )}
           {type === "forgot-password" && (

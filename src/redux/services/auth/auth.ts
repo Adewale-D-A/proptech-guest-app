@@ -1,6 +1,5 @@
 /** @format */
 
-import { GeneralResponse } from "@/types/type";
 import { injectEndpoints } from "../base/base";
 import { Endpoints } from "../base/service";
 

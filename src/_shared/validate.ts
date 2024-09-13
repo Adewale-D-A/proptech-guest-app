@@ -14,7 +14,6 @@ const password = z
   .min(1, "Password field is required")
   .min(7, "Password must be at least 7 characters long");
 
-
 export const signInValidationSchema = z.object({ email, password });
 export const signUpValidationSchema = z
   .object({
@@ -28,3 +27,11 @@ export const signUpValidationSchema = z
     message: "Passwords don't match",
     path: ["confirm"],
   });
+
+export const bookingSchema = z.object({
+  check_in_day: z.string().nonempty("Check-in date is required"),
+  check_in_time: z.string().nonempty("Check-in time is required"),
+  check_out_day: z.string().nonempty("Check-out date is required"),
+  check_out_time: z.string().nonempty("Check-out time is required"),
+  number_of_guests: z.string().nonempty("Number of guests is required"),
+});

@@ -4,13 +4,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
 type AuthType = {
-  user: any;
-  token: any;
+  user: User | null;
+  token: string | undefined;
   isAuthenticated: boolean;
 };
 
 const initialState: AuthType = {
-  user: "",
+  user: null,
   token: "",
   isAuthenticated: false,
 };
@@ -30,14 +30,20 @@ const authSlice = createSlice({
       state.token = token;
       state.isAuthenticated = true;
     },
+    logout: (state) => {
+      state.user = null;
+      state.token = "";
+      state.isAuthenticated = false;
+    },
   },
 });
 
 const { actions, reducer } = authSlice;
-export const { setUserDetails, setUserToken } = actions;
+export const { setUserDetails, setUserToken, logout } = actions;
 
 // selector to select user details from the store
-export const selectCurrentUser = (state: RootState) => state.auth.token;
-// export const selectToken = (state: RootState) => state.auth.token;
+export const selectUserToken = (state: RootState) => state.auth.token;
+export const selectCurrentUser = (state: RootState) => state.auth.user;
+export const isAuthenticated = (state: RootState) => state.auth.isAuthenticated;
 
 export default reducer;

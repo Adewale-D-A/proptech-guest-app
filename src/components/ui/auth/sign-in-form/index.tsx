@@ -22,14 +22,19 @@ import { Button } from "@/components/_shared/button";
 import { Checkbox } from "@/components/_shared/check-box";
 import { LoadingButton } from "@/components/_shared/loading-button";
 import { useSignInMutation } from "@/redux/services/auth/auth";
+import { use99Dispatch } from "@/redux/hooks/hooks";
+import { setUserDetails, setUserToken } from "@/redux/slices/authSlice";
 
 const SignInform = ({
   onClick,
   onClickForgetPassword,
+  handleClose,
 }: {
   onClick: () => void;
   onClickForgetPassword: () => void;
+  handleClose: () => void;
 }) => {
+  const dispatch = use99Dispatch();
   const [signIn, { isLoading }] = useSignInMutation();
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
@@ -44,12 +49,14 @@ const SignInform = ({
   const onSubmit = async (values: z.infer<typeof signInValidationSchema>) => {
     try {
       const response = await signIn(values).unwrap();
-      console.log("user", response);
+      dispatch(setUserToken(response?.data?.access_token));
+      dispatch(setUserDetails(response?.data?.user));
       toast({
         variant: "default",
         title: response?.message,
         description: "Welcome to 99Apartment 🚀",
       });
+      handleClose();
     } catch (err) {
       const errorMessage =
         (err as any)?.data?.message || "Login failed. Please try again.";

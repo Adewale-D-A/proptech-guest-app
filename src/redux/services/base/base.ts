@@ -15,6 +15,7 @@ const base = createApi({
     // },
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
+      console.log("token base:::", token);
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }

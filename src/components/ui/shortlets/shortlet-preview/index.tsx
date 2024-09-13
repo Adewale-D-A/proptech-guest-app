@@ -24,28 +24,38 @@ import DetailsSection from "../details-section";
 import AnimatedContainer from "@/components/_shared/framer/animate-div";
 import AnythingElse from "../anything-else";
 import BackButton from "@/components/back-btn";
-import { ImageType, Shortlet, ShortletPage } from "@/types/type";
+import { ImageType } from "@/types/type";
 import { formatCurrency } from "@/_shared";
+import { DatePickerTime } from "@/components/date-picker-time";
+import { useForm } from "react-hook-form";
+import { useToast } from "@/components/_shared/toast/use-toast";
+import { Form } from "@/components/_shared/form";
+import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
+import { logout, selectCurrentUser } from "@/redux/slices/authSlice";
+import { bookingSchema } from "@/_shared/validate";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useCreateBookingMutation } from "@/redux/services/booking";
+import { LoadingButton } from "@/components/_shared/loading-button";
+
+type FormValues = z.infer<typeof bookingSchema>;
 
 const ShortLetPreviewComponent = ({
   apartmentDetails,
 }: {
   apartmentDetails: any;
 }) => {
-  console.log("apartmentDetails::", apartmentDetails);
-
+  const params = useParams();
+  const { toast } = useToast();
+  const [booking, { isLoading }] = useCreateBookingMutation();
+  const currentUser = use99Selector(selectCurrentUser);
   const [currentIndex, setCurrentIndex] = useState(0);
-
   const imgLength = apartmentDetails && apartmentDetails?.images.length;
-
   const handleNext = () => {
     if (apartmentDetails) {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % imgLength);
     }
   };
-
-  console.log("mgLength.length", imgLength);
-
   const handlePrev = () => {
     if (apartmentDetails && apartmentDetails.length > 0) {
       setCurrentIndex(
@@ -56,13 +66,13 @@ const ShortLetPreviewComponent = ({
   };
 
   const totalImages = apartmentDetails?.images.length || 0;
-
-  console.log("totalImages", totalImages);
-
   const startIndex = Math.max(currentIndex - 2, 0);
   const endIndex = Math.min(startIndex + 4, totalImages);
   const imagesToShow = apartmentDetails?.images.slice(startIndex, endIndex);
-
+  const number_of_guests = Array.from({ length: 10 }, (_, i) => ({
+    key: i + 1,
+    value: i + 1,
+  }));
   const adjustedStartIndex =
     imagesToShow?.length < 4 && totalImages > 4
       ? Math.max(totalImages - 4, 0)
@@ -74,9 +84,53 @@ const ShortLetPreviewComponent = ({
 
   const remainingCount = totalImages - adjustedImagesToShow?.length;
 
-  console.log("remainingCount:::", remainingCount);
+  const form = useForm<FormValues>({
+    resolver: zodResolver(bookingSchema),
+    defaultValues: {
+      check_in_day: "",
+      check_in_time: "",
+      check_out_day: "",
+      check_out_time: "",
+      number_of_guests: "",
+    },
+  });
 
-  console.log("apartmentDetails[currentIndex]?.images[0] ", apartmentDetails);
+  const { reset } = form;
+
+  const onSubmit = async (values: FormValues) => {
+    if (!currentUser) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please log in to proceed with your booking.",
+      });
+      return;
+    }
+    const payload = {
+      ...values,
+      number_of_guests: Number(values.number_of_guests),
+      shortlet_id: params?.id,
+      payment_method: "paystack",
+      callback_url: "/",
+    };
+    try {
+      const res = await booking(payload).unwrap();
+      toast({
+        variant: "default",
+        title: res?.message,
+        description: "Apartment booked",
+      });
+      reset();
+    } catch (err) {
+      const errorMessage =
+        (err as any)?.data?.message || "Submission failed. Please try again.";
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      });
+    }
+  };
 
   return (
     <div className="pt-24">
@@ -178,74 +232,114 @@ const ShortLetPreviewComponent = ({
                 </div>
               </div>
               <section className="p-4">
-                <div className="flex flex-col gap-3">
-                  <div className="flex justify-between items-center gap-4 w-full">
-                    <div className="w-full">
-                      <DatePicker label="Check-in" placeholder="DD/MM/YYYY" />
-                    </div>
-                    <div className="w-full">
-                      <DatePicker label="Check-out" placeholder="DD/MM/YYYY" />
-                    </div>
-                  </div>
-                  <div>
-                    <Label className="text-sm font-normal">No of Guest</Label>
-                    <Select>
-                      <SelectTrigger className="border-black/10 h-10 shadow-none text-gray-100 mt-2">
-                        <SelectValue
-                          placeholder="Enter number of guests"
-                          className="text-[#77838D] text-xs font-light"
-                        />
-                      </SelectTrigger>
-                      <SelectContent className="border-none">
-                        {/* {roomOptions.map((option) => (
-                          <React.Fragment key={option.id}>
-                            <SelectItem
-                              value={option.id}
-                              className="border-none font-bold"
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)}>
+                    <div className="flex flex-col gap-3">
+                      <div className="flex justify-between items-center gap-4 w-full">
+                        <div className="w-full">
+                          <DatePickerTime
+                            label="Check-in"
+                            placeholder="DD/MM/YYYY"
+                            onDateChange={(date) =>
+                              form.setValue(
+                                "check_in_day",
+                                date ? date.toISOString().split("T")[0] : ""
+                              )
+                            }
+                            onTimeChange={(time) =>
+                              form.setValue("check_in_time", time ?? "")
+                            }
+                            error={
+                              form.formState.errors.check_in_day?.message ||
+                              form.formState.errors.check_in_time?.message
+                            }
+                          />
+                        </div>
+                        <div className="w-full">
+                          <DatePickerTime
+                            label="Check-out"
+                            placeholder="DD/MM/YYYY"
+                            onDateChange={(date) =>
+                              form.setValue(
+                                "check_out_day",
+                                date ? date.toISOString().split("T")[0] : ""
+                              )
+                            }
+                            onTimeChange={(time) =>
+                              form.setValue("check_out_time", time ?? "")
+                            }
+                            error={
+                              form.formState.errors.check_out_day?.message ||
+                              form.formState.errors.check_out_time?.message
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <Label className="text-sm font-normal">
+                          No of Guest
+                        </Label>
+                        <Select
+                          value={form.watch("number_of_guests")}
+                          onValueChange={(value) =>
+                            form.setValue("number_of_guests", value)
+                          }
+                        >
+                          <SelectTrigger className="border-black/10 h-10 shadow-none text-gray-100 mt-2">
+                            <SelectValue
+                              placeholder="Enter number of guests"
+                              className="text-[#77838D] text-xs font-light"
                             >
-                              {option.name}
-                            </SelectItem>
-                            {option.details && (
-                              <div className="pl-4">
-                                {option.details.map((detail) => (
-                                  <SelectItem
-                                    key={detail.id}
-                                    value={detail.id}
-                                    className="border-none"
-                                  >
-                                    {detail.name}
-                                  </SelectItem>
-                                ))}
-                              </div>
-                            )}
-                          </React.Fragment>
-                        ))} */}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <section className="bg-[#F9F9F9] rounded-md mt-5">
-                    <div className="border-b p-4">
-                      <h1 className="">Booking Summary</h1>
-                    </div>
-                    <div className="p-4">
-                      <div className="border-b py-3 flex flex-col gap-3">
-                        <ListCard
-                          amt="#108,000.00"
-                          costName="Estimated cost for 1 night "
-                        />
-                        <ListCard
-                          amt="#108,000.00"
-                          costName="Total (1 Night)"
-                        />
+                              {form.watch("number_of_guests") ||
+                                "Enter number of guests"}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent className="border-none">
+                            {number_of_guests.map((num) => (
+                              <SelectItem
+                                key={num.key}
+                                value={num.value.toString()}
+                              >
+                                {num.value}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {form.formState.errors.number_of_guests && (
+                          <span className="text-red-600 text-xs mt-1">
+                            {form.formState.errors.number_of_guests.message}
+                          </span>
+                        )}
                       </div>
-                      <div className="pt-5">
-                        <Button variant="outline" className="w-full">
-                          Reserve Now
-                        </Button>
-                      </div>
+                      <section className="bg-[#F9F9F9] rounded-md mt-5">
+                        <div className="border-b p-4">
+                          <h1 className="">Booking Summary</h1>
+                        </div>
+                        <div className="p-4">
+                          <div className="border-b py-3 flex flex-col gap-3">
+                            <ListCard
+                              amt="#108,000.00"
+                              costName="Estimated cost for 1 night "
+                            />
+                            <ListCard
+                              amt="#108,000.00"
+                              costName="Total (1 Night)"
+                            />
+                          </div>
+                          <div className="pt-5">
+                            <LoadingButton
+                              loading={isLoading}
+                              variant="outline"
+                              className="w-full"
+                            >
+                              Reserve Now
+                            </LoadingButton>
+                          </div>
+                        </div>
+                      </section>
                     </div>
-                  </section>
-                </div>
+                  </form>
+                </Form>
               </section>
             </Card>
           </AnimatedContainer>
