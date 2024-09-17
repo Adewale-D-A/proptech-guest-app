@@ -1,7 +1,7 @@
 /** @format */
 
 import { injectEndpoints } from "../base/base";
-import { Endpoints } from "../base/service";
+import { Endpoints, Methods } from "../base/service";
 
 const bookingEndpoints = injectEndpoints({
   endpoints: (builder) => ({
@@ -12,7 +12,15 @@ const bookingEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/booking`,
       }),
     }),
+    getBookingPrice: builder.mutation<GetFeeResponseData, any>({
+      query: (body) => ({
+        body,
+        method: Methods.post,
+        url: `${Endpoints.api}user/booking/get-fees`,
+      }),
+    }),
   }),
 });
 
-export const { useCreateBookingMutation } = bookingEndpoints;
+export const { useCreateBookingMutation, useGetBookingPriceMutation } =
+  bookingEndpoints;

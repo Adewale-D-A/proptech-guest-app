@@ -3,7 +3,7 @@
 interface GeneralResponse {
   error: boolean;
   message: string;
-  data: AuthResponseData;
+  // data: AuthResponseData;
 }
 
 interface User {
@@ -22,9 +22,20 @@ interface User {
   updated_at: string;
 }
 
-interface AuthResponseData {
-  access_token: string;
-  expires_in: number;
-  token_type: string;
-  user: User;
+interface AuthResponseData extends GeneralResponse {
+  data: {
+    access_token: string;
+    expires_in: number;
+    token_type: string;
+    user: User;
+  };
+}
+
+interface GetFeeResponseData extends GeneralResponse {
+  data: {
+    base_cost: number;
+    caution_fee: number;
+    tax_fee: number;
+    total_cost: number;
+  };
 }

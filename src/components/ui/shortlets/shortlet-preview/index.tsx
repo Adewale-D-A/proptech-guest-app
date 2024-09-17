@@ -1,6 +1,6 @@
 /** @format */
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/_shared/button";
 import { MdArrowBack } from "react-icons/md";
@@ -8,7 +8,6 @@ import { IoArrowForward } from "react-icons/io5";
 import { CalendarCheck2 } from "lucide-react";
 import { Card } from "@/components/_shared/card";
 import { TiStarFullOutline } from "react-icons/ti";
-import { DatePicker } from "@/components/date-picker";
 import { Label } from "@/components/_shared/label";
 import {
   Select,
@@ -18,7 +17,6 @@ import {
   SelectValue,
 } from "@/components/_shared/select";
 import ListCard from "../list-card";
-import { Input } from "@/components/_shared/input";
 import ShareReview from "../share-review";
 import DetailsSection from "../details-section";
 import AnimatedContainer from "@/components/_shared/framer/animate-div";
@@ -30,13 +28,17 @@ import { DatePickerTime } from "@/components/date-picker-time";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import { Form } from "@/components/_shared/form";
-import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
-import { logout, selectCurrentUser } from "@/redux/slices/authSlice";
+import { use99Selector } from "@/redux/hooks/hooks";
+import { selectCurrentUser } from "@/redux/slices/authSlice";
 import { bookingSchema } from "@/_shared/validate";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCreateBookingMutation } from "@/redux/services/booking";
+import {
+  useCreateBookingMutation,
+  useGetBookingPriceMutation,
+} from "@/redux/services/booking";
 import { LoadingButton } from "@/components/_shared/loading-button";
+import RotateLoader from "@/components/loader/rotate-loader";
 
 type FormValues = z.infer<typeof bookingSchema>;
 
@@ -47,7 +49,10 @@ const ShortLetPreviewComponent = ({
 }) => {
   const params = useParams();
   const { toast } = useToast();
+  const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
   const [booking, { isLoading }] = useCreateBookingMutation();
+  const [bookingPrice, { isLoading: priceLoading }] =
+    useGetBookingPriceMutation();
   const currentUser = use99Selector(selectCurrentUser);
   const [currentIndex, setCurrentIndex] = useState(0);
   const imgLength = apartmentDetails && apartmentDetails?.images.length;
@@ -131,6 +136,53 @@ const ShortLetPreviewComponent = ({
       });
     }
   };
+
+  useEffect(() => {
+    const checkInDay = form.watch("check_in_day");
+    const checkInTime = form.watch("check_in_time");
+    const checkOutDay = form.watch("check_out_day");
+    const checkOutTime = form.watch("check_out_time");
+    const numberOfGuests = form.watch("number_of_guests");
+
+    if (
+      checkInDay &&
+      checkInTime &&
+      checkOutDay &&
+      checkOutTime &&
+      numberOfGuests
+    ) {
+      const payload = {
+        check_in_day: checkInDay ?? "",
+        check_in_time: checkInTime ?? "",
+        check_out_day: checkOutDay ?? "",
+        check_out_time: checkOutTime ?? "",
+        number_of_guests: numberOfGuests ?? "",
+        shortlet_id: params?.id,
+      };
+
+      (async () => {
+        try {
+          const res = await bookingPrice(payload).unwrap();
+          setEstimatedPrice(res?.data?.total_cost);
+        } catch (err) {
+          const errorMessage =
+            (err as any)?.data?.message || "Login failed. Please try again.";
+          toast({
+            variant: "destructive",
+            title: "Error fees!",
+            description:
+              errorMessage || "Failed to calculate the price. Please try again",
+          });
+        }
+      })();
+    }
+  }, [
+    form.watch("check_in_day"),
+    form.watch("check_in_time"),
+    form.watch("check_out_day"),
+    form.watch("check_out_time"),
+    form.watch("number_of_guests"),
+  ]);
 
   return (
     <div className="pt-24">
@@ -312,29 +364,41 @@ const ShortLetPreviewComponent = ({
                         )}
                       </div>
                       <section className="bg-[#F9F9F9] rounded-md mt-5">
-                        <div className="border-b p-4">
-                          <h1 className="">Booking Summary</h1>
-                        </div>
-                        <div className="p-4">
-                          <div className="border-b py-3 flex flex-col gap-3">
-                            <ListCard
-                              amt="#108,000.00"
-                              costName="Estimated cost for 1 night "
-                            />
-                            <ListCard
-                              amt="#108,000.00"
-                              costName="Total (1 Night)"
-                            />
+                        {priceLoading ? (
+                          <div className="flex pt-5 items-center justify-center">
+                            <RotateLoader />
                           </div>
-                          <div className="pt-5">
-                            <LoadingButton
-                              loading={isLoading}
-                              variant="outline"
-                              className="w-full"
-                            >
-                              Reserve Now
-                            </LoadingButton>
-                          </div>
+                        ) : (
+                          <>
+                            {estimatedPrice && (
+                              <section>
+                                <div className="border-b p-4">
+                                  <h1 className="">Booking Summary</h1>
+                                </div>
+                                <div className="p-4">
+                                  <div className="border-b py-3 flex flex-col gap-3">
+                                    <ListCard
+                                      amt={estimatedPrice}
+                                      costName="Estimated cost for 1 night "
+                                    />
+                                    <ListCard
+                                      amt={estimatedPrice}
+                                      costName="Total (1 Night)"
+                                    />
+                                  </div>
+                                </div>
+                              </section>
+                            )}
+                          </>
+                        )}
+                        <div className="px-4 pb-4">
+                          <LoadingButton
+                            loading={isLoading}
+                            variant="outline"
+                            className="w-full"
+                          >
+                            Reserve Now
+                          </LoadingButton>
                         </div>
                       </section>
                     </div>

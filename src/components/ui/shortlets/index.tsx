@@ -9,6 +9,7 @@ const ShortletComponent = ({
   showModal,
   shortletData,
   isLoading,
+  setFilters,
 }: ShortletType) => {
   return (
     <>
@@ -18,6 +19,7 @@ const ShortletComponent = ({
         setShowModal={setShowModal}
         showModal={showModal}
         isLoading={isLoading}
+        setFilters={setFilters}
       />
     </>
   );

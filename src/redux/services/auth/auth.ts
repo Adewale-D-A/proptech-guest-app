@@ -1,57 +1,57 @@
 /** @format */
 
 import { injectEndpoints } from "../base/base";
-import { Endpoints } from "../base/service";
+import { Endpoints, Methods } from "../base/service";
 
 const authEndpoints = injectEndpoints({
   endpoints: (builder) => ({
-    signIn: builder.mutation<GeneralResponse, any>({
+    signIn: builder.mutation<AuthResponseData, any>({
       query: (body) => ({
         body,
-        method: "POST",
+        method: Methods.post,
         url: `${Endpoints.api}auth/login`,
       }),
     }),
-    signUp: builder.mutation<GeneralResponse, any>({
+    signUp: builder.mutation<AuthResponseData, any>({
       query: (body) => ({
         body,
-        method: "POST",
+        method: Methods.post,
         url: `${Endpoints.api}auth/register`,
       }),
     }),
 
-    verifyOtp: builder.mutation<GeneralResponse, any>({
+    verifyOtp: builder.mutation<AuthResponseData, any>({
       query: (body) => ({
         body,
-        method: "POST",
+        method: Methods.post,
         url: `${Endpoints.api}auth/register/verify`,
       }),
     }),
-    resendOtp: builder.mutation<GeneralResponse, any>({
+    resendOtp: builder.mutation<AuthResponseData, any>({
       query: (body) => ({
         body,
-        method: "POST",
+        method: Methods.post,
         url: `${Endpoints.api}auth/register/resend-otp`,
       }),
     }),
-    forgotPassword: builder.mutation<GeneralResponse, any>({
+    forgotPassword: builder.mutation<AuthResponseData, any>({
       query: (body) => ({
         body,
-        method: "POST",
+        method: Methods.post,
         url: `${Endpoints.api}auth/forgot-password`,
       }),
     }),
-    verifyForgetPassword: builder.mutation<GeneralResponse, any>({
+    verifyForgetPassword: builder.mutation<AuthResponseData, any>({
       query: (body) => ({
         body,
-        method: "POST",
+        method: Methods.post,
         url: `${Endpoints.api}auth/forgot-password/verify`,
       }),
     }),
     getUsers: builder.mutation<any[], void>({
       query: (body) => ({
         body,
-        method: "GET",
+        method: Methods.get,
         url: `${Endpoints.api}`,
       }),
     }),

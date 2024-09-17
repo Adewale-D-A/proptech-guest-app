@@ -62,7 +62,6 @@ export const footer = [
   },
 ];
 
-
 export const apartments = [
   {
     id: 1,
@@ -283,4 +282,27 @@ export const chatData = [
     message: "Can you tell me more about your pricing?",
     time: "10:03 AM",
   },
+];
+
+export const allAmenities = [
+  { id: "1", name: "Air Conditioning" },
+  { id: "2", name: "Pool" },
+  { id: "3", name: "WiFi" },
+  { id: "4", name: "Kitchen" },
+  { id: "5", name: "Gym" },
+  { id: "6", name: "Washer" },
+  { id: "7", name: "Pool" },
+  { id: "8", name: "Hot tub" },
+  { id: "9", name: "Smoke Alarm" },
+  { id: "10", name: "Free parking on premises" },
+  { id: "11", name: "Dedicated Workspace" },
+  // Add more amenities here
+];
+export const howLong = [
+  { id: "1", name: "Long Stay" },
+  { id: "2", name: "Short Stay" },
+];
+export const shortletAmount = [
+  { id: "1", name: "₦10,000 - ₦50,000  Per Night" },
+  { id: "2", name: "₦51,000 - ₦100,000  Per Night" },
 ];

@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useMediaQuery } from "react-responsive";
 
-const layout = ({ children }: { children: any }) => {
+const DashboardLayout = ({ children }: { children: any }) => {
   let isTab = useMediaQuery({ query: "(max-width:768px)" });
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(!isTab);
@@ -40,4 +40,4 @@ const layout = ({ children }: { children: any }) => {
   );
 };
 
-export default layout;
+export default DashboardLayout;

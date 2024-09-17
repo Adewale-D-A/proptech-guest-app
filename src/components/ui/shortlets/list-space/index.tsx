@@ -24,7 +24,12 @@ import { ShortletType } from "@/types/type";
 import Image from "next/image";
 import { Card } from "@/components/_shared/card";
 import { Wifi } from "lucide-react";
-import { apartments } from "@/_shared/data";
+import {
+  allAmenities,
+  apartments,
+  howLong,
+  shortletAmount,
+} from "@/_shared/data";
 import AnimatedContainer from "@/components/_shared/framer/animate-div";
 import SparkleEffect from "@/components/_shared/framer/sparkle-effect";
 import LoveSparkEffect from "@/components/_shared/framer/love-spark";
@@ -37,14 +42,17 @@ const ListSpace = ({
   showModal,
   shortletData,
   isLoading,
+  setFilters,
 }: ShortletType) => {
   const router = useRouter();
   const pathName = usePathname();
   const handleRoute = (aptName: string, id: number) => {
     router.push(`${pathName}/${aptName}/${id}`);
   };
-  console.log("shortletData:::", shortletData);
+  const [location, setLocation] = useState<string>("");
+  const [numOfRooms, setNumOfRooms] = useState<string>("");
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+  console.log("selected:::", selectedAmenities);
 
   const handleAmenityChange = (amenityId: string) => {
     setSelectedAmenities((prevSelected) =>
@@ -53,28 +61,16 @@ const ListSpace = ({
         : [...prevSelected, amenityId]
     );
   };
-  const allAmenities = [
-    { id: "1", name: "Air Conditioning" },
-    { id: "2", name: "Pool" },
-    { id: "3", name: "WiFi" },
-    { id: "4", name: "Kitchen" },
-    { id: "5", name: "Gym" },
-    { id: "6", name: "Washer" },
-    { id: "7", name: "Pool" },
-    { id: "8", name: "Hot tub" },
-    { id: "9", name: "Smoke Alarm" },
-    { id: "10", name: "Free parking on premises" },
-    { id: "11", name: "Dedicated Workspace" },
-    // Add more amenities here
-  ];
-  const howLong = [
-    { id: "1", name: "Long Stay" },
-    { id: "2", name: "Short Stay" },
-  ];
-  const amount = [
-    { id: "1", name: "₦10,000 - ₦50,000  Per Night" },
-    { id: "2", name: "₦51,000 - ₦100,000  Per Night" },
-  ];
+
+  console.log("numOfRooms", numOfRooms);
+
+  const handleSearch = () => {
+    setFilters({
+      location,
+      room_option_id: numOfRooms,
+    });
+  };
+
   const skeletonRows = Array.from({ length: 5 }, (_, index) => (
     <CardSkeleton key={index} />
   ));
@@ -90,6 +86,8 @@ const ListSpace = ({
                   <Input
                     placeholder="Location"
                     className="w-full text-gray-100 border-none shadow-none"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
                   />
                   <Label className="text-xs">
                     Where would you love to stay
@@ -101,25 +99,22 @@ const ListSpace = ({
                 className=" bg-black/10  h-20"
               />
               <div className="w-full flex flex-col justify-center">
-                <Select>
+                <Select onValueChange={(value) => setNumOfRooms(value)}>
                   <SelectTrigger className="border-none shadow-none text-gray-100">
                     <SelectValue
-                      placeholder="Choose a tag"
-                      className="text-gray-100  "
+                      placeholder="Choose number of rooms"
+                      className="text-gray-100"
                     />
                   </SelectTrigger>
 
                   <SelectContent className="border-none">
-                    {[
-                      { id: "66059257bcb47c8944881922", name: "Marketing" },
-                      { id: "66059257bcb47c8944881924", name: "Sales" },
-                    ].map((tag) => (
+                    {[1, 2, 3, 4, 5].map((room) => (
                       <SelectItem
-                        key={tag.id}
-                        value={tag.id}
+                        key={room}
+                        value={room.toString()}
                         className="border-none"
                       >
-                        {tag.name}
+                        {room} Room{room > 1 ? "s" : ""}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -138,7 +133,10 @@ const ListSpace = ({
               </div>
             </div>
             <div className="h-full cursor-pointer">
-              <Button className="bg-[#FFD772] rounded-l-none text-black h-full w-44">
+              <Button
+                className="bg-[#FFD772] rounded-l-none text-black h-full w-44"
+                onClick={handleSearch}
+              >
                 SEARCH
               </Button>
             </div>
@@ -150,7 +148,7 @@ const ListSpace = ({
             <div className="grid grid-cols-3 gap-4  mt-8">{skeletonRows}</div>
           ) : (
             <div className="grid grid-cols-3 gap-4 mt-8">
-              {shortletData && shortletData.length < 0 ? (
+              {shortletData && shortletData.length <= 0 ? (
                 <>
                   <div>no data avaliable</div>
                 </>
@@ -172,10 +170,10 @@ const ListSpace = ({
                             sizes="100vw"
                             loading="eager"
                           />
-                          <a
+                          {/* <a
                             href="#"
                             className=" rounded-t-md absolute w-full h-60 top-0 left-0 bg-black opacity-0 z-10 transition-opacity duration-300 hover:opacity-30 "
-                          ></a>
+                          ></a> */}
                           <div className="absolute top-2 px-2 flex justify-between items-center flex-1 w-full">
                             <SparkleEffect>
                               <div className="flex items-center gap-2 w-14 h-6 rounded justify-center bg-black/10 bg-opacity-60 cursor-pointer backdrop-blur-md z-40">
@@ -325,7 +323,7 @@ const ListSpace = ({
               <h1>Price Range (Shortlet)</h1>
             </div>
             <div className="flex mt-4 flex-col gap-2">
-              {amount.map((amenity) => (
+              {shortletAmount.map((amenity) => (
                 <div key={amenity.id} className="flex items-center gap-1 mb-2">
                   <Checkbox
                     id={amenity.id}

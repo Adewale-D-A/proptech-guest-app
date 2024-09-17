@@ -10,6 +10,7 @@ export interface ShortletType {
   showModal: boolean;
   shortletData: Shortlet[];
   isLoading?: boolean;
+  setFilters?: Dispatch<SetStateAction<any>>;
 }
 export interface CountryType {
   code: string;
