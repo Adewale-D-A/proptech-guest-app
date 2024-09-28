@@ -8,7 +8,7 @@ import { Form } from "@/components/_shared/form";
 import { LoadingButton } from "@/components/_shared/loading-button";
 import { ScanSearch } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { Input } from "@/components/_shared/input";
+
 import {
   Select,
   SelectContent,
@@ -32,8 +32,18 @@ import VolumeProgressBar from "./volume-progress";
 import FirstStepForm from "./step_1";
 import SecondStepForm from "./step_2";
 import ThirdStepForm from "./step_3";
+import { UserRequestBreakdown, UserRequestsResponse } from "@/types/type";
+import RequestTable from "../make-request/request-table";
 
-const AdditionalServicesComponent = () => {
+const AdditionalServicesComponent = ({
+  requestDataStats,
+  requestData,
+  isLoading,
+}: {
+  requestDataStats: UserRequestBreakdown | undefined;
+  requestData: UserRequestsResponse | undefined;
+  isLoading: boolean;
+}) => {
   const [volume, setVolume] = useState<number>(0);
   const [step, setStep] = useState(1);
   const router = useRouter();
@@ -93,30 +103,34 @@ const AdditionalServicesComponent = () => {
             <section className="grid grid-cols-2 gap-4">
               <ReusableCard
                 text="Pending Requests"
-                bookingAmt="100"
+                bookingAmt={requestDataStats?.data?.pending ?? 0}
                 icon={<TbMessageReply size={16} />}
                 color="#E6F2FF"
                 showBtn
                 btnText="View Pending Requests"
                 onClick={handleNavigate}
+                isLoading={isLoading}
               />
               <ReusableCard
                 text="Total Requests"
-                bookingAmt="100"
+                bookingAmt={requestDataStats?.data?.total ?? 0}
                 icon={<TbMessageReply size={16} />}
                 color="#E9E9E9"
+                isLoading={isLoading}
               />
               <ReusableCard
                 text="Completed Requests"
-                bookingAmt="100"
+                bookingAmt={requestDataStats?.data?.completed ?? 0}
                 icon={<TbMessageReply size={16} />}
                 color="#E9E9E9"
+                isLoading={isLoading}
               />
               <ReusableCard
                 text="Cancelled Requests"
-                bookingAmt="100"
+                bookingAmt={requestDataStats?.data?.cancelled ?? 0}
                 icon={<TbMessageReply size={16} />}
                 color="#E9E9E9"
+                isLoading={isLoading}
               />
             </section>
           </Card>
@@ -187,7 +201,11 @@ const AdditionalServicesComponent = () => {
             <section className="flex  items-center gap-3">
               <div className="flex items-center gap-1">
                 <p className="text-xs">Filter:</p>
-                <DatePicker className="w-60 mt-0 h-9" />
+                <DatePicker
+                  className="w-60 mt-0 h-9"
+                  date={undefined}
+                  setDate={() => {}}
+                />
               </div>
               <div className="flex items-center  gap-1">
                 <p className="text-xs">Sort by:</p>
@@ -215,42 +233,7 @@ const AdditionalServicesComponent = () => {
               </div>
             </section>
           </div>
-          <Table className="mt-4 rounded-md">
-            <TableHeader className="rounded-md">
-              <TableRow className="bg-[#EAEAEA] rounded-md ">
-                {headers.map((h) => (
-                  <TableHead key={h} className="text-xs text-gray-100 "> {h}</TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {[1, 2, 3, 4, 5, 6].map((invoice, index) => (
-                <TableRow key={invoice}>
-                  <TableCell className="font-medium text-xs">
-                    {index + 1}
-                  </TableCell>
-                  <TableCell>25/03/2024 11:23 AM</TableCell>
-                  <TableCell className="font-medium text-xs">
-                    REQ2024-ABC123
-                  </TableCell>
-                  <TableCell className="font-medium text-xs">
-                    Sunshine - 2 Bedroom
-                  </TableCell>
-                  <TableCell className="font-medium text-xs">
-                    Netflix Account Subscription
-                  </TableCell>
-                  <TableCell className="font-medium text-xs">
-                    <div className="w-24 py-2 rounded  bg-[#00C814]/10 flex justify-center items-center">
-                      <p className="text-xs text-[#00C814]">Completed</p>
-                    </div>
-                  </TableCell>
-                  <TableCell className="font-medium text-xs">
-                    <ScanSearch className="text-[#00C814] " />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <RequestTable headers={headers} requestData={requestData} />
         </Card>
       </section>
     </div>

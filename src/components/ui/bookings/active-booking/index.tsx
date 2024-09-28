@@ -1,14 +1,7 @@
 /** @format */
 "use client";
 import React, { useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/_shared/table";
+
 import SearchInput from "@/components/search-input";
 import { Card } from "@/components/_shared/card";
 import {
@@ -18,13 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/_shared/select";
-import { faker } from "@faker-js/faker";
-import { House, MapPin, X } from "lucide-react";
-import { Bed, Bath } from "lucide-react";
-
+import { House, X } from "lucide-react";
 import { DatePicker } from "@/components/date-picker";
 import BackButton from "@/components/back-btn";
-import ActionsDropdown from "../actions";
 import { Modal } from "@/components/_shared/modal";
 import ExtendModal from "../extend-modal";
 import TransferModal from "../transfer-modal";
@@ -33,17 +22,34 @@ import { Button } from "@/components/_shared/button";
 import RescheduleModal from "../reshedule-modal";
 import GenerateVisitor from "../generate-visitor";
 import VisitorsCode from "../generate-visitor/copy-code";
-const ActiveBookingComponent = () => {
+import BookingTable from "../booking-table";
+const ActiveBookingComponent = ({
+  bookingData,
+  isLoading,
+}: {
+  bookingData: BookingsResponse | null;
+  isLoading: boolean;
+}) => {
   const [showModal, setShowModal] = useState(false);
   const [type, setType] = useState("");
   const [extendConfirm, setExtendConfirm] = useState(false);
-  const handleShowModal = (open: boolean, types: string) => {
+  const [selectedBookingId, setSelectedBookingId] = useState<number | null>(
+    null
+  );
+  const [visitorCode, setVisitorCode] = useState("");
+
+  const handleShowModal = (
+    open: boolean,
+    types: string,
+    bookingId?: number
+  ) => {
     setShowModal(open);
     setType(types);
+    if (bookingId) setSelectedBookingId(bookingId);
   };
 
-  const handleActionSelect = (selectedType: string) => {
-    handleShowModal(true, selectedType);
+  const handleActionSelect = (selectedType: string, bookingId?: number) => {
+    handleShowModal(true, selectedType, bookingId);
   };
   const handleExtend = () => {
     setExtendConfirm(true);
@@ -70,7 +76,11 @@ const ActiveBookingComponent = () => {
           <section className="flex  items-center gap-3">
             <div className="flex items-center gap-1">
               <p className="text-xs">Filter:</p>
-              <DatePicker className="w-60 mt-0 h-9" />
+              <DatePicker
+                className="w-60 mt-0 h-9"
+                date={undefined}
+                setDate={() => {}}
+              />
             </div>
             <div className="flex items-center  gap-1">
               <p className="text-xs">Sort by:</p>
@@ -97,65 +107,12 @@ const ActiveBookingComponent = () => {
             </div>
           </section>
         </div>
-        <Table className="mt-4 rounded-md">
-          {/* <TableCaption>A list of your recent bookings.</TableCaption> */}
-          <TableHeader className="rounded-md">
-            <TableRow className="bg-[#EAEAEA] rounded-md ">
-              {headers.map((h) => (
-                <TableHead key={h} className="text-xs text-gray-100 "> {h}</TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {[1, 2, 3, 4, 5, 6].map((invoice, index) => (
-              <TableRow key={invoice}>
-                <TableCell className="font-medium text-xs">
-                  {index + 1}
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-4 items-center">
-                    <img
-                      src={faker.image.avatar()}
-                      alt=""
-                      className="w-9 h-9 rounded"
-                    />
-                    <div>
-                      <p className="text-xs">Sunshine - 2 Bedroom</p>
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-1">
-                          <MapPin color="#6d6d6d" size={12} />
-                          <p className="text-[10px] text-gray-100">
-                            Lekki Phase II
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Bed color="#6d6d6d" size={12} />
-                          <p className="text-[10px] text-gray-100">2 bed(s)</p>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Bath color="#6d6d6d" size={12} />
-                          <p className="text-[10px] text-gray-100">
-                            2 bathroom
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell className="font-medium text-xs">
-                  #116,100.00
-                </TableCell>
-                <TableCell className="font-medium text-xs">
-                  28 Mar, 2024 5:25 AM
-                </TableCell>
-                <TableCell className="font-medium text-xs">1 Night</TableCell>
-                <TableCell className="font-medium text-xs">
-                  <ActionsDropdown onActionSelect={handleActionSelect} />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <BookingTable
+          headers={headers}
+          bookingData={bookingData}
+          isLoading={isLoading}
+          handleActionSelect={handleActionSelect}
+        />
       </Card>
       <Modal
         showModal={showModal}
@@ -176,9 +133,14 @@ const ActiveBookingComponent = () => {
           <GenerateVisitor
             onClose={() => setShowModal(false)}
             onClick={() => handleActionSelect("generate-true")}
+            bookingId={selectedBookingId}
+            setVisitorCode={setVisitorCode}
           />
         ) : type === "generate-true" ? (
-          <VisitorsCode onClose={() => setShowModal(false)} />
+          <VisitorsCode
+            visitorCode={visitorCode}
+            onClose={() => setShowModal(false)}
+          />
         ) : null}
       </Modal>
       <Modal

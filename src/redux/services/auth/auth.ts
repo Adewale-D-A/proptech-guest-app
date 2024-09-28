@@ -41,18 +41,38 @@ const authEndpoints = injectEndpoints({
         url: `${Endpoints.api}auth/forgot-password`,
       }),
     }),
-    verifyForgetPassword: builder.mutation<AuthResponseData, any>({
+    verifyForgetPassword: builder.mutation<AuthVerifyOtpData, any>({
       query: (body) => ({
         body,
         method: Methods.post,
         url: `${Endpoints.api}auth/forgot-password/verify`,
       }),
     }),
-    getUsers: builder.mutation<any[], void>({
+    resetPassword: builder.mutation<any, any>({
       query: (body) => ({
         body,
+        method: Methods.post,
+        url: `${Endpoints.api}auth/reset-password`,
+      }),
+    }),
+    getUsers: builder.query<User, void>({
+      query: () => ({
         method: Methods.get,
-        url: `${Endpoints.api}`,
+        url: `${Endpoints.api}user/user`,
+      }),
+    }),
+    updateUser: builder.mutation<any, UpdateUserPayload>({
+      query: (body) => ({
+        body,
+        method: Methods.post,
+        url: `${Endpoints.api}user/user`,
+      }),
+    }),
+    updateUserDocs: builder.mutation<any, UpdateUserDocPayload>({
+      query: (body) => ({
+        body,
+        method: Methods.post,
+        url: `${Endpoints.api}user/user/upload-identity-document`,
       }),
     }),
   }),
@@ -61,9 +81,12 @@ const authEndpoints = injectEndpoints({
 export const {
   useSignInMutation,
   useSignUpMutation,
-  useGetUsersMutation,
+  useGetUsersQuery,
   useVerifyOtpMutation,
   useResendOtpMutation,
   useForgotPasswordMutation,
   useVerifyForgetPasswordMutation,
+  useUpdateUserMutation,
+  useUpdateUserDocsMutation,
+  useResetPasswordMutation,
 } = authEndpoints;

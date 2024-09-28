@@ -2,6 +2,7 @@
 
 import AnimatedContainer from "@/components/_shared/framer/animate-div";
 import { Separator } from "@/components/_shared/separator";
+import CalendarView from "@/components/calander";
 import Image from "next/image";
 import React from "react";
 
@@ -75,6 +76,9 @@ const PropertyNeeds = () => {
           </div>
         </div>
       </div>
+      {/* <section className="w-64">
+        <CalendarView />
+      </section> */}
     </AnimatedContainer>
   );
 };

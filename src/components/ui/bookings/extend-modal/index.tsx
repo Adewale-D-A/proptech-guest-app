@@ -63,10 +63,18 @@ const ExtendModal = ({
           </div>
           <section className="flex flex-col gap-2  mt-4">
             <div>
-              <DatePicker label="Due date" />
+              <DatePicker
+                date={undefined}
+                setDate={() => {}}
+                label="Due date"
+              />
             </div>
             <div>
-              <DatePicker label="Extended date" />
+              <DatePicker
+                date={undefined}
+                setDate={() => {}}
+                label="Extended date"
+              />
             </div>
             <Button
               className="text-primary-1 cursor-pointer underline text-xs font-normal p-0 justify-start items-start"
@@ -92,7 +100,6 @@ const ExtendModal = ({
           </section>
         </section>
       </div>
-      
     </div>
   );
 };

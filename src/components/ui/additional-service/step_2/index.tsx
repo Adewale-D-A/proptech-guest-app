@@ -11,7 +11,11 @@ const SecondStepForm = ({ form }: { form: any }) => {
       <section className="flex gap-4 items-center w-full">
         <div className="flex w-full flex-col gap-1">
           <p className="text-xs">Select Date</p>
-          <DatePicker className="w-full mt-0 h-9" />
+          <DatePicker
+            className="w-full mt-0 h-9"
+            date={undefined}
+            setDate={() => {}}
+          />
         </div>
         <div className="flex w-full flex-col gap-1">
           <p className="text-xs">Select Time</p>

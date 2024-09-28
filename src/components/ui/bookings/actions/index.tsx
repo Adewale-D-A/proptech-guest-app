@@ -5,18 +5,27 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/_shared/drop-down";
+import { use99Dispatch } from "@/redux/hooks/hooks";
+import { setSelectedApt } from "@/redux/slices/apt";
 import { Ellipsis } from "lucide-react";
 import React from "react";
 
 const ActionsDropdown = ({
-  onActionSelect,
+  handleActionSelect,
+  booking,
+  id,
 }: {
-  onActionSelect: (value: string) => void;
+  handleActionSelect?: (value: string, id?: number) => void;
+  id: number;
+  booking?: any;
 }) => {
+  const dispatch = use99Dispatch();
+  const handleSelectApt = (apt: any) => {
+    dispatch(setSelectedApt(apt));
+  };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -28,19 +37,22 @@ const ActionsDropdown = ({
         <DropdownMenuSeparator />
         <DropdownMenuCheckboxItem
           className=" cursor-pointer text-xs "
-          onClick={() => onActionSelect("extend")}
+          onClick={() => handleActionSelect?.("extend")}
         >
           Extend Booking
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
           className=" cursor-pointer  text-xs"
-          onClick={() => onActionSelect("transfer")}
+          onClick={() => handleActionSelect?.("transfer")}
         >
           Transfer Booking
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
           className=" text-xs cursor-pointer "
-          onClick={() => onActionSelect("reschedule")}
+          onClick={() => {
+            handleSelectApt(booking);
+            handleActionSelect?.("reschedule");
+          }}
         >
           Reschedule Booking
         </DropdownMenuCheckboxItem>
@@ -48,7 +60,7 @@ const ActionsDropdown = ({
           Change Apartment
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
-          onClick={() => onActionSelect("generate")}
+          onClick={() => handleActionSelect?.("generate", id)}
           className=" text-xs cursor-pointer "
         >
           Generate Visitors Code

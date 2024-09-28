@@ -19,7 +19,7 @@ import { useDispatch } from "react-redux";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth", "auth-email"],
+  whitelist: ["auth", "auth-email", "apt"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

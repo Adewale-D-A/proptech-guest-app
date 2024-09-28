@@ -18,6 +18,9 @@ type IProps = {
   placeholder?: string;
   className?: string;
   label?: string;
+  date: Date | undefined;
+  setDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
+  disabled?: boolean;
 };
 
 export function DatePicker({
@@ -25,9 +28,10 @@ export function DatePicker({
   placeholder,
   className,
   label,
+  date,
+  setDate,
+  disabled = false,
 }: IProps) {
-  const [date, setDate] = React.useState<Date>();
-
   return (
     <Popover>
       <Label className="text-xs font-normal ">{label}</Label>
@@ -35,14 +39,17 @@ export function DatePicker({
         <Button
           variant={"outline"}
           className={cn(
-            `w-full h-11 border p-2 mt-2  rounded-md  border-[#EDEFF3] justify-start text-left font-normal",
-            !date && "text-muted-foreground ${className}`
+            `w-full h-11 border p-2 mt-2 rounded-md border-[#EDEFF3] justify-start text-left font-normal`,
+            !date && "text-muted-foreground",
+            disabled ? "opacity-50 cursor-not-allowed" : "",
+            className
           )}
+          disabled={disabled}
         >
           <div className="flex justify-between w-full">
-            <div className="flex w-full items-center">
+            <div className="flex w-full font-light items-center">
               {date ? (
-                format(date, "dd/MM/yyyy")
+                format(date, "yyyy-MM-dd")
               ) : (
                 <span className=" text-xs text-[#77838D] font-light ">
                   {placeholder}

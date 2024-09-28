@@ -2,15 +2,7 @@
 "use client";
 import React, { useState } from "react";
 import ReusableCard from "../reusable-card";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/_shared/table";
+
 import { Calendar, House, X } from "lucide-react";
 import { Card } from "@/components/_shared/card";
 import SearchInput from "@/components/search-input";
@@ -25,18 +17,13 @@ import {
 import { CalendarCheck2 } from "lucide-react";
 import { Database } from "lucide-react";
 import { CalendarClock } from "lucide-react";
-import { faker, tr } from "@faker-js/faker";
-import { MapPin } from "lucide-react";
-import { Bed } from "lucide-react";
-import { Bath } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import ActionsDropdown from "./actions";
-import HomeActionsDropdown from "./home-actions";
 import { Modal } from "@/components/_shared/modal";
-import { Label } from "@/components/_shared/label";
 import CautionForm from "./caution-form";
 import SuccessfulMessage from "./success-message";
 import Rating from "./rate";
+import BookingTable from "./booking-table";
+import { BookingData } from "@/types/type";
 
 const headers = [
   "S/N",
@@ -47,7 +34,17 @@ const headers = [
   "Action",
 ];
 
-const BookingsComponent = () => {
+const BookingsComponent = ({
+  bookingData,
+  isLoading,
+  statsLoading,
+  statsData,
+}: {
+  bookingData: BookingsResponse | null;
+  isLoading: boolean;
+  statsLoading: boolean;
+  statsData: BookingData | null;
+}) => {
   const router = useRouter();
   const pathName = usePathname();
   const [show, setShow] = useState(false);
@@ -56,6 +53,8 @@ const BookingsComponent = () => {
     setShow(true);
     setModalType(type);
   };
+
+  console.log("statsData", statsData);
   const handleNavigate = () => {
     router.push(`${pathName}/active-bookings`);
   };
@@ -66,29 +65,33 @@ const BookingsComponent = () => {
         <ReusableCard
           icon={<Calendar size={16} />}
           text="Active Bookings"
-          bookingAmt="2 Bookings"
+          bookingAmt={`${statsData?.active_bookings} Bookings`}
           color="#E6F2FF"
           onClick={handleNavigate}
           showBtn={true}
           btnText="  View Bookings"
+          isLoading={statsLoading}
         />
         <ReusableCard
           icon={<CalendarCheck2 size={16} />}
           text="Total Bookings"
-          bookingAmt="50 Bookings"
+          bookingAmt={`${statsData?.total_bookings} Bookings`}
           color="#E9E9E9"
+          isLoading={statsLoading}
         />
         <ReusableCard
           icon={<Database size={16} />}
           text="Total Booking Cost"
-          bookingAmt="#1.5Million"
+          bookingAmt={statsData?.total_booking_cost ?? 0}
           color="#E9E9E9"
+          isLoading={statsLoading}
         />
         <ReusableCard
           icon={<CalendarClock size={16} />}
           text="Total Booking Duration"
-          bookingAmt="1200 Hours"
+          bookingAmt={`${statsData?.total_duration} Hours`}
           color="#E9E9E9"
+          isLoading={statsLoading}
         />
       </section>
       <Card className="shadow-sm mt-6  p-4">
@@ -101,7 +104,11 @@ const BookingsComponent = () => {
           <section className="flex  items-center gap-3">
             <div className="flex items-center gap-1">
               <p className="text-xs">Filter:</p>
-              <DatePicker className="w-60 mt-0 h-9" />
+              <DatePicker
+                className="w-60 mt-0 h-9"
+                date={undefined}
+                setDate={() => {}}
+              />
             </div>
             <div className="flex items-center  gap-1">
               <p className="text-xs">Sort by:</p>
@@ -129,69 +136,12 @@ const BookingsComponent = () => {
             </div>
           </section>
         </div>
-        <Table className="mt-4 rounded-md">
-          {/* <TableCaption>A list of your recent bookings.</TableCaption> */}
-          <TableHeader className="rounded-md">
-            <TableRow className="bg-[#EAEAEA] rounded-md ">
-              {headers.map((h) => (
-                <TableHead key={h} className="text-xs text-gray-100 "> {h}</TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {[1, 2, 3, 4, 5, 6].map((invoice, index) => (
-              <TableRow key={invoice}>
-                <TableCell className="font-medium text-xs">
-                  {index + 1}
-                </TableCell>
-                <TableCell>
-                  <div className="flex gap-4 items-center">
-                    <img
-                      src={faker.image.avatar()}
-                      alt=""
-                      className="w-9 h-9 rounded"
-                    />
-                    <div>
-                      <p className="text-xs">Sunshine - 2 Bedroom</p>
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-1">
-                          <MapPin color="#6d6d6d" size={12} />
-                          <p className="text-[10px] text-gray-100">
-                            Lekki Phase II
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Bed color="#6d6d6d" size={12} />
-                          <p className="text-[10px] text-gray-100">2 bed(s)</p>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Bath color="#6d6d6d" size={12} />
-                          <p className="text-[10px] text-gray-100">
-                            2 bathroom
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell className="font-medium text-xs">
-                  #116,100.00
-                </TableCell>
-                <TableCell className="font-medium text-xs">
-                  28 Mar, 2024 5:25 AM
-                </TableCell>
-                <TableCell className="font-medium text-xs">1 Night</TableCell>
-                <TableCell className="font-medium text-xs">
-                  {pathName === "/bookings" ? (
-                    <HomeActionsDropdown handleClickModal={handleClickModal} />
-                  ) : (
-                    <ActionsDropdown onActionSelect={() => {}} />
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <BookingTable
+          headers={headers}
+          handleClickModal={handleClickModal}
+          bookingData={bookingData}
+          isLoading={isLoading}
+        />
       </Card>
       <Modal
         showModal={show}

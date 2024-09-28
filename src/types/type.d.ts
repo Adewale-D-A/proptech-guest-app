@@ -5,6 +5,12 @@ export interface CommonProps {
   children?: ReactNode;
   style?: CSSProperties;
 }
+
+interface GeneralResponseStatus {
+  error: boolean;
+  message: string;
+}
+
 export interface ShortletType {
   setShowModal: Dispatch<SetStateAction<boolean>>;
   showModal: boolean;
@@ -47,9 +53,7 @@ interface ToastResponse {
   };
 }
 
-interface ShortletDataResponse {
-  error: boolean;
-  message: string;
+interface ShortletDataResponse extends GeneralResponseStatus {
   data: ShortletData;
 }
 
@@ -188,5 +192,97 @@ interface PaginationLink {
   active: boolean;
 }
 interface ImageType {
-  path: string; // Adjust according to your actual properties
+  path: string;
+}
+
+interface NotificationData {
+  id: number;
+  user_id: number;
+  title: string;
+  message: string;
+  is_read: boolean;
+  type: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+interface NotificationsResponse {
+  message: string;
+  data: {
+    current_page: number;
+    data: NotificationData[];
+    first_page_url: string;
+    from: number;
+    last_page: number;
+    last_page_url: string;
+    links: PaginationLink[];
+    next_page_url: string | null;
+    path: string;
+    per_page: number;
+    prev_page_url: string | null;
+    to: number;
+    total: number;
+  };
+}
+interface UserRequestBreakdown {
+  message: string;
+  data: {
+    pending: number;
+    cancelled: number;
+    completed: number;
+    total: number;
+  };
+}
+
+interface UserRequest {
+  id: number;
+  user_id: number;
+  shortlet_id: number;
+  request_id: string;
+  status: string;
+  subject: string;
+  description: string;
+  is_escalated: number;
+  escalation_reason: string | null;
+  created_at: string;
+  updated_at: string;
+  shortlet: any | null;
+}
+
+interface UserRequestsResponse extends PaginationLink {
+  current_page: number;
+  data: UserRequest[];
+  first_page_url: string;
+  from: number;
+  last_page: number;
+  last_page_url: string;
+  next_page_url: string | null;
+  path: string;
+  per_page: number;
+  prev_page_url: string | null;
+  to: number;
+  total: number;
+}
+
+interface RequestResponseData {
+  message: string;
+  data: {
+    user_requests: UserRequestsResponse;
+  };
+}
+
+interface BookingData {
+  total_bookings: number;
+  active_bookings: number;
+  total_booking_cost: number;
+  total_duration: number;
+}
+
+interface BookingStats extends GeneralResponseStatus {
+  data: BookingData;
+}
+interface VisitorResponse extends GeneralResponseStatus {
+  data: {
+    visitor_code: string;
+  };
 }

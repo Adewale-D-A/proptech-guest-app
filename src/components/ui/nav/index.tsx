@@ -30,7 +30,7 @@ const HomeNavBar = () => {
   const [showModal, setShowModal] = useState(false);
   const [type, setType] = useState("");
   const email = use99Selector(selectEmail);
-
+  const [token, setToken] = useState("");
   const isMainRoute = pathName === "/shortlets" || pathName === "/landing";
 
   useEffect(() => {
@@ -118,7 +118,7 @@ const HomeNavBar = () => {
                 )}
                 <Button
                   className="text-xs h-8"
-                  onClick={() => router.push("/dashboard")}
+                  onClick={() => router.push("/bookings")}
                 >
                   Goto Dashboard
                 </Button>
@@ -200,7 +200,7 @@ const HomeNavBar = () => {
             />
           )}
           {type === "change-password" && (
-            <ChangePasswordForm handleOpen={handleOpen} />
+            <ChangePasswordForm token={token} handleOpen={handleOpen} />
           )}
           {type === "successful" && (
             <SuccessfulModal onClickLogin={() => handleOpen(true, "sign-in")} />
@@ -211,6 +211,7 @@ const HomeNavBar = () => {
               onClickChangePassword={() => handleOpen(true, "change-password")}
               onClickLogin={() => handleOpen(true, "sign-in")}
               handleOpen={handleOpen}
+              setToken={setToken}
             />
           )}
         </Modal>

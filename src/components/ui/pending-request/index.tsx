@@ -44,7 +44,11 @@ const PendingRequestComponent = () => {
           <section className="flex  items-center gap-3">
             <div className="flex items-center gap-1">
               <p className="text-xs">Filter:</p>
-              <DatePicker className="w-60 mt-0 h-9" />
+              <DatePicker
+                className="w-60 mt-0 h-9"
+                date={undefined}
+                setDate={() => {}}
+              />
             </div>
             <div className="flex items-center  gap-1">
               <p className="text-xs">Sort by:</p>
@@ -76,7 +80,10 @@ const PendingRequestComponent = () => {
           <TableHeader className="rounded-md">
             <TableRow className="bg-[#EAEAEA] rounded-md ">
               {headers.map((h) => (
-                <TableHead key={h} className="text-xs text-gray-100 "> {h}</TableHead>
+                <TableHead key={h} className="text-xs text-gray-100 ">
+                  {" "}
+                  {h}
+                </TableHead>
               ))}
             </TableRow>
           </TableHeader>

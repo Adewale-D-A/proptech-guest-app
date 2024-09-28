@@ -61,7 +61,11 @@ const ReferralsSection = () => {
           <section className="flex  items-center gap-3">
             <div className="flex items-center gap-1">
               <p className="text-xs">Filter:</p>
-              <DatePicker className="w-60 mt-0 h-9" />
+              <DatePicker
+                date={undefined}
+                setDate={() => {}}
+                className="w-60 mt-0 h-9"
+              />
             </div>
             <div className="flex items-center  gap-1">
               <p className="text-xs">Sort by:</p>
@@ -93,7 +97,10 @@ const ReferralsSection = () => {
           <TableHeader className="rounded-md">
             <TableRow className="bg-[#EAEAEA] rounded-md ">
               {headers.map((h) => (
-                <TableHead key={h} className="text-xs text-gray-100 "> {h}</TableHead>
+                <TableHead key={h} className="text-xs text-gray-100 ">
+                  {" "}
+                  {h}
+                </TableHead>
               ))}
             </TableRow>
           </TableHeader>

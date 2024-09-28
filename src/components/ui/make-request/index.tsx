@@ -14,8 +14,6 @@ import {
   FormMessage,
 } from "@/components/_shared/form";
 import { LoadingButton } from "@/components/_shared/loading-button";
-import { ScanSearch } from "lucide-react";
-
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/_shared/input";
 import {
@@ -28,14 +26,6 @@ import {
 
 import { Textarea } from "@/components/_shared/textarea";
 import { Label } from "@/components/_shared/label";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/_shared/table";
 import { DatePicker } from "@/components/date-picker";
 import SearchInput from "@/components/search-input";
 import {
@@ -48,14 +38,30 @@ import { usePathname, useRouter } from "next/navigation";
 import { Modal } from "@/components/_shared/modal";
 import Image from "next/image";
 import { Button } from "@/components/_shared/button";
+import { UserRequestBreakdown, UserRequestsResponse } from "@/types/type";
+import RequestTable from "./request-table";
+import { use99Selector } from "@/redux/hooks/hooks";
+import { selectCurrentUser } from "@/redux/slices/authSlice";
+import { Booking } from "@/types/book";
 
-const MakeRequestComponent = () => {
+const MakeRequestComponent = ({
+  requestDataStats,
+  requestData,
+  isLoading,
+  shortlet,
+}: {
+  requestDataStats: UserRequestBreakdown | undefined;
+  requestData: UserRequestsResponse | undefined;
+  isLoading: boolean;
+  shortlet: Booking[];
+}) => {
+  const currentUser = use99Selector(selectCurrentUser);
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const pathName = usePathname();
   const form = useForm({
     defaultValues: {
-      name: "",
+      name: `${currentUser?.first_name} ${currentUser?.last_name}`,
       apartment: "",
       request: "",
       description: "",
@@ -91,30 +97,34 @@ const MakeRequestComponent = () => {
           <section className="grid grid-cols-2 mt-4 gap-4">
             <ReusableCard
               text="Pending Requests"
-              bookingAmt="100"
+              bookingAmt={requestDataStats?.data?.pending ?? 0}
               icon={<TbMessageReply size={16} />}
               color="#E6F2FF"
               showBtn
               btnText="View Pending Requests"
               onClick={handleNavigate}
+              isLoading={isLoading}
             />
             <ReusableCard
               text="Total Requests"
-              bookingAmt="100"
+              bookingAmt={requestDataStats?.data?.total ?? 0}
               icon={<TbMessageReply size={16} />}
               color="#E9E9E9"
+              isLoading={isLoading}
             />
             <ReusableCard
               text="Completed Requests"
-              bookingAmt="100"
+              bookingAmt={requestDataStats?.data?.completed ?? 0}
               icon={<TbMessageReply size={16} />}
               color="#E9E9E9"
+              isLoading={isLoading}
             />
             <ReusableCard
               text="Cancelled Requests"
-              bookingAmt="100"
+              bookingAmt={requestDataStats?.data?.cancelled ?? 0}
               icon={<TbMessageReply size={16} />}
               color="#E9E9E9"
+              isLoading={isLoading}
             />
           </section>
         </div>
@@ -157,6 +167,7 @@ const MakeRequestComponent = () => {
                             className=" font-light w-full  h-10 "
                             placeholder="Enter name "
                             {...field}
+                            disabled
                           />
                         </FormControl>
                         <FormMessage className="text-xs text-red-500 font-light" />
@@ -172,19 +183,16 @@ const MakeRequestComponent = () => {
                         </SelectTrigger>
 
                         <SelectContent className="border-none">
-                          {[
-                            { id: "all", name: "All" },
-                            { id: "newest-oldest", name: "Newest - Oldest" },
-                            { id: "oldest", name: "Oldest - Newest" },
-                          ].map((tag) => (
-                            <SelectItem
-                              key={tag.id}
-                              value={tag.id}
-                              className="border-none"
-                            >
-                              {tag.name}
-                            </SelectItem>
-                          ))}
+                          {shortlet &&
+                            shortlet.map((tag) => (
+                              <SelectItem
+                                key={tag.shortlet.id}
+                                value={String(tag.shortlet.id)}
+                                className="border-none"
+                              >
+                                {tag.shortlet.name}
+                              </SelectItem>
+                            ))}
                         </SelectContent>
                       </Select>
                     </section>
@@ -243,7 +251,11 @@ const MakeRequestComponent = () => {
             <section className="flex  items-center gap-3">
               <div className="flex items-center gap-1">
                 <p className="text-xs">Filter:</p>
-                <DatePicker className="w-60 mt-0 h-9" />
+                <DatePicker
+                  className="w-60 mt-0 h-9"
+                  date={undefined}
+                  setDate={() => {}}
+                />
               </div>
               <div className="flex items-center  gap-1">
                 <p className="text-xs">Sort by:</p>
@@ -271,38 +283,7 @@ const MakeRequestComponent = () => {
               </div>
             </section>
           </div>
-          <Table className="mt-6">
-            <TableHeader>
-              <TableRow className="bg-[#EAEAEA] rounded-md">
-                {headers.map((header) => (
-                  <TableHead key={header} className="text-xs font-medium text-gray-500 ">
-                    {header}
-                  </TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {[1, 2, 3, 4].map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>12-02-2023</TableCell>
-                  <TableCell>PD#00234</TableCell>
-                  <TableCell>True_</TableCell>
-                  <TableCell>Maintenance</TableCell>
-                  <TableCell>
-                    <Button variant="secondary" className="h-8 text-xs">
-                      Pending
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <div className="w-9 bg-[#E6F2FF] h-9 flex items-center justify-center cursor-pointer rounded">
-                      <ScanSearch size={18} />
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <RequestTable headers={headers} requestData={requestData} />
         </Card>
       </section>
       <Modal

@@ -29,10 +29,12 @@ import { ToastResponse } from "@/types/type";
 const ForgetPasswordOtp = ({
   onClickLogin,
   handleOpen,
+  setToken,
 }: {
   onClickChangePassword: () => void;
   onClickLogin: () => void;
   handleOpen: (open: boolean, modalType: string) => void;
+  setToken: (val: string) => void;
 }) => {
   const [verifyPasswordOtp, { isLoading }] = useVerifyForgetPasswordMutation();
   const [resendOtp, { isLoading: resendLoading }] = useForgotPasswordMutation();
@@ -48,7 +50,12 @@ const ForgetPasswordOtp = ({
     try {
       const verifyData = { ...values, email };
       const response = await verifyPasswordOtp(verifyData).unwrap();
-
+      console.log(
+        "response?.data?.token",
+        response?.data?.token,
+        response?.data
+      );
+      setToken(response?.data?.token);
       toast({
         variant: "default",
         title: response?.message || "Success!",

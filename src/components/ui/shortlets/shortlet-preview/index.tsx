@@ -1,7 +1,7 @@
 /** @format */
 "use client";
 import React, { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Button } from "@/components/_shared/button";
 import { MdArrowBack } from "react-icons/md";
 import { IoArrowForward } from "react-icons/io5";
@@ -166,7 +166,7 @@ const ShortLetPreviewComponent = ({
           setEstimatedPrice(res?.data?.total_cost);
         } catch (err) {
           const errorMessage =
-            (err as any)?.data?.message || "Login failed. Please try again.";
+            (err as any)?.data?.message || "shortlet failed. Please try again.";
           toast({
             variant: "destructive",
             title: "Error fees!",

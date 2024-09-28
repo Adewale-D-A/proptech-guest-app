@@ -1,11 +1,9 @@
 /** @format */
 
-import { Button } from "@/components/_shared/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/_shared/drop-down";
@@ -15,7 +13,7 @@ import React from "react";
 const HomeActionsDropdown = ({
   handleClickModal,
 }: {
-  handleClickModal: (value: string) => void;
+  handleClickModal?: (value: string) => void;
 }) => {
   return (
     <DropdownMenu>
@@ -34,13 +32,13 @@ const HomeActionsDropdown = ({
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
           className=" text-xs cursor-pointer p-0"
-          onClick={() => handleClickModal("caution")}
+          onClick={() => handleClickModal?.("caution")}
         >
           Request Caution fee
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
           className=" text-xs cursor-pointer p-0"
-          onClick={() => handleClickModal("rate")}
+          onClick={() => handleClickModal?.("rate")}
         >
           Rate your Experience
         </DropdownMenuCheckboxItem>

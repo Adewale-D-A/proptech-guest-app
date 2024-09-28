@@ -5,6 +5,7 @@ import { isValidPhoneNumber } from "react-phone-number-input";
 
 const first_name = z.string().min(1, "First name is required");
 const last_name = z.string().min(1, "Last name is required");
+const gender = z.string().min(1, "Gender is required");
 const email = z
   .string()
   .email("Email must be a valid email address")
@@ -28,10 +29,27 @@ export const signUpValidationSchema = z
     path: ["confirm"],
   });
 
+export const updateProfileSchema = z.object({
+  first_name,
+  last_name,
+  email,
+  gender,
+});
+
+export const nameSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+});
+
 export const bookingSchema = z.object({
   check_in_day: z.string().nonempty("Check-in date is required"),
   check_in_time: z.string().nonempty("Check-in time is required"),
   check_out_day: z.string().nonempty("Check-out date is required"),
   check_out_time: z.string().nonempty("Check-out time is required"),
   number_of_guests: z.string().nonempty("Number of guests is required"),
+});
+export const bookingUpdateSchema = z.object({
+  check_in_day: z.string().nonempty("Check-in date is required"),
+  check_in_time: z.string().nonempty("Check-in time is required"),
+  check_out_day: z.string().nonempty("Check-out date is required"),
+  check_out_time: z.string().nonempty("Check-out time is required"),
 });

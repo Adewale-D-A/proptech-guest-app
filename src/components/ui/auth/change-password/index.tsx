@@ -16,7 +16,7 @@ import { Input } from "@/components/_shared/input";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import { LoadingButton } from "@/components/_shared/loading-button";
-import { useVerifyForgetPasswordMutation } from "@/redux/services/auth/auth";
+import { useResetPasswordMutation } from "@/redux/services/auth/auth";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSearchParams } from "next/navigation";
@@ -29,7 +29,6 @@ const changePasswordSchema = z
     password_confirmation: z
       .string()
       .min(6, "Password must be at least 6 characters long"),
-    otp: z.string(),
   })
   .refine((data) => data.password === data.password_confirmation, {
     message: "Passwords must match",
@@ -38,10 +37,12 @@ const changePasswordSchema = z
 
 const ChangePasswordForm = ({
   handleOpen,
+  token,
 }: {
   handleOpen: (open: boolean, modalType: string) => void;
+  token: string;
 }) => {
-  const [verifyPasswordOtp, { isLoading }] = useVerifyForgetPasswordMutation();
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
   const dispatch = use99Dispatch();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
@@ -52,14 +53,13 @@ const ChangePasswordForm = ({
     defaultValues: {
       password: "",
       password_confirmation: "",
-      otp: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof changePasswordSchema>) => {
-    const changePasswordValues = { ...values, email };
+    const payload = { ...values, email, token };
     try {
-      const response = await verifyPasswordOtp(changePasswordValues).unwrap();
+      const response = await resetPassword(payload).unwrap();
       toast({
         variant: "default",
         title: response?.message || "Password changed successfully!",
@@ -94,24 +94,6 @@ const ChangePasswordForm = ({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="mt-6">
             <div className="flex flex-col gap-2">
-              <FormField
-                control={form.control}
-                name="otp"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xs font-light">Token</FormLabel>
-                    <FormControl className="bg-transparent">
-                      <Input
-                        className="bg-white font-light w-full"
-                        placeholder="Enter token"
-                        {...field}
-                        type="text"
-                      />
-                    </FormControl>
-                    <FormMessage className="text-xs text-red-500 font-light" />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="password"

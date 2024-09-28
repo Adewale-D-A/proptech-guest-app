@@ -25,36 +25,102 @@ import { Label } from "@radix-ui/react-label";
 import { Button } from "@/components/_shared/button";
 import { LoadingButton } from "@/components/_shared/loading-button";
 import { Modal } from "@/components/_shared/modal";
+import { z } from "zod";
+import { updateProfileSchema } from "@/_shared/validate";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { DatePicker } from "@/components/date-picker";
+import { format } from "date-fns";
+import { useUpdateUserMutation } from "@/redux/services/auth/auth";
+import { ToastResponse } from "@/types/type";
+import { toast } from "@/components/_shared/toast/use-toast";
 
 const PersonaInfo = () => {
+  const [updateUser, { isLoading }] = useUpdateUserMutation();
   const [show, setShow] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phone, setPhone] = useState("");
   const [successModal, setSuccessModal] = useState(false);
-  const form = useForm({
+  const [profileImage, setProfileImage] = useState<File | null>(null); // Store image file
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [dateOfBirth, setDateOfBirth] = useState<Date | undefined>();
+
+  const form = useForm<z.infer<typeof updateProfileSchema>>({
+    resolver: zodResolver(updateProfileSchema),
     defaultValues: {
       email: "",
-      firstName: "",
-      lastName: "",
+      first_name: "",
+      last_name: "",
+      gender: "",
     },
   });
-  const handleSuccessClick = () => {
-    setSuccessModal(true);
-    setShow(false);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setProfileImage(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const onSubmit = async (values: z.infer<typeof updateProfileSchema>) => {
+    const dob = dateOfBirth ? format(dateOfBirth, "yyyy-MM-dd") : null;
+    const payload: UpdateUserPayload = {
+      ...values,
+      phone,
+      profile_photo: profileImage,
+      dob,
+    };
+    console.log("ayload::", payload);
+    try {
+      await updateUser(payload).unwrap();
+      setSuccessModal(true);
+    } catch (err) {
+      const error = err as ToastResponse;
+      toast({
+        variant: "destructive",
+        title: error?.data?.message || "Update user Failed",
+        description: "An error occurred during updating user.",
+      });
+    }
+  };
+
+  const handleSaveChangesClick = async () => {
+    const isValid = await form.trigger();
+    if (isValid) {
+      setShow(true);
+    }
+  };
+  const handleModalSubmitClick = () => {
+    form.handleSubmit(onSubmit)();
   };
   return (
     <section className="w-full h-full">
       <section className="w-full">
         <h1 className="font-medium">Personal Information</h1>
         <section className="relative mt-8">
-          <Image
-            src={"/images/user-1.png"}
-            width={150}
-            height={150}
-            alt="user"
-          />
-          <div className="bg-primary-1 absolute top-28 left-28 flex items-center justify-center w-8 h-8 rounded-full cursor-pointer">
+          {imagePreview ? (
+            <Image
+              src={imagePreview}
+              width={0}
+              height={0}
+              alt="Profile Preview"
+              className="rounded-full h-[150px] w-[150px] "
+            />
+          ) : (
+            <Image
+              src={"/images/user-1.png"}
+              width={150}
+              height={150}
+              alt="Default User"
+            />
+          )}
+          <label className="bg-primary-1 absolute top-28 left-28 flex items-center justify-center w-8 h-8 rounded-full cursor-pointer">
             <Camera size={18} className="text-white" />
-          </div>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageChange}
+            />
+          </label>
         </section>
         <section className="w-full mt-10">
           <Form {...form}>
@@ -62,7 +128,7 @@ const PersonaInfo = () => {
               <div className="flex items-center w-full gap-4">
                 <FormField
                   control={form.control}
-                  name="firstName"
+                  name="first_name"
                   render={({ field }) => (
                     <FormItem className="w-full">
                       <FormLabel className="  font-light text-xs">
@@ -82,7 +148,7 @@ const PersonaInfo = () => {
 
                 <FormField
                   control={form.control}
-                  name="lastName"
+                  name="last_name"
                   render={({ field }) => (
                     <FormItem className="w-full">
                       <FormLabel className="font-light text-xs">
@@ -103,7 +169,7 @@ const PersonaInfo = () => {
               <section className="flex items-center gap-4 w-full">
                 <FormField
                   control={form.control}
-                  name="lastName"
+                  name="email"
                   render={({ field }) => (
                     <FormItem className="w-full">
                       <FormLabel className=" font-light text-xs">
@@ -126,42 +192,50 @@ const PersonaInfo = () => {
                     Phone Number
                   </FormLabel>
                   <PhoneNumberInput
-                    value={phoneNumber}
-                    onChange={setPhoneNumber}
+                    value={phone}
+                    onChange={setPhone}
                     includePlusPrefix
                     required={false}
                     classNames="rounded-md mt-2"
                   />
                 </div>
               </section>
-              <section className="w-1/2 flex gap-4">
+              <section className="flex items-center gap-4">
                 <div className="w-full">
-                  <Label className="font-light  text-xs">Gender *</Label>
-                  <Select>
-                    <SelectTrigger className="h-10 border-black/10 shadow-none text-gray-100 mt-2">
-                      <SelectValue placeholder="Choose a tag" className=" " />
-                    </SelectTrigger>
-
-                    <SelectContent className="border-none">
-                      {[
-                        { id: "male", name: "Male" },
-                        { id: "female", name: "Female" },
-                      ].map((tag) => (
-                        <SelectItem
-                          key={tag.id}
-                          value={tag.id}
-                          className="border-none"
-                        >
-                          {tag.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label className="font-light text-xs">Gender *</Label>
+                  <FormField
+                    control={form.control}
+                    name="gender"
+                    render={({ field }) => (
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger className="h-10 border-black/10 shadow-none text-gray-100 mt-2">
+                          <SelectValue placeholder="Choose Gender" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="male">Male</SelectItem>
+                          <SelectItem value="female">Female</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  <FormMessage className="text-xs" />
                 </div>
+                <section className="w-full">
+                  <DatePicker
+                    label="Date of Birth"
+                    className="h-10"
+                    placeholder="DOB"
+                    date={dateOfBirth}
+                    setDate={setDateOfBirth}
+                  />
+                </section>
               </section>
               <div className="flex justify-end mt-6">
                 <LoadingButton
-                  onClick={() => setShow(true)}
+                  onClick={handleSaveChangesClick}
                   className="w-40 h-10"
                   type="button"
                 >
@@ -185,9 +259,15 @@ const PersonaInfo = () => {
                       Are you sure you want to save changes
                     </p>
                     <div className="w-full gap-3 flex items-center mt-6">
-                      <Button onClick={handleSuccessClick} className="w-full">
+                      <LoadingButton
+                        className="w-full mt-0"
+                        type="button"
+                        onClick={handleModalSubmitClick}
+                        loading={isLoading}
+                      >
                         Yes, I want to
-                      </Button>
+                      </LoadingButton>
+
                       <Button
                         onClick={() => setShow(false)}
                         className="w-full"
@@ -215,7 +295,12 @@ const PersonaInfo = () => {
           <p className="text-gray-100 text-xs mt-1">
             Your profile has been successfully updated
           </p>
-          <Button className="w-full mt-6">Done</Button>
+          <Button
+            className="w-full mt-6"
+            onClick={() => setSuccessModal(false)}
+          >
+            Done
+          </Button>
         </div>
       </Modal>
     </section>

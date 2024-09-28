@@ -14,7 +14,7 @@ import { LogOut } from "lucide-react";
 import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
 import { logout, selectCurrentUser } from "@/redux/slices/authSlice";
 import { useRouter } from "next/navigation";
-
+import Cookies from "js-cookie";
 const UserDropDown = () => {
   const router = useRouter();
   const currentUser = use99Selector(selectCurrentUser);
@@ -22,6 +22,7 @@ const UserDropDown = () => {
   const handleLogout = () => {
     dispatch(logout());
     router.push("/landing");
+    Cookies.remove("access_token");
   };
   return (
     <div>
@@ -37,7 +38,6 @@ const UserDropDown = () => {
               <h1 className="text-xs font-semibold">
                 {currentUser?.first_name} {currentUser?.last_name}{" "}
               </h1>
-              <p className="text-[10px] text-[#6D6D6D] font-light">none</p>
             </div>
           </Card>
         </DropdownMenuTrigger>

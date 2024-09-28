@@ -4,6 +4,7 @@ import { Button } from "@/components/_shared/button";
 import { Card } from "@/components/_shared/card";
 import React from "react";
 import { MoveRight } from "lucide-react";
+import CardSkeleton from "@/components/card-skeleton";
 
 const ReusableCard = ({
   text,
@@ -13,38 +14,51 @@ const ReusableCard = ({
   onClick,
   showBtn = false,
   btnText,
+  isLoading,
 }: {
   text: string;
-  bookingAmt: string;
+  bookingAmt: number | string;
   icon: any;
   color: string;
   onClick?: () => void;
   showBtn?: boolean;
   btnText?: string;
+  isLoading?: boolean;
 }) => {
   return (
-    <Card className="p-4 h-48 w-full shadow-sm cursor-pointer">
-      <div className="flex flex-col gap-2">
-        <div
-          className="w-8 h-8 rounded-full flex justify-center  items-center"
-          style={{ backgroundColor: color }}
-        >
-          {icon}
-        </div>
-        <p className="text-sm text-[#515151] font-light mt-3">{text}</p>
-        <h1 className="text-2xl font-medium">{bookingAmt}</h1>
-        {showBtn && (
-          <Button
-            variant={"text"}
-            className="shadow-none p-0 text-primary justify-start text-xs gap-2 font-normal"
-            onClick={onClick}
-          >
-            {btnText}
-            <MoveRight size={16} />{" "}
-          </Button>
-        )}
-      </div>
-    </Card>
+    <>
+      {isLoading ? (
+        <>
+          <CardSkeleton />
+        </>
+      ) : (
+        <>
+          {" "}
+          <Card className="p-4 h-48 w-full shadow-sm cursor-pointer">
+            <div className="flex flex-col gap-2">
+              <div
+                className="w-8 h-8 rounded-full flex justify-center  items-center"
+                style={{ backgroundColor: color }}
+              >
+                {icon}
+              </div>
+              <p className="text-sm text-[#515151] font-light mt-3">{text}</p>
+              <h1 className="text-2xl font-medium">{bookingAmt}</h1>
+              {showBtn && (
+                <Button
+                  variant={"text"}
+                  className="shadow-none p-0 text-primary justify-start text-xs gap-2 font-normal"
+                  onClick={onClick}
+                >
+                  {btnText}
+                  <MoveRight size={16} />{" "}
+                </Button>
+              )}
+            </div>
+          </Card>
+        </>
+      )}
+    </>
   );
 };
 

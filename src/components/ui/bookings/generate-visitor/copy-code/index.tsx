@@ -1,10 +1,28 @@
 /** @format */
 
+import { useToast } from "@/components/_shared/toast/use-toast";
 import Logo from "@/components/ui/logo";
 import { Copy, X } from "lucide-react";
 import React from "react";
 
-const VisitorsCode = ({ onClose }: { onClose: () => void }) => {
+const VisitorsCode = ({
+  onClose,
+  visitorCode,
+}: {
+  onClose: () => void;
+  visitorCode: string;
+}) => {
+  const { toast } = useToast();
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(visitorCode).then(() => {
+      toast({
+        variant: "default",
+        title: "Copied",
+        description: "Visitor code copied to clipboard.",
+      });
+    });
+  };
   return (
     <div>
       <section className="flex justify-end p-3">
@@ -25,9 +43,12 @@ const VisitorsCode = ({ onClose }: { onClose: () => void }) => {
           <p className="text-sm text-center pb-2">VALID TILL 11:59PM</p>
           <div className="relative rounded-md  bg-white py-3">
             <div className="flex-1 w-full text-center font-medium">
-              ABCD1234
+              {visitorCode}
             </div>
-            <div className="absolute top-4 cursor-pointer right-3">
+            <div
+              className="absolute top-4 cursor-pointer right-3"
+              onClick={handleCopy}
+            >
               <Copy color="#9D9D9D" size={18} />
             </div>
           </div>

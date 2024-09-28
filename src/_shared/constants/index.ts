@@ -24,3 +24,15 @@ export const formatCurrency = (
 ) => {
   return toCurrency2(currency, amount ? amount : 0).split(".00")[0];
 };
+
+export const formatDateTime = (dateString: string) => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).format(date);
+};

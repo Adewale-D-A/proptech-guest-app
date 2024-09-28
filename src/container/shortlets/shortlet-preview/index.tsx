@@ -1,26 +1,36 @@
 /** @format */
 "use client";
 import ShortLetPreviewComponent from "@/components/ui/shortlets/shortlet-preview";
-import { useGetSingleGuestShortletMutation } from "@/redux/services/shortlet";
-import { Shortlet } from "@/types/type";
+import {
+  useGetAvailableDateMutation,
+  useGetSingleGuestShortletMutation,
+} from "@/redux/services/shortlet";
 import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 const ShortLetPreviewContainer = () => {
   const { id } = useParams();
-  const [getSingleGuestShortlet, { data: shortletData, isLoading, error }] =
-    useGetSingleGuestShortletMutation();
-
+  const [
+    getSingleGuestShortlet,
+    { data: shortletData, isLoading: loadingShortlet },
+  ] = useGetSingleGuestShortletMutation();
+  const [
+    getAvailableDate,
+    { data: availableDates, isLoading: loadingAvailableDates },
+  ] = useGetAvailableDateMutation();
   const numericId = typeof id === "string" ? parseInt(id, 10) : null;
 
   useEffect(() => {
     if (numericId) {
       getSingleGuestShortlet(numericId);
+      getAvailableDate(numericId);
     }
-  }, [numericId, getSingleGuestShortlet]);
+  }, [numericId, getSingleGuestShortlet, getAvailableDate]);
 
-  if (isLoading) return <p>Loading...</p>;
-  console.log("shortletData?.data?.shortlet", shortletData);
+  if (loadingShortlet || loadingAvailableDates) return <p>Loading...</p>;
+
+  console.log("shortletData", availableDates);
+
   return (
     <div>
       {shortletData ? (

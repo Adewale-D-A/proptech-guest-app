@@ -1,15 +1,12 @@
 /** @format */
 
 import React from "react";
-import "./style.css";
+
+import { Logo } from "../ui";
 const Loader = () => {
   return (
-    <div className="loading">
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
+    <div className="flex items-center flex-1 justify-center h-screen">
+      <Logo default />
     </div>
   );
 };

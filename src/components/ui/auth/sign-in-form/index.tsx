@@ -12,6 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/_shared/form";
+
 import { Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/_shared/input";
 import { useForm } from "react-hook-form";
@@ -21,10 +22,13 @@ import { z } from "zod";
 import { Button } from "@/components/_shared/button";
 import { Checkbox } from "@/components/_shared/check-box";
 import { LoadingButton } from "@/components/_shared/loading-button";
-import { useSignInMutation } from "@/redux/services/auth/auth";
+import {
+  useGetUsersQuery,
+  useSignInMutation,
+} from "@/redux/services/auth/auth";
 import { use99Dispatch } from "@/redux/hooks/hooks";
 import { setUserDetails, setUserToken } from "@/redux/slices/authSlice";
-
+import Cookies from "js-cookie";
 const SignInform = ({
   onClick,
   onClickForgetPassword,
@@ -50,6 +54,7 @@ const SignInform = ({
     try {
       const response = await signIn(values).unwrap();
       dispatch(setUserToken(response?.data?.access_token));
+      Cookies.set("access_token", response?.data?.access_token, { expires: 7 });
       dispatch(setUserDetails(response?.data?.user));
       toast({
         variant: "default",

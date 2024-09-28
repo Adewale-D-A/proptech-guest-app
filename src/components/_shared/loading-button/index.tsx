@@ -4,6 +4,7 @@ import React from "react";
 import { Loader2 } from "lucide-react";
 import classNames from "classnames";
 import { Button } from "../button";
+import StarLoader from "@/components/loader/star-loader";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
@@ -38,7 +39,7 @@ export const LoadingButton: React.FC<ButtonProps> = ({
         `${
           noStyle
             ? ""
-            : "w-full h-8 text-xs mt-6  rounded-full flex justify-center items-center"
+            : "w-full h-8 text-xs mt-6   rounded-full flex justify-center items-center"
         } `,
         className
       )}
@@ -48,7 +49,10 @@ export const LoadingButton: React.FC<ButtonProps> = ({
     >
       {loading ? (
         <div className={`${loadingClass} flex items-center`}>
-          <Loader2 className={`mr-2 h-4 w-4 animate-spin `} />
+          <section className="mr-2">
+            <StarLoader />
+          </section>
+
           {loadingText ? loadingText : "Please wait..."}
         </div>
       ) : (
