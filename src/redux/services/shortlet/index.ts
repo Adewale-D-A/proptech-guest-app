@@ -6,7 +6,7 @@ import { Endpoints, Methods } from "../base/service";
 import { buildQueryString } from "@/_shared/constants";
 import { GetAvailableDateResponse } from "@/types/book";
 
-const authEndpoints = injectEndpoints({
+const shortletEndPoint = injectEndpoints({
   endpoints: (builder) => ({
     getGuestShortlet: builder.mutation<
       ShortletDataResponse,
@@ -38,4 +38,4 @@ export const {
   useGetGuestShortletMutation,
   useGetSingleGuestShortletMutation,
   useGetAvailableDateMutation,
-} = authEndpoints;
+} = shortletEndPoint;

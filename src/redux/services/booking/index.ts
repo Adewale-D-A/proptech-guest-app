@@ -21,12 +21,22 @@ const bookingEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/booking/get-fees`,
       }),
     }),
+    getBookings: builder.query<
+      BookingsResponseData,
+      { start_date?: string; end_date?: string; search?: string }
+    >({
+      query: (params) => {
+        const { start_date, end_date, search } = params;
+        const queryParams = new URLSearchParams();
+        if (start_date) queryParams.append("start_date", start_date);
+        if (end_date) queryParams.append("end_date", end_date);
+        if (search) queryParams.append("search", search);
 
-    getBookings: builder.query<BookingsResponseData, void>({
-      query: () => ({
-        method: Methods.get,
-        url: `${Endpoints.api}user/booking`,
-      }),
+        return {
+          method: Methods.get,
+          url: `${Endpoints.api}user/booking?${queryParams.toString()}`,
+        };
+      },
     }),
     getBookingStats: builder.query<BookingStats, void>({
       query: () => ({
@@ -44,7 +54,13 @@ const bookingEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/booking/visitor-code`,
       }),
     }),
-   
+    rescheduleBooking: builder.mutation<GeneralResponse, any>({
+      query: (body) => ({
+        body,
+        method: "POST",
+        url: `${Endpoints.api}user/booking/reschedule`,
+      }),
+    }),
   }),
 });
 
@@ -54,4 +70,5 @@ export const {
   useGetBookingsQuery,
   useGetBookingStatsQuery,
   useGenerateCodeMutation,
+  useRescheduleBookingMutation
 } = bookingEndpoints;

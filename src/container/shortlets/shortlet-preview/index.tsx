@@ -36,6 +36,7 @@ const ShortLetPreviewContainer = () => {
       {shortletData ? (
         <ShortLetPreviewComponent
           apartmentDetails={shortletData.data.shortlet}
+          availableDates={availableDates?.data}
         />
       ) : (
         <p>No shortlet data available</p>

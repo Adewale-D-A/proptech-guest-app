@@ -1,7 +1,7 @@
 /** @format */
 
 import * as React from "react";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { Calendar } from "../_shared/calander";
 import { Button } from "../_shared/button";
 import { cn } from "@/_shared/cn";
@@ -18,6 +18,9 @@ type IProps = {
   onDateChange: (date: Date | undefined) => void;
   onTimeChange: (time: string | null) => void;
   error?: string;
+  disabledDates?: string[];
+  minDate?: Date;
+  disabled?: boolean;
 };
 
 export function DatePickerTime({
@@ -28,10 +31,16 @@ export function DatePickerTime({
   onDateChange,
   onTimeChange,
   error,
+  disabledDates = [],
+  minDate,
+  disabled,
 }: IProps) {
   const [date, setDate] = React.useState<Date | undefined>(undefined);
   const [time, setTime] = React.useState<string>("");
 
+  const disabledDatesArray = disabledDates.map((date) => parseISO(date));
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
   const handleDateChange = (date: Date | undefined) => {
     setDate(date);
     onDateChange(date);
@@ -57,6 +66,7 @@ export function DatePickerTime({
               !date && "text-muted-foreground",
               className
             )}
+            disabled={disabled}
           >
             <div className="flex justify-between w-full">
               <div className="flex w-full items-center">
@@ -80,6 +90,7 @@ export function DatePickerTime({
                 mode="single"
                 selected={date}
                 onSelect={handleDateChange}
+                disabled={[...disabledDatesArray, { before: yesterday }]}
               />
               <section className="p-4">
                 <Input

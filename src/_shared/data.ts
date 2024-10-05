@@ -1,5 +1,7 @@
 /** @format */
 
+import { ApartmentOption } from "@/types/type";
+
 export const allInOneData = [
   {
     id: "1",
@@ -305,4 +307,17 @@ export const howLong = [
 export const shortletAmount = [
   { id: "1", name: "₦10,000 - ₦50,000  Per Night" },
   { id: "2", name: "₦51,000 - ₦100,000  Per Night" },
+];
+
+export const apartmentOptions: ApartmentOption[] = [
+  { id: "price-low-high", name: "Price: Low to High" },
+  { id: "price-high-low", name: "Price: High to Low" },
+  { id: "bedrooms-more-less", name: "Bedrooms: More to Less" },
+  { id: "bedrooms-less-more", name: "Bedrooms: Less to More" },
+  { id: "netflix", name: "Netflix Subscription" },
+  { id: "gym-access", name: "Gym Access" },
+  { id: "pet-friendly", name: "Pet Friendly" },
+  { id: "parking-available", name: "Parking Available" },
+  { id: "swimming-pool", name: "Swimming Pool" },
+  { id: "fully-furnished", name: "Fully Furnished" },
 ];

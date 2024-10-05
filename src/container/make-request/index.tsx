@@ -6,15 +6,30 @@ import {
   useGetRequestQuery,
   useGetRequestStatsQuery,
 } from "@/redux/services/request";
-import { useGetGuestShortletMutation } from "@/redux/services/shortlet";
 import React, { useEffect, useState } from "react";
 
 const MakeRequestContainer = () => {
-  const { data, isLoading } = useGetRequestStatsQuery();
-  const { data: requestData } = useGetRequestQuery();
-  const { data: shortlet, error } = useGetBookingsQuery();
+  const [shouldRefetch, setShouldRefetch] = useState(false);
+  const { data, isLoading, refetch: refetchStats } = useGetRequestStatsQuery();
+  const { data: requestData, refetch: refetchRequests } = useGetRequestQuery();
+  const {
+    data: shortlet,
+    error,
+    refetch: refetchBookings,
+  } = useGetBookingsQuery();
 
-  console.log("shortlet", shortlet?.data?.bookings?.data);
+  useEffect(() => {
+    if (shouldRefetch) {
+      refetchRequests();
+      refetchStats();
+      refetchBookings();
+      setShouldRefetch(false);
+    }
+  }, [shouldRefetch, refetchRequests, refetchStats, refetchBookings]);
+
+  const handleNewRequest = () => {
+    setShouldRefetch(true);
+  };
 
   return (
     <MakeRequestComponent
@@ -22,6 +37,7 @@ const MakeRequestContainer = () => {
       requestData={requestData?.data?.user_requests}
       isLoading={isLoading}
       shortlet={shortlet?.data?.bookings?.data ?? []}
+      onNewRequest={handleNewRequest}
     />
   );
 };

@@ -82,6 +82,8 @@ const PersonaInfo = () => {
     }
   };
 
+  console.log("profileImage", profileImage);
+
   const handleSaveChangesClick = async () => {
     const isValid = await form.trigger();
     if (isValid) {

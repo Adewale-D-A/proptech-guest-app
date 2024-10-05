@@ -24,6 +24,7 @@ import SuccessfulMessage from "./success-message";
 import Rating from "./rate";
 import BookingTable from "./booking-table";
 import { BookingData } from "@/types/type";
+import { BookingsResponse } from "@/types/book";
 
 const headers = [
   "S/N",
@@ -39,11 +40,17 @@ const BookingsComponent = ({
   isLoading,
   statsLoading,
   statsData,
+  setSearch,
+  setStartDate,
+  setEndDate,
 }: {
   bookingData: BookingsResponse | null;
   isLoading: boolean;
   statsLoading: boolean;
   statsData: BookingData | null;
+  setSearch: (value: string) => void;
+  setStartDate: (date: string | undefined) => void;
+  setEndDate: (date: string | undefined) => void;
 }) => {
   const router = useRouter();
   const pathName = usePathname();
@@ -54,7 +61,6 @@ const BookingsComponent = ({
     setModalType(type);
   };
 
-  console.log("statsData", statsData);
   const handleNavigate = () => {
     router.push(`${pathName}/active-bookings`);
   };
@@ -100,6 +106,7 @@ const BookingsComponent = ({
           <SearchInput
             className="w-[28rem]"
             placeholder="Search apartment by  name, apartment type, No of Nights"
+            onChange={(e) => setSearch(e.target.value)}
           />
           <section className="flex  items-center gap-3">
             <div className="flex items-center gap-1">

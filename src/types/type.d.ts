@@ -246,7 +246,7 @@ interface UserRequest {
   escalation_reason: string | null;
   created_at: string;
   updated_at: string;
-  shortlet: any | null;
+  shortlet: Shortlet;
 }
 
 interface UserRequestsResponse extends PaginationLink {
@@ -285,4 +285,14 @@ interface VisitorResponse extends GeneralResponseStatus {
   data: {
     visitor_code: string;
   };
+}
+
+export type ApartmentOption = {
+  id: string;
+  name: string;
+};
+interface CreateRequestBody {
+  shortlet_id: number;
+  subject: string;
+  description: string;
 }

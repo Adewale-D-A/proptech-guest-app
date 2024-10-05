@@ -38,32 +38,44 @@ import { usePathname, useRouter } from "next/navigation";
 import { Modal } from "@/components/_shared/modal";
 import Image from "next/image";
 import { Button } from "@/components/_shared/button";
-import { UserRequestBreakdown, UserRequestsResponse } from "@/types/type";
+import {
+  CreateRequestBody,
+  UserRequestBreakdown,
+  UserRequestsResponse,
+} from "@/types/type";
 import RequestTable from "./request-table";
 import { use99Selector } from "@/redux/hooks/hooks";
 import { selectCurrentUser } from "@/redux/slices/authSlice";
 import { Booking } from "@/types/book";
+import { apartmentOptions } from "@/_shared/data";
+import { useCreateRequestMutation } from "@/redux/services/request";
+import { useToast } from "@/components/_shared/toast/use-toast";
 
 const MakeRequestComponent = ({
   requestDataStats,
   requestData,
   isLoading,
   shortlet,
+  onNewRequest,
 }: {
   requestDataStats: UserRequestBreakdown | undefined;
   requestData: UserRequestsResponse | undefined;
   isLoading: boolean;
   shortlet: Booking[];
+  onNewRequest: () => void;
 }) => {
+  const { toast } = useToast();
   const currentUser = use99Selector(selectCurrentUser);
+  const [createRequest, { isLoading: createLoading }] =
+    useCreateRequestMutation();
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const pathName = usePathname();
   const form = useForm({
     defaultValues: {
       name: `${currentUser?.first_name} ${currentUser?.last_name}`,
-      apartment: "",
-      request: "",
+      shortlet_id: "",
+      subject: "",
       description: "",
     },
   });
@@ -82,11 +94,25 @@ const MakeRequestComponent = ({
     router.push(`${pathName}/pending-request`);
   };
 
-  const onSubmit = (data: any) => {
-    if (data) {
+  const onSubmit = async (data: any) => {
+    const requestBody: CreateRequestBody = {
+      shortlet_id: Number(data.shortlet_id),
+      subject: data.subject,
+      description: data.description,
+    };
+    try {
+      await createRequest(requestBody).unwrap();
+      onNewRequest();
       setShowModal(true);
+    } catch (err) {
+      const errorMessage =
+        (err as any)?.data?.message || "Login failed. Please try again.";
+      toast({
+        variant: "destructive",
+        title: "Error login!",
+        description: errorMessage,
+      });
     }
-    console.log(data);
   };
 
   return (
@@ -177,50 +203,66 @@ const MakeRequestComponent = ({
                   <section className="flex items-center gap-3 w-full">
                     <section className="w-full">
                       <Label className="text-xs  font-normal">Apartment</Label>
-                      <Select>
-                        <SelectTrigger className="h-10 w-full border-black/10 shadow-none text-gray-100 mt-2 ">
-                          <SelectValue placeholder="" className="text-xs " />
-                        </SelectTrigger>
-
-                        <SelectContent className="border-none">
-                          {shortlet &&
-                            shortlet.map((tag) => (
-                              <SelectItem
-                                key={tag.shortlet.id}
-                                value={String(tag.shortlet.id)}
-                                className="border-none"
-                              >
-                                {tag.shortlet.name}
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
+                      <FormField
+                        control={form.control}
+                        name="shortlet_id"
+                        render={({ field }) => (
+                          <FormItem>
+                            <Select onValueChange={field.onChange}>
+                              <SelectTrigger className="h-10 w-full border-black/10 shadow-none mt-2">
+                                <SelectValue
+                                  placeholder="Select apartment"
+                                  className="text-xs"
+                                />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {shortlet.map((item) => (
+                                  <SelectItem
+                                    key={item.shortlet.id}
+                                    value={String(item.shortlet.id)}
+                                  >
+                                    {item.shortlet.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage className="text-xs text-red-500 font-light" />
+                          </FormItem>
+                        )}
+                      />
                     </section>
                     <section className="w-full">
                       <Label className="text-xs  font-normal">
                         Subject of Request
                       </Label>
-                      <Select>
-                        <SelectTrigger className="h-10 w-full border-black/10 shadow-none text-gray-100 mt-2">
-                          <SelectValue placeholder="" className="text-xs " />
-                        </SelectTrigger>
-
-                        <SelectContent className="border-none">
-                          {[
-                            { id: "all", name: "All" },
-                            { id: "newest-oldest", name: "Newest - Oldest" },
-                            { id: "oldest", name: "Oldest - Newest" },
-                          ].map((tag) => (
-                            <SelectItem
-                              key={tag.id}
-                              value={tag.id}
-                              className="border-none"
+                      <FormField
+                        control={form.control}
+                        name="subject"
+                        render={({ field }) => (
+                          <FormItem>
+                            <Select
+                              onValueChange={(value) =>
+                                form.setValue("subject", value)
+                              }
                             >
-                              {tag.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                              <SelectTrigger className="h-10 w-full border-black/10 shadow-none mt-2">
+                                <SelectValue
+                                  placeholder="Select subject"
+                                  className="text-xs"
+                                />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {apartmentOptions.map((tag) => (
+                                  <SelectItem key={tag.id} value={tag.name}>
+                                    {tag.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage className="text-xs text-red-500 font-light" />
+                          </FormItem>
+                        )}
+                      />
                     </section>
                   </section>
                   <section>
@@ -231,7 +273,11 @@ const MakeRequestComponent = ({
                       {...form.register("description")}
                     />
                   </section>
-                  <LoadingButton type="submit" className="w-full  mt-5 h-11">
+                  <LoadingButton
+                    type="submit"
+                    className="w-full  mt-5 h-11"
+                    loading={createLoading}
+                  >
                     Submit Request
                   </LoadingButton>
                 </div>

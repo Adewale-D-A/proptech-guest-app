@@ -44,8 +44,10 @@ type FormValues = z.infer<typeof bookingSchema>;
 
 const ShortLetPreviewComponent = ({
   apartmentDetails,
+  availableDates,
 }: {
   apartmentDetails: any;
+  availableDates: any;
 }) => {
   const params = useParams();
   const { toast } = useToast();
@@ -101,6 +103,7 @@ const ShortLetPreviewComponent = ({
   });
 
   const { reset } = form;
+  console.log("availableDates", availableDates);
 
   const onSubmit = async (values: FormValues) => {
     if (!currentUser) {
@@ -305,6 +308,9 @@ const ShortLetPreviewComponent = ({
                               form.formState.errors.check_in_day?.message ||
                               form.formState.errors.check_in_time?.message
                             }
+                            disabledDates={availableDates?.booked_dates.concat(
+                              availableDates?.blocked_dates
+                            )}
                           />
                         </div>
                         <div className="w-full">
@@ -324,6 +330,9 @@ const ShortLetPreviewComponent = ({
                               form.formState.errors.check_out_day?.message ||
                               form.formState.errors.check_out_time?.message
                             }
+                            disabledDates={availableDates?.booked_dates.concat(
+                              availableDates?.blocked_dates
+                            )}
                           />
                         </div>
                       </div>

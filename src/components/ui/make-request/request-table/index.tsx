@@ -10,6 +10,7 @@ import {
   TableRow,
 } from "@/components/_shared/table";
 import { UserRequestsResponse } from "@/types/type";
+import { format } from "date-fns";
 import { ScanSearch } from "lucide-react";
 
 import React from "react";
@@ -42,9 +43,9 @@ const RequestTable = ({
               requestData?.data.map((req, index) => (
                 <TableRow key={req.id}>
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell>{req.created_at}</TableCell>
+                  <TableCell>{format(req.created_at, "yyyy/MM/dd")}</TableCell>
                   <TableCell>{req.request_id}</TableCell>
-                  <TableCell>True_</TableCell>
+                  <TableCell>{req.shortlet.name}</TableCell>
                   <TableCell>{req.subject}</TableCell>
                   <TableCell>
                     <Button variant="secondary" className="h-8 text-xs">

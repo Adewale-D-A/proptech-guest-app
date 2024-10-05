@@ -23,6 +23,7 @@ import RescheduleModal from "../reshedule-modal";
 import GenerateVisitor from "../generate-visitor";
 import VisitorsCode from "../generate-visitor/copy-code";
 import BookingTable from "../booking-table";
+import { BookingsResponse } from "@/types/book";
 const ActiveBookingComponent = ({
   bookingData,
   isLoading,

@@ -17,6 +17,7 @@ import { formatCurrency } from "@/_shared";
 import { formatDateTime } from "@/_shared/constants";
 import ImageSkeleton from "@/components/img-skeleton";
 import { SkeletonTable } from "@/components/skeleton-preview";
+import { BookingsResponse } from "@/types/book";
 
 const BookingTable = ({
   headers,
