@@ -4,7 +4,7 @@
 import { Button } from "@/components/_shared/button";
 import { Card } from "@/components/_shared/card";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -23,12 +23,58 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/_shared/select";
-import { useGetReferralsQuery } from "@/redux/services/referral";
+import {
+  useGenerateReferralLinkQuery,
+  useGetReferralsQuery,
+} from "@/redux/services/referral";
 import { SkeletonTable } from "@/components/skeleton-preview";
 import { format } from "date-fns";
+import { useToast } from "@/components/_shared/toast/use-toast";
 const ReferralsSection = () => {
+  const { toast } = useToast();
   const { data, isLoading, error } = useGetReferralsQuery({});
-  console.log("datsa::", data);
+  const {
+    data: generatedLinkData,
+    isFetching: isGenerating,
+    refetch,
+    error: generateError,
+  } = useGenerateReferralLinkQuery(undefined, {
+    skip: true, // don't auto-fetch
+  });
+
+  // Handle link generation
+  const handleGenerateReferralLink = async () => {
+    try {
+      const response = await refetch();
+      if (response?.data) {
+        toast({
+          variant: "default",
+          title: "Success!",
+          description: "Referral link generated successfully!",
+        });
+      }
+    } catch (err) {
+      console.error("Failed to generate referral link:", err);
+      const errorMessage =
+        (err as any)?.data?.message || "Failed to generate the link.";
+      toast({
+        variant: "destructive",
+        title: "Error!",
+        description: errorMessage,
+      });
+    }
+  };
+
+ 
+  useEffect(() => {
+    if (generateError) {
+      toast({
+        variant: "destructive",
+        title: "Error!",
+        description: "An error occurred.",
+      });
+    }
+  }, [generateError]);
   const headers = [
     "S/N",
     "Date of Request ",
@@ -52,7 +98,9 @@ const ReferralsSection = () => {
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore.
             </p>
-            <Button className="w-56 mt-6">Generate Referral Link</Button>
+            <Button onClick={handleGenerateReferralLink} className="w-56 mt-6">
+              {isGenerating ? "Generating..." : "Generate Referral Link"}
+            </Button>
           </div>
           <div className="w-1/2 flex justify-end ">
             <Image src={"/images/rafiki.png"} width={508} height={374} alt="" />

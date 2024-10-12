@@ -29,6 +29,8 @@ const BookingsContainer = () => {
       setSearch={setSearch}
       setStartDate={setStartDate}
       setEndDate={setEndDate}
+      endDate={endDate}
+      startDate={startDate}
     />
   );
 };

@@ -3,10 +3,9 @@
 import React, { useState } from "react";
 import ReusableCard from "../reusable-card";
 
-import { Calendar, House, X } from "lucide-react";
+import { Calendar as CalendarIcon, House, X } from "lucide-react";
 import { Card } from "@/components/_shared/card";
 import SearchInput from "@/components/search-input";
-import { DatePicker } from "@/components/date-picker";
 import {
   Select,
   SelectContent,
@@ -25,6 +24,10 @@ import Rating from "./rate";
 import BookingTable from "./booking-table";
 import { BookingData } from "@/types/type";
 import { BookingsResponse } from "@/types/book";
+import { Calendar } from "@/components/_shared/calander";
+import { format } from "date-fns";
+import { Button } from "@/components/_shared/button";
+import FilterDateComponent from "../make-request/filter-component";
 
 const headers = [
   "S/N",
@@ -43,6 +46,8 @@ const BookingsComponent = ({
   setSearch,
   setStartDate,
   setEndDate,
+  endDate,
+  startDate,
 }: {
   bookingData: BookingsResponse | null;
   isLoading: boolean;
@@ -51,8 +56,12 @@ const BookingsComponent = ({
   setSearch: (value: string) => void;
   setStartDate: (date: string | undefined) => void;
   setEndDate: (date: string | undefined) => void;
+  endDate: string | undefined;
+  startDate: string | undefined;
 }) => {
   const router = useRouter();
+
+  const [showDate, setShowDate] = useState(false);
   const pathName = usePathname();
   const [show, setShow] = useState(false);
   const [modalType, setModalType] = useState("");
@@ -64,12 +73,35 @@ const BookingsComponent = ({
   const handleNavigate = () => {
     router.push(`${pathName}/active-bookings`);
   };
+  const handleDateSelect = (
+    date: Date | undefined,
+    setter: (date: string | undefined) => void
+  ) => {
+    if (date) {
+      setter(format(date, "yyyy-MM-dd"));
+    } else {
+      setter(undefined);
+    }
+  };
+
+  const handleApply = () => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+    setShowDate(false);
+  };
+
+  const handleCancel = () => {
+    setStartDate("");
+    setEndDate("");
+    setShowDate(false);
+  };
+
   return (
     <div className="mt-10">
       <h1 className="font-medium text-lg">Bookings Breakdown</h1>
       <section className="flex mt-6 items-center gap-4 w-full">
         <ReusableCard
-          icon={<Calendar size={16} />}
+          icon={<CalendarIcon size={16} />}
           text="Active Bookings"
           bookingAmt={`${statsData?.active_bookings} Bookings`}
           color="#E6F2FF"
@@ -109,14 +141,21 @@ const BookingsComponent = ({
             onChange={(e) => setSearch(e.target.value)}
           />
           <section className="flex  items-center gap-3">
-            <div className="flex items-center gap-1">
+            <Button
+              variant={"text"}
+              className="flex  items-center cursor-pointer gap-3"
+              onClick={() => setShowDate(true)}
+            >
               <p className="text-xs">Filter:</p>
-              <DatePicker
-                className="w-60 mt-0 h-9"
-                date={undefined}
-                setDate={() => {}}
-              />
-            </div>
+              <div className="flex items-center gap-1 border w-60 h-9 text-xs px-2 rounded">
+                {startDate && endDate && (
+                  <>
+                    {" "}
+                    {startDate} - {endDate}
+                  </>
+                )}
+              </div>
+            </Button>
             <div className="flex items-center  gap-1">
               <p className="text-xs">Sort by:</p>
               <Select>
@@ -213,6 +252,24 @@ serve you."
             />
           )}
         </section>
+      </Modal>
+
+      <Modal
+        showModal={showDate}
+        setShowModal={setShowDate}
+        onClose={() => setShowDate(false)}
+        className="max-w-xl py-10"
+      >
+        <FilterDateComponent
+          endDate={endDate}
+          handleApply={handleApply}
+          handleCancel={handleCancel}
+          handleDateSelect={handleDateSelect}
+          setEndDate={setEndDate}
+          setStartDate={setStartDate}
+          startDate={startDate}
+     
+        />
       </Modal>
     </div>
   );

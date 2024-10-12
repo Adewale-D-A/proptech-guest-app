@@ -12,6 +12,7 @@ import {
 import { UserRequestsResponse } from "@/types/type";
 import { format } from "date-fns";
 import { ScanSearch } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 import React from "react";
 
@@ -22,6 +23,7 @@ const RequestTable = ({
   headers: string[];
   requestData: UserRequestsResponse | undefined;
 }) => {
+  const pathName = usePathname();
   return (
     <Table className="mt-6">
       {requestData && requestData?.data.length > 0 ? (
@@ -45,11 +47,17 @@ const RequestTable = ({
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{format(req.created_at, "yyyy/MM/dd")}</TableCell>
                   <TableCell>{req.request_id}</TableCell>
-                  <TableCell>{req.shortlet.name}</TableCell>
-                  <TableCell>{req.subject}</TableCell>
+                  <TableCell>
+                    {req?.shortlet?.name || req?.service_type?.name}
+                  </TableCell>
+                  <TableCell>
+                    {pathName === "/additional-services"
+                      ? req?.description
+                      : req?.subject}
+                  </TableCell>
                   <TableCell>
                     <Button variant="secondary" className="h-8 text-xs">
-                      {req.status}
+                      {req?.booking?.payment_status || req.status}
                     </Button>
                   </TableCell>
                   <TableCell>

@@ -6,7 +6,6 @@ import ReusableCard from "../reusable-card";
 import { Card } from "@/components/_shared/card";
 import { Form } from "@/components/_shared/form";
 import { LoadingButton } from "@/components/_shared/loading-button";
-import { ScanSearch } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 import {
@@ -16,14 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/_shared/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/_shared/table";
+
 import { DatePicker } from "@/components/date-picker";
 import SearchInput from "@/components/search-input";
 
@@ -34,26 +26,56 @@ import SecondStepForm from "./step_2";
 import ThirdStepForm from "./step_3";
 import { UserRequestBreakdown, UserRequestsResponse } from "@/types/type";
 import RequestTable from "../make-request/request-table";
+import { format } from "date-fns/format";
+import { Modal } from "@/components/_shared/modal";
+import FilterDateComponent from "../make-request/filter-component";
+import { Button } from "@/components/_shared/button";
+import { selectCurrentUser } from "@/redux/slices/authSlice";
+import { use99Selector } from "@/redux/hooks/hooks";
+import { useCreateAdditionalMutation } from "@/redux/services/request";
+import { useToast } from "@/components/_shared/toast/use-toast";
 
 const AdditionalServicesComponent = ({
   requestDataStats,
   requestData,
   isLoading,
+  setSearchTerm,
+  searchTerm,
+  setStartDate,
+  setEndDate,
+  endDate,
+  startDate,
 }: {
   requestDataStats: UserRequestBreakdown | undefined;
   requestData: UserRequestsResponse | undefined;
   isLoading: boolean;
+  searchTerm: string;
+  setSearchTerm: any;
+  setStartDate: any;
+  setEndDate: any;
+  endDate: string | undefined;
+  startDate: string | undefined;
 }) => {
+  const { toast } = useToast();
+  const currentUser = use99Selector(selectCurrentUser);
+  const [showDate, setShowDate] = useState(false);
+  const [createAdditional, { isLoading: isLoadingMutation }] =
+    useCreateAdditionalMutation();
   const [volume, setVolume] = useState<number>(0);
   const [step, setStep] = useState(1);
   const router = useRouter();
   const pathName = usePathname();
+  const [selectedDate, setSelectedDate] = useState<string | undefined>();
   const form = useForm({
     defaultValues: {
-      name: "",
-      apartment: "",
-      request: "",
+      name: `${currentUser?.first_name} ${currentUser?.last_name}`,
+      shortlet_id: "",
+      service_type_id: "",
+      quantity: "",
+      request_date: "",
       description: "",
+      callback_url: "https:/example.com/payment",
+      payment_method: "paystack",
     },
   });
 
@@ -73,11 +95,29 @@ const AdditionalServicesComponent = ({
     }
   };
 
-  // Form Submission Handler
-  const onSubmit = (data: any) => {
-    console.log("Form submitted:", data);
-    // Submit your form data here
-    // After submission, you might want to reset the form or perform any other actions
+  console.log("selectedDate", selectedDate);
+
+  const onSubmit = async (values: any) => {
+    const payload = {
+      ...values,
+      request_date: selectedDate,
+    };
+    try {
+      const response = await createAdditional(payload).unwrap();
+      toast({
+        variant: "default",
+        title: response?.message || "Additional Request",
+        description: "Your Additional Request is successful.",
+      });
+    } catch (err) {
+      const errorMessage =
+        (err as any)?.data?.message || "Failed . Please try again.";
+      toast({
+        variant: "destructive",
+        title: "Error!",
+        description: errorMessage,
+      });
+    }
   };
 
   const headers = [
@@ -92,6 +132,28 @@ const AdditionalServicesComponent = ({
 
   const handleNavigate = () => {
     router.push(`${pathName}/pending-request`);
+  };
+
+  const handleDateSelect = (
+    date: Date | undefined,
+    setter: (date: string | undefined) => void
+  ) => {
+    if (date) {
+      setter(format(date, "yyyy-MM-dd"));
+    } else {
+      setter(undefined);
+    }
+  };
+  const handleCancel = () => {
+    setStartDate("");
+    setEndDate("");
+    setShowDate(false);
+  };
+
+  const handleApply = () => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+    setShowDate(false);
   };
 
   return (
@@ -158,8 +220,23 @@ const AdditionalServicesComponent = ({
                         : "Provide your request details below"}
                     </h1>
                     {step === 1 && <FirstStepForm form={form} />}
-                    {step === 2 && <SecondStepForm form={form} />}
-                    {step === 3 && <ThirdStepForm form={form} />}
+                    {step === 2 && (
+                      <SecondStepForm
+                        form={form}
+                        setSelectedDate={setSelectedDate}
+                      />
+                    )}
+                    {step === 3 && (
+                      <ThirdStepForm
+                        name={form.getValues("name")}
+                        serviceType={form.getValues("service_type_id")}
+                        quantity={form.getValues("quantity")}
+                        requestDate={selectedDate}
+                        description={form.getValues("description")}
+                        form={form}
+                        totalAmount={""}
+                      />
+                    )}
                   </section>
                 </div>
                 <div className="p-4 flex justify-between">
@@ -197,16 +274,25 @@ const AdditionalServicesComponent = ({
             <SearchInput
               className="w-[28rem]"
               placeholder="Search apartment by  name, apartment type, No of Nights"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
             <section className="flex  items-center gap-3">
-              <div className="flex items-center gap-1">
+              <Button
+                variant={"text"}
+                className="flex  items-center cursor-pointer gap-3"
+                onClick={() => setShowDate(true)}
+              >
                 <p className="text-xs">Filter:</p>
-                <DatePicker
-                  className="w-60 mt-0 h-9"
-                  date={undefined}
-                  setDate={() => {}}
-                />
-              </div>
+                <div className="flex items-center gap-1 border w-60 h-9 text-xs px-2 rounded">
+                  {startDate && endDate && (
+                    <>
+                      {" "}
+                      {startDate} - {endDate}
+                    </>
+                  )}
+                </div>
+              </Button>
               <div className="flex items-center  gap-1">
                 <p className="text-xs">Sort by:</p>
                 <Select>
@@ -236,6 +322,22 @@ const AdditionalServicesComponent = ({
           <RequestTable headers={headers} requestData={requestData} />
         </Card>
       </section>
+      <Modal
+        showModal={showDate}
+        setShowModal={setShowDate}
+        onClose={() => setShowDate(false)}
+        className="max-w-xl py-10"
+      >
+        <FilterDateComponent
+          endDate={endDate}
+          handleApply={handleApply}
+          handleCancel={handleCancel}
+          handleDateSelect={handleDateSelect}
+          setEndDate={setEndDate}
+          setStartDate={setStartDate}
+          startDate={startDate}
+        />
+      </Modal>
     </div>
   );
 };

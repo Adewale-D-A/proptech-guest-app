@@ -18,9 +18,10 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Menu } from "lucide-react";
 import { clearEmail, selectEmail } from "@/redux/slices/emailSlice";
 import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
-import { selectCurrentUser } from "@/redux/slices/authSlice";
-
+import { logout, selectCurrentUser } from "@/redux/slices/authSlice";
+import Cookies from "js-cookie";
 const HomeNavBar = () => {
+  
   const currentUser = use99Selector(selectCurrentUser);
   const router = useRouter();
   const dispatch = use99Dispatch();
@@ -73,6 +74,12 @@ const HomeNavBar = () => {
     dispatch(clearEmail());
     handleOpen(false, type);
   };
+
+    const handleLogout = () => {
+      dispatch(logout());
+      router.push("/landing");
+      Cookies.remove("access_token");
+    };
 
   return (
     <>

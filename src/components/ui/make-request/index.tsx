@@ -1,6 +1,6 @@
 /** @format */
 "use client";
-import React, { useState } from "react";
+import React, { SetStateAction, useState } from "react";
 import { TbMessageReply } from "react-icons/tb";
 import ReusableCard from "../reusable-card";
 import { Card } from "@/components/_shared/card";
@@ -51,20 +51,37 @@ import { apartmentOptions } from "@/_shared/data";
 import { useCreateRequestMutation } from "@/redux/services/request";
 import { useToast } from "@/components/_shared/toast/use-toast";
 
+import { format } from "date-fns/format";
+
+import FilterDateComponent from "./filter-component";
+
 const MakeRequestComponent = ({
   requestDataStats,
   requestData,
   isLoading,
   shortlet,
   onNewRequest,
+  setSearchTerm,
+  searchTerm,
+  setStartDate,
+  setEndDate,
+  endDate,
+  startDate,
 }: {
   requestDataStats: UserRequestBreakdown | undefined;
   requestData: UserRequestsResponse | undefined;
   isLoading: boolean;
   shortlet: Booking[];
   onNewRequest: () => void;
+  searchTerm: string;
+  setSearchTerm: any;
+  setStartDate: any;
+  setEndDate: any;
+  endDate: string | undefined;
+  startDate: string | undefined;
 }) => {
   const { toast } = useToast();
+  const [showDate, setShowDate] = useState(false);
   const currentUser = use99Selector(selectCurrentUser);
   const [createRequest, { isLoading: createLoading }] =
     useCreateRequestMutation();
@@ -113,6 +130,28 @@ const MakeRequestComponent = ({
         description: errorMessage,
       });
     }
+  };
+
+  const handleDateSelect = (
+    date: Date | undefined,
+    setter: (date: string | undefined) => void
+  ) => {
+    if (date) {
+      setter(format(date, "yyyy-MM-dd"));
+    } else {
+      setter(undefined);
+    }
+  };
+  const handleCancel = () => {
+    setStartDate("");
+    setEndDate("");
+    setShowDate(false);
+  };
+
+  const handleApply = () => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+    setShowDate(false);
   };
 
   return (
@@ -238,7 +277,7 @@ const MakeRequestComponent = ({
                       <FormField
                         control={form.control}
                         name="subject"
-                        render={({ field }) => (
+                        render={({}) => (
                           <FormItem>
                             <Select
                               onValueChange={(value) =>
@@ -293,16 +332,25 @@ const MakeRequestComponent = ({
             <SearchInput
               className="w-[28rem]"
               placeholder="Search apartment by  name, apartment type, No of Nights"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
             <section className="flex  items-center gap-3">
-              <div className="flex items-center gap-1">
+              <Button
+                variant={"text"}
+                className="flex  items-center cursor-pointer gap-3"
+                onClick={() => setShowDate(true)}
+              >
                 <p className="text-xs">Filter:</p>
-                <DatePicker
-                  className="w-60 mt-0 h-9"
-                  date={undefined}
-                  setDate={() => {}}
-                />
-              </div>
+                <div className="flex items-center gap-1 border w-60 h-9 text-xs px-2 rounded">
+                  {startDate && endDate && (
+                    <>
+                      {" "}
+                      {startDate} - {endDate}
+                    </>
+                  )}
+                </div>
+              </Button>
               <div className="flex items-center  gap-1">
                 <p className="text-xs">Sort by:</p>
                 <Select>
@@ -361,6 +409,22 @@ const MakeRequestComponent = ({
             </div>
           </div>
         </section>
+      </Modal>
+      <Modal
+        showModal={showDate}
+        setShowModal={setShowDate}
+        onClose={() => setShowDate(false)}
+        className="max-w-xl py-10"
+      >
+        <FilterDateComponent
+          endDate={endDate}
+          handleApply={handleApply}
+          handleCancel={handleCancel}
+          handleDateSelect={handleDateSelect}
+          setEndDate={setEndDate}
+          setStartDate={setStartDate}
+          startDate={startDate}
+        />
       </Modal>
     </div>
   );

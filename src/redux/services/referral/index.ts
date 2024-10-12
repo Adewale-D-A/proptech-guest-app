@@ -11,6 +11,13 @@ const referralEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/referral`,
       }),
     }),
+    generateReferralLink: builder.query<any, void>({
+      query: () => ({
+        method: Methods.get,
+        url: `${Endpoints.api}user/referral/code`,
+      }),
+    }),
   }),
 });
-export const { useGetReferralsQuery } = referralEndpoints;
+export const { useGetReferralsQuery, useGenerateReferralLinkQuery } =
+  referralEndpoints;

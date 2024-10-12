@@ -24,13 +24,26 @@ import GenerateVisitor from "../generate-visitor";
 import VisitorsCode from "../generate-visitor/copy-code";
 import BookingTable from "../booking-table";
 import { BookingsResponse } from "@/types/book";
+import { format } from "date-fns";
+import FilterDateComponent from "../../make-request/filter-component";
 const ActiveBookingComponent = ({
   bookingData,
   isLoading,
+  setSearch,
+  setStartDate,
+  setEndDate,
+  endDate,
+  startDate,
 }: {
   bookingData: BookingsResponse | null;
   isLoading: boolean;
+  setSearch: (value: string) => void;
+  setStartDate: (date: string | undefined) => void;
+  setEndDate: (date: string | undefined) => void;
+  endDate: string | undefined;
+  startDate: string | undefined;
 }) => {
+  const [showDate, setShowDate] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [type, setType] = useState("");
   const [extendConfirm, setExtendConfirm] = useState(false);
@@ -64,6 +77,28 @@ const ActiveBookingComponent = ({
     "No of Nights",
     "Action",
   ];
+  const handleDateSelect = (
+    date: Date | undefined,
+    setter: (date: string | undefined) => void
+  ) => {
+    if (date) {
+      setter(format(date, "yyyy-MM-dd"));
+    } else {
+      setter(undefined);
+    }
+  };
+
+  const handleApply = () => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+    setShowDate(false);
+  };
+
+  const handleCancel = () => {
+    setStartDate("");
+    setEndDate("");
+    setShowDate(false);
+  };
   return (
     <div>
       <BackButton className="mt-6 " />
@@ -73,16 +108,24 @@ const ActiveBookingComponent = ({
           <SearchInput
             className="w-[28rem]"
             placeholder="Search apartment by  name, apartment type, No of Nights"
+            onChange={(e) => setSearch(e.target.value)}
           />
           <section className="flex  items-center gap-3">
-            <div className="flex items-center gap-1">
+            <Button
+              variant={"text"}
+              className="flex  items-center cursor-pointer gap-3"
+              onClick={() => setShowDate(true)}
+            >
               <p className="text-xs">Filter:</p>
-              <DatePicker
-                className="w-60 mt-0 h-9"
-                date={undefined}
-                setDate={() => {}}
-              />
-            </div>
+              <div className="flex items-center gap-1 border w-60 h-9 text-xs px-2 rounded">
+                {startDate && endDate && (
+                  <>
+                    {" "}
+                    {startDate} - {endDate}
+                  </>
+                )}
+              </div>
+            </Button>
             <div className="flex items-center  gap-1">
               <p className="text-xs">Sort by:</p>
               <Select>
@@ -184,6 +227,22 @@ const ActiveBookingComponent = ({
             </div>
           </div>
         </section>
+      </Modal>
+      <Modal
+        showModal={showDate}
+        setShowModal={setShowDate}
+        onClose={() => setShowDate(false)}
+        className="max-w-xl py-10"
+      >
+        <FilterDateComponent
+          endDate={endDate}
+          handleApply={handleApply}
+          handleCancel={handleCancel}
+          handleDateSelect={handleDateSelect}
+          setEndDate={setEndDate}
+          setStartDate={setStartDate}
+          startDate={startDate}
+        />
       </Modal>
     </div>
   );
