@@ -26,19 +26,17 @@ const requestEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/additional-service/metrics`,
       }),
     }),
-    getRequest: builder.query<
-      RequestResponseData,
-      { start_date?: string; end_date?: string; search?: string }
-    >({
-      query: ({ start_date, end_date, search }) => {
-        const params = new URLSearchParams();
-        if (start_date) params.append("start_date", start_date);
-        if (end_date) params.append("end_date", end_date);
-        if (search) params.append("search", search);
-
+    getRequest: builder.query<RequestResponseData, Record<string, any>>({
+      query: (params) => {
+        const searchParams = new URLSearchParams();
+        Object.keys(params).forEach((key) => {
+          if (params[key]) {
+            searchParams.append(key, params[key]);
+          }
+        });
         return {
           method: Methods.get,
-          url: `${Endpoints.api}user/request?${params.toString()}`,
+          url: `${Endpoints.api}user/request?${searchParams.toString()}`,
         };
       },
     }),
@@ -71,17 +69,20 @@ const requestEndpoints = injectEndpoints({
     }),
     getAdditionalRequest: builder.query<
       AdditionalRequestResponseData,
-      { start_date?: string; end_date?: string; search?: string }
+      Record<string, any>
     >({
-      query: ({ start_date, end_date, search }) => {
-        const params = new URLSearchParams();
-        if (start_date) params.append("start_date", start_date);
-        if (end_date) params.append("end_date", end_date);
-        if (search) params.append("search", search);
-
+      query: (params) => {
+        const searchParams = new URLSearchParams();
+        Object.keys(params).forEach((key) => {
+          if (params[key]) {
+            searchParams.append(key, params[key]);
+          }
+        });
         return {
           method: Methods.get,
-          url: `${Endpoints.api}user/additional-service?${params.toString()}`,
+          url: `${
+            Endpoints.api
+          }user/additional-service?${searchParams.toString()}`,
         };
       },
     }),

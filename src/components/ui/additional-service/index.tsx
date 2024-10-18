@@ -24,7 +24,11 @@ import VolumeProgressBar from "./volume-progress";
 import FirstStepForm from "./step_1";
 import SecondStepForm from "./step_2";
 import ThirdStepForm from "./step_3";
-import { UserRequestBreakdown, UserRequestsResponse } from "@/types/type";
+import {
+  AdditionalServicesComponentProps,
+  UserRequestBreakdown,
+  UserRequestsResponse,
+} from "@/types/type";
 import RequestTable from "../make-request/request-table";
 import { format } from "date-fns/format";
 import { Modal } from "@/components/_shared/modal";
@@ -45,17 +49,11 @@ const AdditionalServicesComponent = ({
   setEndDate,
   endDate,
   startDate,
-}: {
-  requestDataStats: UserRequestBreakdown | undefined;
-  requestData: UserRequestsResponse | undefined;
-  isLoading: boolean;
-  searchTerm: string;
-  setSearchTerm: any;
-  setStartDate: any;
-  setEndDate: any;
-  endDate: string | undefined;
-  startDate: string | undefined;
-}) => {
+  pageIndex,
+  pageSize,
+  setPageIndex,
+  setPageSize,
+}: AdditionalServicesComponentProps) => {
   const { toast } = useToast();
   const currentUser = use99Selector(selectCurrentUser);
   const [showDate, setShowDate] = useState(false);
@@ -74,7 +72,7 @@ const AdditionalServicesComponent = ({
       quantity: "",
       request_date: "",
       description: "",
-      callback_url: "https:/example.com/payment",
+      callback_url: "/additional-services",
       payment_method: "paystack",
     },
   });
@@ -109,6 +107,10 @@ const AdditionalServicesComponent = ({
         title: response?.message || "Additional Request",
         description: "Your Additional Request is successful.",
       });
+      const paymentUrl = response.data.payment || "";
+      if (paymentUrl) {
+        window.location.href = paymentUrl;
+      }
     } catch (err) {
       const errorMessage =
         (err as any)?.data?.message || "Failed . Please try again.";
@@ -319,7 +321,14 @@ const AdditionalServicesComponent = ({
               </div>
             </section>
           </div>
-          <RequestTable headers={headers} requestData={requestData} />
+          <RequestTable
+            headers={headers}
+            requestData={requestData}
+            setPageIndex={setPageIndex}
+            setPageSize={setPageSize}
+            pageIndex={pageIndex}
+            pageSize={pageSize}
+          />
         </Card>
       </section>
       <Modal

@@ -46,3 +46,20 @@ export const formatChatTime = (dateString: string) => {
 
   return format(date, "hh:mm a");
 };
+
+// utils/dateFormatter.ts
+export function formatDate(
+  date: Date | string | number,
+  locales: string = "en-US",
+  options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  }
+): string {
+  const parsedDate = new Date(date);
+  return new Intl.DateTimeFormat(locales, options).format(parsedDate);
+}

@@ -1,6 +1,10 @@
 /** @format */
 
-import { BookingStats, VisitorResponse } from "@/types/type";
+import {
+  BookingStats,
+  ShortletDataResponse,
+  VisitorResponse,
+} from "@/types/type";
 import { injectEndpoints } from "../base/base";
 import { Endpoints, Methods } from "../base/service";
 import { BookingsResponseData } from "@/types/book";
@@ -38,6 +42,12 @@ const bookingEndpoints = injectEndpoints({
         };
       },
     }),
+    getSingleBookings: builder.query<ShortletDataResponse, string>({
+      query: (id) => ({
+        method: Methods.get,
+        url: `${Endpoints.api}user/booking/${id}`,
+      }),
+    }),
     getBookingStats: builder.query<BookingStats, void>({
       query: () => ({
         method: Methods.get,
@@ -57,8 +67,15 @@ const bookingEndpoints = injectEndpoints({
     rescheduleBooking: builder.mutation<GeneralResponse, any>({
       query: (body) => ({
         body,
-        method: "POST",
+        method: Methods.post,
         url: `${Endpoints.api}user/booking/reschedule`,
+      }),
+    }),
+    createRating: builder.mutation<any, RatingPayload>({
+      query: (body) => ({
+        body,
+        method: Methods.post,
+        url: `${Endpoints.api}user/booking/rate`,
       }),
     }),
   }),
@@ -70,5 +87,7 @@ export const {
   useGetBookingsQuery,
   useGetBookingStatsQuery,
   useGenerateCodeMutation,
-  useRescheduleBookingMutation
+  useRescheduleBookingMutation,
+  useGetSingleBookingsQuery,
+  useCreateRatingMutation,
 } = bookingEndpoints;

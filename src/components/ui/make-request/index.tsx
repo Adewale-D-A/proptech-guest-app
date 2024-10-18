@@ -40,6 +40,7 @@ import Image from "next/image";
 import { Button } from "@/components/_shared/button";
 import {
   CreateRequestBody,
+  MakeARequestResponseData,
   UserRequestBreakdown,
   UserRequestsResponse,
 } from "@/types/type";
@@ -67,19 +68,11 @@ const MakeRequestComponent = ({
   setEndDate,
   endDate,
   startDate,
-}: {
-  requestDataStats: UserRequestBreakdown | undefined;
-  requestData: UserRequestsResponse | undefined;
-  isLoading: boolean;
-  shortlet: Booking[];
-  onNewRequest: () => void;
-  searchTerm: string;
-  setSearchTerm: any;
-  setStartDate: any;
-  setEndDate: any;
-  endDate: string | undefined;
-  startDate: string | undefined;
-}) => {
+  pageIndex,
+  pageSize,
+  setPageIndex,
+  setPageSize,
+}: MakeARequestResponseData) => {
   const { toast } = useToast();
   const [showDate, setShowDate] = useState(false);
   const currentUser = use99Selector(selectCurrentUser);
@@ -377,7 +370,14 @@ const MakeRequestComponent = ({
               </div>
             </section>
           </div>
-          <RequestTable headers={headers} requestData={requestData} />
+          <RequestTable
+            headers={headers}
+            requestData={requestData}
+            setPageIndex={setPageIndex}
+            setPageSize={setPageSize}
+            pageIndex={pageIndex}
+            pageSize={pageSize}
+          />
         </Card>
       </section>
       <Modal

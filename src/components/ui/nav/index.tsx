@@ -20,8 +20,9 @@ import { clearEmail, selectEmail } from "@/redux/slices/emailSlice";
 import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
 import { logout, selectCurrentUser } from "@/redux/slices/authSlice";
 import Cookies from "js-cookie";
+import { setActiveTab } from "@/redux/slices/active_tab";
+import { MdOutlineDateRange } from "react-icons/md";
 const HomeNavBar = () => {
-  
   const currentUser = use99Selector(selectCurrentUser);
   const router = useRouter();
   const dispatch = use99Dispatch();
@@ -75,11 +76,23 @@ const HomeNavBar = () => {
     handleOpen(false, type);
   };
 
-    const handleLogout = () => {
-      dispatch(logout());
-      router.push("/landing");
-      Cookies.remove("access_token");
-    };
+  const handleLogout = () => {
+    dispatch(logout());
+    router.push("/landing");
+    Cookies.remove("access_token");
+  };
+
+  const handleGoToDashboard = () => {
+    router.push("/bookings");
+    dispatch(
+      setActiveTab({
+        id: "2",
+        title: "Bookings",
+        href: `/bookings`,
+        icon: <MdOutlineDateRange />,
+      })
+    );
+  };
 
   return (
     <>
@@ -123,10 +136,7 @@ const HomeNavBar = () => {
                     Hi {currentUser?.first_name}
                   </p>
                 )}
-                <Button
-                  className="text-xs h-8"
-                  onClick={() => router.push("/bookings")}
-                >
+                <Button className="text-xs h-8" onClick={handleGoToDashboard}>
                   Goto Dashboard
                 </Button>
               </div>

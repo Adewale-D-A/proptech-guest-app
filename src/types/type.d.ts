@@ -58,6 +58,7 @@ interface ShortletDataResponse extends GeneralResponseStatus {
 }
 
 interface ShortletData {
+  bookings?: Booking;
   shortlet: ShortletPage;
 }
 
@@ -256,14 +257,14 @@ interface Booking {
   channel: string;
   payment_expires_at: string;
   created_at: string;
+
+  transferred_from?: string;
+  transferred_to?: string;
+  visitor_code?: string;
+  account_name?: string;
   updated_at: string;
-  transferred_from: string | null;
-  transferred_to: string | null;
-  visitor_code: string | null;
-  account_name: string | null;
-  account_number: string | null;
-  bank_name: string | null;
-  has_requested_refund: number;
+  bank_name?: string;
+  has_requested_refund?: number;
   shortlet: Shortlet;
 }
 interface UserRequestBreakdown {
@@ -412,4 +413,54 @@ interface ServiceFeeResponse extends GeneralResponseStatus {
     quantity: string;
     cost: number;
   };
+}
+
+interface PaginationTableProps {
+  pageSize: number;
+  pageIndex: number;
+  setPageIndex: (index: number) => void;
+  totalItemsCount: number;
+  handleOnChange: (index: number) => void;
+  setPageSize?: (val: number) => void;
+}
+interface ButtonPaginationProps {
+  children: React.ReactNode;
+  index: number;
+  setPageIndex: (index: number) => void;
+  pageIndex: number;
+  handleOnChange: (index: number) => void;
+}
+
+interface Pagination {
+  pageIndex: number;
+  pageSize: number;
+  setPageIndex: (index: number) => void;
+  totalPages?: number;
+  setPageSize?: (index: number) => void;
+}
+
+interface AdditionalServicesComponentProps extends Pagination {
+  requestDataStats: UserRequestBreakdown | undefined;
+  requestData: UserRequestsResponse | undefined;
+  isLoading: boolean;
+  searchTerm: string;
+  setSearchTerm: (value: string) => void;
+  setStartDate: Dispatch<SetStateAction<string>>;
+  setEndDate: Dispatch<SetStateAction<string>>;
+  endDate: string | undefined;
+  startDate: string | undefined;
+}
+
+interface MakeARequestResponseData extends Pagination {
+  requestDataStats: UserRequestBreakdown | undefined;
+  requestData: UserRequestsResponse | undefined;
+  isLoading: boolean;
+  shortlet: Booking[];
+  onNewRequest: () => void;
+  searchTerm: string;
+  setSearchTerm: any;
+  setStartDate: any;
+  setEndDate: any;
+  endDate: string | undefined;
+  startDate: string | undefined;
 }

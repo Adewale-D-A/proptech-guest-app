@@ -11,13 +11,13 @@ const referralEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/referral`,
       }),
     }),
-    generateReferralLink: builder.query<any, void>({
+    generateReferralLink: builder.mutation<any, void>({
       query: () => ({
-        method: Methods.get,
+        method: Methods.post,
         url: `${Endpoints.api}user/referral/code`,
       }),
     }),
   }),
 });
-export const { useGetReferralsQuery, useGenerateReferralLinkQuery } =
+export const { useGetReferralsQuery, useGenerateReferralLinkMutation } =
   referralEndpoints;

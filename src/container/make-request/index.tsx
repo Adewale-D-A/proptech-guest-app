@@ -9,6 +9,8 @@ import {
 import React, { useEffect, useState } from "react";
 
 const MakeRequestContainer = () => {
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -18,6 +20,8 @@ const MakeRequestContainer = () => {
     start_date: startDate,
     end_date: endDate,
     search: searchTerm,
+    page: pageIndex + 1,
+    limit: pageSize,
   });
   const {
     data: shortlet,
@@ -51,6 +55,10 @@ const MakeRequestContainer = () => {
       setEndDate={setEndDate}
       endDate={endDate}
       startDate={startDate}
+      setPageIndex={setPageIndex}
+      setPageSize={setPageSize}
+      pageIndex={pageIndex}
+      pageSize={pageSize}
     />
   );
 };

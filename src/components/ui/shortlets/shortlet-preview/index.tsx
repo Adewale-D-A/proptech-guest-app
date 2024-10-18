@@ -103,7 +103,6 @@ const ShortLetPreviewComponent = ({
   });
 
   const { reset } = form;
-  console.log("availableDates", availableDates);
 
   const onSubmit = async (values: FormValues) => {
     if (!currentUser) {
@@ -194,7 +193,7 @@ const ShortLetPreviewComponent = ({
         <AnimatedContainer className="flex mt-6 gap-4">
           <div className="w-full relative">
             <img
-              src={apartmentDetails?.images[0].path || ""}
+              src={apartmentDetails?.images[currentIndex].path || ""}
               alt={`Apartment Image ${currentIndex + 1}`}
               className="w-full rounded-xl h-[600px] object-cover"
             />

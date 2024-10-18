@@ -29,8 +29,6 @@ const ShortLetPreviewContainer = () => {
 
   if (loadingShortlet || loadingAvailableDates) return <p>Loading...</p>;
 
-  console.log("shortletData", availableDates);
-
   return (
     <div>
       {shortletData ? (

@@ -1,6 +1,6 @@
 /** @format */
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReusableCard from "../reusable-card";
 
 import { Calendar as CalendarIcon, House, X } from "lucide-react";
@@ -22,12 +22,15 @@ import CautionForm from "./caution-form";
 import SuccessfulMessage from "./success-message";
 import Rating from "./rate";
 import BookingTable from "./booking-table";
-import { BookingData } from "@/types/type";
+import { Booking, BookingData } from "@/types/type";
 import { BookingsResponse } from "@/types/book";
-import { Calendar } from "@/components/_shared/calander";
 import { format } from "date-fns";
 import { Button } from "@/components/_shared/button";
 import FilterDateComponent from "../make-request/filter-component";
+import { useCreateBookingMutation } from "@/redux/services/booking";
+import { useToast } from "@/components/_shared/toast/use-toast";
+import RebookApartment from "./rebook-apartment";
+import { useGetAvailableDateMutation } from "@/redux/services/shortlet";
 
 const headers = [
   "S/N",
@@ -60,14 +63,25 @@ const BookingsComponent = ({
   startDate: string | undefined;
 }) => {
   const router = useRouter();
-
+  const { toast } = useToast();
+  const [booking, { isLoading: reBookingLoading }] = useCreateBookingMutation();
   const [showDate, setShowDate] = useState(false);
   const pathName = usePathname();
   const [show, setShow] = useState(false);
   const [modalType, setModalType] = useState("");
-  const handleClickModal = (type: string) => {
+  const [reBookStartDate, setReBookStartDate] = useState<string | undefined>();
+  const [reBookEndDate, setReBookEndDate] = useState<string | undefined>();
+  const [bookingInfo, setBookingInfo] = useState<any>(null);
+  const [
+    getAvailableDate,
+    { data: availableDates, isLoading: loadingAvailableDates },
+  ] = useGetAvailableDateMutation();
+  const bookingId =
+    typeof bookingInfo?.id === "string" ? parseInt(bookingInfo?.id, 10) : null;
+  const handleClickModal = (type: string, booking?: Booking) => {
     setShow(true);
     setModalType(type);
+    setBookingInfo(booking);
   };
 
   const handleNavigate = () => {
@@ -95,6 +109,42 @@ const BookingsComponent = ({
     setEndDate("");
     setShowDate(false);
   };
+
+  const handleRebook = async () => {
+    const payload = {
+      shortlet_id: bookingInfo?.id,
+      check_in_day: reBookStartDate,
+      check_out_day: reBookEndDate,
+      check_in_time: bookingInfo?.check_in_time,
+      check_out_time: bookingInfo?.check_out_time,
+      number_of_guests: Number(bookingInfo?.number_of_guests),
+      payment_method: "paystack",
+      callback_url: "/booking",
+    };
+    try {
+      const res = await booking(payload).unwrap();
+      toast({
+        variant: "default",
+        title: res?.message,
+        description: "Apartment booked",
+      });
+      setShow(false);
+    } catch (err) {
+      const errorMessage =
+        (err as any)?.data?.message || "Submission failed. Please try again.";
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (bookingId) {
+      getAvailableDate(bookingId);
+    }
+  }, [bookingId, getAvailableDate]);
 
   return (
     <div className="mt-10">
@@ -193,7 +243,9 @@ const BookingsComponent = ({
         showModal={show}
         setShowModal={setShow}
         onClose={() => setShow(false)}
-        className={`relative   rounded-none max-w-md `}
+        className={`relative   rounded-none  ${
+          modalType === "rebook" ? "max-w-xl" : "max-w-md"
+        } `}
       >
         <section>
           {modalType === "rate" ? (
@@ -221,6 +273,19 @@ const BookingsComponent = ({
                 onClick={() => setShow(false)}
               />
             </div>
+          ) : modalType === "rebook" ? (
+            <div>
+              <div className="flex items-center justify-between border-b p-4">
+                <h1 className="text-lg ">
+                  Rebook {bookingInfo?.shortlet?.name} Apartment
+                </h1>
+                <X
+                  className="cursor-pointer "
+                  size={18}
+                  onClick={() => setShow(false)}
+                />
+              </div>
+            </div>
           ) : null}
 
           {modalType === "caution" && (
@@ -245,15 +310,29 @@ serve you."
           )}
           {modalType === "rate" && (
             <Rating
+              bookingId={bookingInfo?.id}
               onClose={() => setShow(false)}
               handleClickModalSuccessRate={() =>
                 handleClickModal("rate-success")
               }
             />
           )}
+
+          {modalType === "rebook" && (
+            <RebookApartment
+              handleRebook={handleRebook}
+              reBookingLoading={reBookingLoading}
+              handleDateSelect={handleDateSelect}
+              reBookEndDate={reBookEndDate}
+              reBookStartDate={reBookStartDate}
+              setReBookEndDate={setReBookEndDate}
+              setReBookStartDate={setReBookStartDate}
+              onClose={() => setShow(false)}
+              availableDates={availableDates?.data}
+            />
+          )}
         </section>
       </Modal>
-
       <Modal
         showModal={showDate}
         setShowModal={setShowDate}
@@ -268,7 +347,6 @@ serve you."
           setEndDate={setEndDate}
           setStartDate={setStartDate}
           startDate={startDate}
-     
         />
       </Modal>
     </div>
