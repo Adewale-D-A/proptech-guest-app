@@ -85,7 +85,7 @@ export const Modal = (props: ModalProps) => {
                 onOpenAutoFocus={(e) => e.preventDefault()}
                 onCloseAutoFocus={(e) => e.preventDefault()}
                 className={cn(
-                  "fixed inset-0 z-40 m-auto max-h-fit w-full max-w-md overflow-hidden border border-gray-200 bg-white  p-0 shadow-xl sm:rounded-lg",
+                  "fixed inset-0 z-40 m-auto max-h-fit w-full max-w-md overflow-hidden border border-gray-200 bg-white  p-0 shadow-xl sm:rounded-lg focus:border-none outline-none ring-0",
                   className
                 )}
               >

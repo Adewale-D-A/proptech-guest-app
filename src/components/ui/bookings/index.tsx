@@ -1,12 +1,11 @@
 /** @format */
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReusableCard from "../reusable-card";
 
-import { Calendar, House, X } from "lucide-react";
+import { Calendar as CalendarIcon, House, X } from "lucide-react";
 import { Card } from "@/components/_shared/card";
 import SearchInput from "@/components/search-input";
-import { DatePicker } from "@/components/date-picker";
 import {
   Select,
   SelectContent,
@@ -23,7 +22,15 @@ import CautionForm from "./caution-form";
 import SuccessfulMessage from "./success-message";
 import Rating from "./rate";
 import BookingTable from "./booking-table";
-import { BookingData } from "@/types/type";
+import { Booking, BookingData } from "@/types/type";
+import { BookingsResponse } from "@/types/book";
+import { format } from "date-fns";
+import { Button } from "@/components/_shared/button";
+import FilterDateComponent from "../make-request/filter-component";
+import { useCreateBookingMutation } from "@/redux/services/booking";
+import { useToast } from "@/components/_shared/toast/use-toast";
+import RebookApartment from "./rebook-apartment";
+import { useGetAvailableDateMutation } from "@/redux/services/shortlet";
 
 const headers = [
   "S/N",
@@ -39,31 +46,111 @@ const BookingsComponent = ({
   isLoading,
   statsLoading,
   statsData,
+  setSearch,
+  setStartDate,
+  setEndDate,
+  endDate,
+  startDate,
 }: {
   bookingData: BookingsResponse | null;
   isLoading: boolean;
   statsLoading: boolean;
   statsData: BookingData | null;
+  setSearch: (value: string) => void;
+  setStartDate: (date: string | undefined) => void;
+  setEndDate: (date: string | undefined) => void;
+  endDate: string | undefined;
+  startDate: string | undefined;
 }) => {
   const router = useRouter();
+  const { toast } = useToast();
+  const [booking, { isLoading: reBookingLoading }] = useCreateBookingMutation();
+  const [showDate, setShowDate] = useState(false);
   const pathName = usePathname();
   const [show, setShow] = useState(false);
   const [modalType, setModalType] = useState("");
-  const handleClickModal = (type: string) => {
+  const [reBookStartDate, setReBookStartDate] = useState<string | undefined>();
+  const [reBookEndDate, setReBookEndDate] = useState<string | undefined>();
+  const [bookingInfo, setBookingInfo] = useState<any>(null);
+  const [
+    getAvailableDate,
+    { data: availableDates, isLoading: loadingAvailableDates },
+  ] = useGetAvailableDateMutation();
+  const bookingId = bookingInfo && bookingInfo?.shortlet?.id;
+  const handleClickModal = (type: string, booking?: Booking) => {
     setShow(true);
     setModalType(type);
+    setBookingInfo(booking);
   };
 
-  console.log("statsData", statsData);
   const handleNavigate = () => {
     router.push(`${pathName}/active-bookings`);
   };
+  const handleDateSelect = (
+    date: Date | undefined,
+    setter: (date: string | undefined) => void
+  ) => {
+    if (date) {
+      setter(format(date, "yyyy-MM-dd"));
+    } else {
+      setter(undefined);
+    }
+  };
+
+  const handleApply = () => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+    setShowDate(false);
+  };
+
+  const handleCancel = () => {
+    setStartDate("");
+    setEndDate("");
+    setShowDate(false);
+  };
+
+  const handleRebook = async () => {
+    const payload = {
+      shortlet_id: bookingInfo?.shortlet?.id,
+      check_in_day: reBookStartDate,
+      check_out_day: reBookEndDate,
+      check_in_time: bookingInfo?.check_in_time,
+      check_out_time: bookingInfo?.check_out_time,
+      number_of_guests: Number(bookingInfo?.number_of_guests),
+      payment_method: "paystack",
+      callback_url: "/bookings",
+    };
+    try {
+      const res = await booking(payload).unwrap();
+      toast({
+        variant: "default",
+        title: res?.message,
+        description: "Apartment booked",
+      });
+      setShow(false);
+    } catch (err) {
+      const errorMessage =
+        (err as any)?.data?.message || "Submission failed. Please try again.";
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (bookingId) {
+      getAvailableDate(bookingId);
+    }
+  }, [bookingId, getAvailableDate]);
+
   return (
     <div className="mt-10">
       <h1 className="font-medium text-lg">Bookings Breakdown</h1>
       <section className="flex mt-6 items-center gap-4 w-full">
         <ReusableCard
-          icon={<Calendar size={16} />}
+          icon={<CalendarIcon size={16} />}
           text="Active Bookings"
           bookingAmt={`${statsData?.active_bookings} Bookings`}
           color="#E6F2FF"
@@ -100,16 +187,24 @@ const BookingsComponent = ({
           <SearchInput
             className="w-[28rem]"
             placeholder="Search apartment by  name, apartment type, No of Nights"
+            onChange={(e) => setSearch(e.target.value)}
           />
           <section className="flex  items-center gap-3">
-            <div className="flex items-center gap-1">
+            <Button
+              variant={"text"}
+              className="flex  items-center cursor-pointer gap-3"
+              onClick={() => setShowDate(true)}
+            >
               <p className="text-xs">Filter:</p>
-              <DatePicker
-                className="w-60 mt-0 h-9"
-                date={undefined}
-                setDate={() => {}}
-              />
-            </div>
+              <div className="flex items-center gap-1 border w-60 h-9 text-xs px-2 rounded">
+                {startDate && endDate && (
+                  <>
+                    {" "}
+                    {startDate} - {endDate}
+                  </>
+                )}
+              </div>
+            </Button>
             <div className="flex items-center  gap-1">
               <p className="text-xs">Sort by:</p>
               <Select>
@@ -147,7 +242,9 @@ const BookingsComponent = ({
         showModal={show}
         setShowModal={setShow}
         onClose={() => setShow(false)}
-        className={`relative   rounded-none max-w-md `}
+        className={`relative   rounded-none  ${
+          modalType === "rebook" ? "max-w-xl" : "max-w-md"
+        } `}
       >
         <section>
           {modalType === "rate" ? (
@@ -175,6 +272,19 @@ const BookingsComponent = ({
                 onClick={() => setShow(false)}
               />
             </div>
+          ) : modalType === "rebook" ? (
+            <div>
+              <div className="flex items-center justify-between border-b p-4">
+                <h1 className="text-lg ">
+                  Rebook {bookingInfo?.shortlet?.name} Apartment
+                </h1>
+                <X
+                  className="cursor-pointer "
+                  size={18}
+                  onClick={() => setShow(false)}
+                />
+              </div>
+            </div>
           ) : null}
 
           {modalType === "caution" && (
@@ -199,13 +309,44 @@ serve you."
           )}
           {modalType === "rate" && (
             <Rating
+              bookingId={bookingInfo?.id}
               onClose={() => setShow(false)}
               handleClickModalSuccessRate={() =>
                 handleClickModal("rate-success")
               }
             />
           )}
+
+          {modalType === "rebook" && (
+            <RebookApartment
+              handleRebook={handleRebook}
+              reBookingLoading={reBookingLoading}
+              handleDateSelect={handleDateSelect}
+              reBookEndDate={reBookEndDate}
+              reBookStartDate={reBookStartDate}
+              setReBookEndDate={setReBookEndDate}
+              setReBookStartDate={setReBookStartDate}
+              onClose={() => setShow(false)}
+              availableDates={availableDates?.data}
+            />
+          )}
         </section>
+      </Modal>
+      <Modal
+        showModal={showDate}
+        setShowModal={setShowDate}
+        onClose={() => setShowDate(false)}
+        className="max-w-xl py-10"
+      >
+        <FilterDateComponent
+          endDate={endDate}
+          handleApply={handleApply}
+          handleCancel={handleCancel}
+          handleDateSelect={handleDateSelect}
+          setEndDate={setEndDate}
+          setStartDate={setStartDate}
+          startDate={startDate}
+        />
       </Modal>
     </div>
   );

@@ -14,12 +14,11 @@ import {
 import storage from "redux-persist/lib/storage";
 import rootReducer from "./reducer";
 import { apiMiddleware } from "../services/base/base";
-import { useDispatch } from "react-redux";
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth", "auth-email", "apt"],
+  whitelist: ["auth", "auth-email", "apt", "tab"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

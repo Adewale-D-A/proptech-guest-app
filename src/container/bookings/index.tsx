@@ -5,19 +5,32 @@ import {
   useGetBookingsQuery,
   useGetBookingStatsQuery,
 } from "@/redux/services/booking";
-import React from "react";
+import React, { useState } from "react";
 
 const BookingsContainer = () => {
-  const { data, isLoading, error } = useGetBookingsQuery();
+    const [search, setSearch] = useState("");
+    const [startDate, setStartDate] = useState<string | undefined>(undefined);
+    const [endDate, setEndDate] = useState<string | undefined>(undefined);
+
+  const { data, isLoading, error } = useGetBookingsQuery({
+    search,
+    start_date: startDate,
+    end_date: endDate,
+  });
   const { data: statsData, isLoading: statsLoading } =
     useGetBookingStatsQuery();
-  console.log("statsData", statsData);
+
   return (
     <BookingsComponent
       isLoading={isLoading}
       bookingData={data?.data ?? null}
       statsData={statsData?.data ?? null}
       statsLoading={statsLoading}
+      setSearch={setSearch}
+      setStartDate={setStartDate}
+      setEndDate={setEndDate}
+      endDate={endDate}
+      startDate={startDate}
     />
   );
 };

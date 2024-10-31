@@ -14,7 +14,7 @@ const ImageSkeleton = ({
       <div
         role="status"
         style={{ width: width, height: height }}
-        className={`flex items-center justify-center   bg-gray-200 rounded-md animate-pulse dark:bg-gray-300`}
+        className={`flex items-center justify-center   bg-gray-200 rounded-md  dark:bg-gray-300`}
       >
         <svg
           className="w-3 h-3 text-gray-200 dark:text-gray-400"

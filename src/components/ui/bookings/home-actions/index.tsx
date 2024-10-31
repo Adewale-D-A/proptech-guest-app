@@ -12,8 +12,14 @@ import React from "react";
 
 const HomeActionsDropdown = ({
   handleClickModal,
+  handleOpenSingleBooking,
+  handleClickModalRate,
+  handleClickModalRebook,
 }: {
   handleClickModal?: (value: string) => void;
+  handleOpenSingleBooking: () => void;
+  handleClickModalRate: () => void;
+  handleClickModalRebook: () => void;
 }) => {
   return (
     <DropdownMenu>
@@ -24,10 +30,16 @@ const HomeActionsDropdown = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-44 p-0 pb-4 cursor-pointer relative right-4 bg-white flex flex-col gap-2 px-4">
         <DropdownMenuSeparator />
-        <DropdownMenuCheckboxItem className=" cursor-pointer text-xs p-0">
+        <DropdownMenuCheckboxItem
+          className=" cursor-pointer text-xs p-0"
+          onClick={handleOpenSingleBooking}
+        >
           View details
         </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem className=" cursor-pointer  text-xs p-0">
+        <DropdownMenuCheckboxItem
+          className=" cursor-pointer  text-xs p-0"
+          onClick={handleClickModalRebook}
+        >
           Rebook apartment
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
@@ -38,7 +50,7 @@ const HomeActionsDropdown = ({
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
           className=" text-xs cursor-pointer p-0"
-          onClick={() => handleClickModal?.("rate")}
+          onClick={handleClickModalRate}
         >
           Rate your Experience
         </DropdownMenuCheckboxItem>

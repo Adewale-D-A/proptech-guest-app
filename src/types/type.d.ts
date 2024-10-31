@@ -58,6 +58,7 @@ interface ShortletDataResponse extends GeneralResponseStatus {
 }
 
 interface ShortletData {
+  bookings?: Booking;
   shortlet: ShortletPage;
 }
 
@@ -224,6 +225,48 @@ interface NotificationsResponse {
     total: number;
   };
 }
+interface Booking {
+  id: number;
+  booking_number: string;
+  shortlet_id: number;
+  user_id: number;
+  check_in_date: string;
+  check_out_date: string;
+  check_in_time: string;
+  check_out_time: string;
+  number_of_days: number;
+  number_of_guests: number;
+  guest_breakdown: string | null;
+  currency: string;
+  caution_fee: number;
+  tax_fee: number;
+  base_price: number;
+  discount_fee: number;
+  total_price: number;
+  exchange_rate: string;
+  caution_fee_NGN: number;
+  tax_fee_NGN: number;
+  base_price_NGN: number;
+  discount_amount_NGN: number;
+  total_price_NGN: number;
+  status: string;
+  payment_status: string;
+  payment_method: string;
+  promo_code: string | null;
+  notes: string | null;
+  channel: string;
+  payment_expires_at: string;
+  created_at: string;
+
+  transferred_from?: string;
+  transferred_to?: string;
+  visitor_code?: string;
+  account_name?: string;
+  updated_at: string;
+  bank_name?: string;
+  has_requested_refund?: number;
+  shortlet: Shortlet;
+}
 interface UserRequestBreakdown {
   message: string;
   data: {
@@ -236,17 +279,29 @@ interface UserRequestBreakdown {
 
 interface UserRequest {
   id: number;
+  request_id: string | null;
+  service_type_id: number;
   user_id: number;
-  shortlet_id: number;
-  request_id: string;
-  status: string;
-  subject: string;
-  description: string;
+  booking_id: number;
+  currency: string;
+  amount_charged: string;
+  amount_charged_NGN: string;
+  amount_paid: string | null;
+  amount_paid_NGN: string | null;
+  quantity: number;
+  request_date: string;
   is_escalated: number;
   escalation_reason: string | null;
+  description: string;
+  status: string;
   created_at: string;
   updated_at: string;
-  shortlet: any | null;
+  booking: Booking;
+  service_type: ServiceType;
+  shortlet: Shortlet;
+  name: string;
+  subject: string;
+  payment_status: string;
 }
 
 interface UserRequestsResponse extends PaginationLink {
@@ -271,6 +326,13 @@ interface RequestResponseData {
   };
 }
 
+interface AdditionalRequestResponseData {
+  message: string;
+  data: {
+    additional_service: UserRequestsResponse;
+  };
+}
+
 interface BookingData {
   total_bookings: number;
   active_bookings: number;
@@ -285,4 +347,121 @@ interface VisitorResponse extends GeneralResponseStatus {
   data: {
     visitor_code: string;
   };
+}
+
+export type ApartmentOption = {
+  id: string;
+  name: string;
+};
+interface CreateRequestBody {
+  shortlet_id: number;
+  subject: string;
+  description: string;
+}
+interface FilterDateComponentProps {
+  startDate: string | undefined;
+  endDate: string | undefined;
+  handleDateSelect: (
+    date: Date | undefined,
+    setter: (date: string | undefined) => void
+  ) => void;
+  handleCancel: () => void;
+  handleApply: () => void;
+  setStartDate: (date: string | undefined) => void;
+  setEndDate: (date: string | undefined) => void;
+}
+
+interface ServiceRequest {
+  shortlet_id: number;
+  service_type_id: number;
+  quantity: number;
+  request_date: string;
+  description: string;
+  callback_url: string;
+  payment_method: string;
+}
+
+interface ServiceType {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  currency: string;
+}
+
+interface ServiceTypesResponse extends GeneralResponseStatus {
+  data: {
+    serviceTypes: {
+      current_page: number;
+      data: ServiceType[];
+      first_page_url: string;
+      from: number;
+      last_page: number;
+      last_page_url: string;
+      links: PaginationLink[];
+      next_page_url: string | null;
+      path: string;
+      per_page: number;
+      prev_page_url: string | null;
+      to: number;
+      total: number;
+    };
+  };
+}
+interface ServiceFeeResponse extends GeneralResponseStatus {
+  data: {
+    currency: string;
+    quantity: string;
+    cost: number;
+  };
+}
+
+interface PaginationTableProps {
+  pageSize: number;
+  pageIndex: number;
+  setPageIndex: (index: number) => void;
+  totalItemsCount: number;
+  handleOnChange: (index: number) => void;
+  setPageSize?: (val: number) => void;
+}
+interface ButtonPaginationProps {
+  children: React.ReactNode;
+  index: number;
+  setPageIndex: (index: number) => void;
+  pageIndex: number;
+  handleOnChange: (index: number) => void;
+}
+
+interface Pagination {
+  pageIndex: number;
+  pageSize: number;
+  setPageIndex: (index: number) => void;
+  totalPages?: number;
+  setPageSize?: (index: number) => void;
+}
+
+interface AdditionalServicesComponentProps extends Pagination {
+  requestDataStats: UserRequestBreakdown | undefined;
+  requestData: UserRequestsResponse | undefined;
+  isLoading: boolean;
+  searchTerm: string;
+  setSearchTerm: (value: string) => void;
+  setStartDate: Dispatch<SetStateAction<string>>;
+  setEndDate: Dispatch<SetStateAction<string>>;
+  endDate: string | undefined;
+  startDate: string | undefined;
+}
+
+interface MakeARequestResponseData extends Pagination {
+  requestDataStats: UserRequestBreakdown | undefined;
+  requestData: UserRequestsResponse | undefined;
+  isLoading: boolean;
+  shortlet: Booking[];
+  onNewRequest: () => void;
+  searchTerm: string;
+  setSearchTerm: any;
+  setStartDate: any;
+  setEndDate: any;
+  endDate: string | undefined;
+  startDate: string | undefined;
 }

@@ -9,7 +9,6 @@ import {
   SelectValue,
 } from "../_shared/select";
 
-
 import { CountryType } from "@/types/type";
 import { countries } from "@/_shared/countries";
 import { Input } from "../_shared/input";
@@ -25,6 +24,7 @@ interface PhoneNumberInputProps {
   noRadius?: boolean;
   inputClassName?: string;
   selectClassName?: string;
+  disabled?: boolean;
 }
 
 const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
@@ -38,6 +38,7 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
   noRadius,
   inputClassName,
   selectClassName,
+  disabled,
 }) => {
   const [selectedCountry, setSelectedCountry] = useState<CountryType>(
     countries.find((country) => country.code === "NG") || countries[0]
@@ -127,6 +128,7 @@ const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
           showDivider ? "border-l rounded-l-none" : ""
         } px-2  ${inputClassName} `}
         required={required}
+        disabled={disabled}
       />
     </div>
   );

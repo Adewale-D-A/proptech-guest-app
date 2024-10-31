@@ -3,10 +3,13 @@
 import React, { useEffect, useState } from "react";
 import UserDropDown from "./user-dropdown";
 import NotificationDropDown from "./notification";
+import { use99Selector } from "@/redux/hooks/hooks";
+import { RootState } from "@/redux/store";
+import { ChevronLeft, ChevronRight, LayoutGrid } from "lucide-react";
 
 const Navbar = ({ isOpen }: { isOpen: boolean }) => {
   const [bgColor, setBgColor] = useState<string>("");
-
+  const activeTab = use99Selector((state: RootState) => state.tab.activeTab);
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 10) {
@@ -17,7 +20,7 @@ const Navbar = ({ isOpen }: { isOpen: boolean }) => {
     };
 
     window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Call it once to set initial state
+    handleScroll();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -31,8 +34,10 @@ const Navbar = ({ isOpen }: { isOpen: boolean }) => {
           isOpen ? "ml-[15rem]" : "ml-[4rem]"
         } h-24 z-30 fixed left-0 right-0 px-5 flex justify-between items-center  transition-colors duration-300`}
       >
-        <div className="w-60">
-          <h1 className="text-xl font-semibold">Welcome Back</h1>
+        <div className="flex items-center">
+          <LayoutGrid size={16} /> <span className="px-1 ">Dashboard</span>{" "}
+          <ChevronRight size={18} color="#284499" />
+          <span className="text-primary pl-1"> {activeTab?.title}</span>
         </div>
 
         <div className="flex items-center gap-6">
