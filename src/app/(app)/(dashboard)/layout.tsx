@@ -23,10 +23,9 @@ const DashboardLayout = ({ children }: { children: any }) => {
   const dispatch = use99Dispatch();
   const token = use99Selector(selectUserToken);
   const userAuthenticated = use99Selector(isAuthenticated);
-  const { data: userData, error: userError } = useGetUsersQuery(undefined, {
+  const { data: userData } = useGetUsersQuery(undefined, {
     skip: !token,
   });
-  console.log("userData", userData);
 
   useEffect(() => {
     if (token) {

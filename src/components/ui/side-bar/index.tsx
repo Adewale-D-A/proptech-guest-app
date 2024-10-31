@@ -18,6 +18,10 @@ import {
 import Logo from "../logo";
 import { Label } from "@/components/_shared/label";
 import { navigationOptions } from "@/_shared/sidebar";
+import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
+import { RootState } from "@/redux/store";
+import { setActiveTab } from "@/redux/slices/active_tab";
+import { NavLink } from "@/types/type";
 
 type Props = {
   setIsOpen: (val: boolean) => void;
@@ -26,9 +30,8 @@ type Props = {
 };
 
 const SideBarScreen = ({ isOpen, isTab, setIsOpen }: Props) => {
-  const [activeTab, setActiveTab] = useState<string | null>(null);
-  const pathName = usePathname();
-
+  const dispatch = use99Dispatch();
+  const activeTab = use99Selector((state: RootState) => state.tab.activeTab);
   const Sidebar_animation = isTab
     ? {
         open: {
@@ -62,8 +65,8 @@ const SideBarScreen = ({ isOpen, isTab, setIsOpen }: Props) => {
         },
       };
 
-  const handleTabClick = (tabId: string) => {
-    setActiveTab(tabId);
+  const handleTabClick = (tab: NavLink) => {
+    dispatch(setActiveTab(tab));
   };
 
   return (
@@ -98,13 +101,13 @@ const SideBarScreen = ({ isOpen, isTab, setIsOpen }: Props) => {
                 className={`flex hover:bg-primary hover:text-primary-0 items-center h-[40px]  hover:text-[#CFCFCF] ${
                   isOpen ? "justify-start  gap-x-3 px-3" : "justify-center"
                 } ${
-                  activeTab === data.id
+                  activeTab?.id === data.id
                     ? `bg-[#9B9B9B]/20  border-white text-white ${
                         isOpen ? " border-l-[3px] " : "border-b-[3px]"
                       }`
                     : "text-[#CFCFCF]"
                 }`}
-                onClick={() => handleTabClick(data.id)}
+                onClick={() => handleTabClick(data)}
               >
                 {isOpen ? (
                   <>
@@ -199,9 +202,3 @@ const SideBarScreen = ({ isOpen, isTab, setIsOpen }: Props) => {
 };
 
 export default SideBarScreen;
-
-
-
-
-
-

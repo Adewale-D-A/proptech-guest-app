@@ -60,7 +60,7 @@ const NotificationComponent = ({
       </section>
     );
 
-  console.log("notificationData", notificationData);
+
 
   return (
     <Card className="mt-6 shadow-sm">

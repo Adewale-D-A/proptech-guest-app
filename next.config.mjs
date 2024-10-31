@@ -3,28 +3,34 @@
  * @type {import('next').NextConfig}
  */
 
-export function webpack(
-  config,
-  { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }
-) {
-  config.resolve.alias.canvas = false;
-  config.resolve.alias.encoding = false;
+const nextConfig = {
+  images: {
+    domains: ["99apt-shortlet.fra1.digitaloceanspaces.com"],
+  },
+  webpack(
+    config,
+    { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }
+  ) {
+    config.resolve.alias.canvas = false;
+    config.resolve.alias.encoding = false;
 
-  config.module.rules.push({
-    test: /\.svg$/i,
-    issuer: /\.[jt]sx?$/,
-    use: ["@svgr/webpack"],
-  });
-  // Important: return the modified config
+    config.module.rules.push({
+      test: /\.svg$/i,
+      issuer: /\.[jt]sx?$/,
+      use: ["@svgr/webpack"],
+    });
 
-  return config;
-}
-export async function redirects() {
-  return [
-    {
-      source: "/",
-      destination: "/landing",
-      permanent: true,
-    },
-  ];
-}
+    return config;
+  },
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/landing",
+        permanent: true,
+      },
+    ];
+  },
+};
+
+export default nextConfig;

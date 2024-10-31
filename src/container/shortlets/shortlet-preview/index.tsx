@@ -29,13 +29,12 @@ const ShortLetPreviewContainer = () => {
 
   if (loadingShortlet || loadingAvailableDates) return <p>Loading...</p>;
 
-  console.log("shortletData", availableDates);
-
   return (
     <div>
       {shortletData ? (
         <ShortLetPreviewComponent
           apartmentDetails={shortletData.data.shortlet}
+          availableDates={availableDates?.data}
         />
       ) : (
         <p>No shortlet data available</p>

@@ -1,12 +1,12 @@
 /** @format */
 
-import Loader from "@/components/loader";
+import ThunderLoader from "@/components/loader/thunder-loader";
 import React from "react";
 
 const loading = () => {
   return (
     <div className="flex  justify-center items-center h-screen">
-      <Loader/>
+      <ThunderLoader />
     </div>
   );
 };

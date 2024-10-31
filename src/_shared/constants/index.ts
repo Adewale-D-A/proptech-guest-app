@@ -1,7 +1,7 @@
 /** @format */
 
 import countries from "../data/countries";
-
+import { format, isYesterday, parseISO } from "date-fns";
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 export const buildQueryString = (params: any) =>
   Object.keys(params)
@@ -36,3 +36,38 @@ export const formatDateTime = (dateString: string) => {
     hour12: true,
   }).format(date);
 };
+
+export const formatChatTime = (dateString: string) => {
+  const date = parseISO(dateString);
+
+  if (isYesterday(date)) {
+    return "Yesterday";
+  }
+
+  return format(date, "hh:mm a");
+};
+
+// utils/dateFormatter.ts
+export function formatDate(
+  date: Date | string | number,
+  locales: string = "en-US",
+  options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  }
+): string {
+  const parsedDate = new Date(date);
+  return new Intl.DateTimeFormat(locales, options).format(parsedDate);
+}
+
+export enum urlRoute {
+  additionalPayStackUrl = "/additional-services",
+}
+
+export enum payment_method {
+  pay_stack = "paystack",
+}

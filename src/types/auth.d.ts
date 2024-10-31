@@ -67,3 +67,14 @@ interface UpdateUserPayload {
 interface UpdateUserDocPayload {
   identity_document: File | null;
 }
+
+interface RatingPayload {
+  booking_id: number;
+  rating: number;
+  review: string;
+}
+
+interface TransferPayload {
+  booking_id: number;
+  email: string;
+}

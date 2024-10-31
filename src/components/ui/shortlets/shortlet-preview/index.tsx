@@ -44,8 +44,10 @@ type FormValues = z.infer<typeof bookingSchema>;
 
 const ShortLetPreviewComponent = ({
   apartmentDetails,
+  availableDates,
 }: {
   apartmentDetails: any;
+  availableDates: any;
 }) => {
   const params = useParams();
   const { toast } = useToast();
@@ -191,7 +193,7 @@ const ShortLetPreviewComponent = ({
         <AnimatedContainer className="flex mt-6 gap-4">
           <div className="w-full relative">
             <img
-              src={apartmentDetails?.images[0].path || ""}
+              src={apartmentDetails?.images[currentIndex].path || ""}
               alt={`Apartment Image ${currentIndex + 1}`}
               className="w-full rounded-xl h-[600px] object-cover"
             />
@@ -305,6 +307,9 @@ const ShortLetPreviewComponent = ({
                               form.formState.errors.check_in_day?.message ||
                               form.formState.errors.check_in_time?.message
                             }
+                            disabledDates={availableDates?.booked_dates.concat(
+                              availableDates?.blocked_dates
+                            )}
                           />
                         </div>
                         <div className="w-full">
@@ -324,6 +329,9 @@ const ShortLetPreviewComponent = ({
                               form.formState.errors.check_out_day?.message ||
                               form.formState.errors.check_out_time?.message
                             }
+                            disabledDates={availableDates?.booked_dates.concat(
+                              availableDates?.blocked_dates
+                            )}
                           />
                         </div>
                       </div>

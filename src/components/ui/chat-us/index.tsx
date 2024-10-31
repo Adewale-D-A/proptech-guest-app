@@ -2,21 +2,33 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { chatData } from "@/_shared/data";
 import ChatInput from "./chat-input";
+import { formatChatTime } from "@/_shared/constants";
+import ThunderLoader from "@/components/loader/thunder-loader";
 
-const ChatUsComponent = () => {
-  const [chatMessages, setChatMessages] = useState(chatData);
+interface ChatUsComponentProps {
+  chatData: ChatApiResponse | undefined;
+  handleSendMessage: (message: string) => void;
+  isLoading: boolean;
+  inputValue: string;
+  setInputValue: (value: string) => void;
+}
+
+const ChatUsComponent = ({
+  chatData,
+  handleSendMessage,
+  isLoading,
+  setInputValue,
+  inputValue,
+}: ChatUsComponentProps) => {
+  const allChatMessageData = chatData && chatData.data.data;
   const chatContainerRef = useRef<HTMLDivElement>(null);
-
   const [showMenu, setShowMenu] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
-  const [inputValue, setInputValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const emojiPickerRef = useRef<HTMLDivElement | null>(null);
   const emojiIconRef = useRef<HTMLDivElement | null>(null);
 
-  // scroll down effect when chat is new
   const scrollChatToBottom = () => {
     if (chatContainerRef.current) {
       const chatContainer = chatContainerRef.current;
@@ -37,32 +49,12 @@ const ChatUsComponent = () => {
     }
   };
 
-  const handleSendMessage = () => {
-    if (inputValue.trim() !== "") {
-      const newMessage = {
-        sender: "me",
-        message: inputValue,
-        time: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      };
-      setChatMessages((prevMessages) => [...prevMessages, newMessage]);
-      setInputValue("");
-
-      // Scroll to bottom after the state has updated
-      setTimeout(() => {
-        scrollChatToBottom();
-      }, 0);
-    }
-  };
-
   const handleTextareaKeyDown = (
     event: React.KeyboardEvent<HTMLTextAreaElement>
   ) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
-      handleSendMessage();
+      handleSendMessage(inputValue);
     }
   };
 
@@ -99,65 +91,88 @@ const ChatUsComponent = () => {
     };
   }, [showEmoji]);
 
-  
   useEffect(() => {
     scrollChatToBottom();
-  }, [chatMessages]);
+  }, [allChatMessageData]);
 
   function handleMenuClicked() {
     setShowMenu((prev) => !prev);
   }
 
+  const sortedChatMessages =
+    allChatMessageData?.slice().sort((a, b) => {
+      return (
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      );
+    }) || [];
+
   return (
     <div className="flex  flex-col justify-between h-screen p-4">
       <div className="overflow-y-auto" ref={chatContainerRef}>
-        {chatMessages.map((chat, index) => (
-          <div
-            key={index}
-            className={`flex flex-col ${
-              chat.sender === "me" ? "items-end" : "items-start"
-            } `}
-          >
-            <section className=" flex flex-col">
-              <div
-                className={`shadow-sm border border-black/5  max-w-xs px-4 py-2 rounded-lg ${
-                  chat.sender === "me"
-                    ? "border-r-4 mr-14 border-r-primary-1 "
-                    : "border-l-4 ml-14 border-l-primary-1 "
-                }  `}
-              >
-                <p className="text-sm break-words">{chat.message}</p>
-                <span
-                  className={`text-xs mt-1 flex justify-end font-light text-gray-500`}
-                >
-                  {chat.time}
-                </span>
-              </div>
-              <div className=" relative bottom-10">
-                <Image
-                  src={
-                    chat.sender === "me"
-                      ? "/images/user.png"
-                      : "/images/logos.png"
-                  }
-                  width={40}
-                  height={40}
-                  alt=""
-                  className={`${
-                    chat.sender === "me" ? "float-right" : "float-left"
-                  }`}
-                />
-              </div>
-            </section>
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center h-screen">
+            <ThunderLoader />{" "}
           </div>
-        ))}
+        ) : sortedChatMessages && sortedChatMessages.length > 0 ? (
+          sortedChatMessages.map((chat, index) => (
+            <div
+              key={index}
+              className={`flex flex-col ${
+                chat.sender !== "admin" ? "items-end" : "items-start"
+              } `}
+            >
+              <section className=" flex flex-col">
+                <div
+                  className={`shadow-sm border border-black/5  max-w-xs px-4 py-2 rounded-lg ${
+                    chat.sender !== "admin"
+                      ? "border-r-4 mr-14 border-r-primary-1 "
+                      : "border-l-4 ml-14 border-l-primary-1 "
+                  }  `}
+                >
+                  <p className="text-sm break-words">{chat.message}</p>
+                  <span
+                    className={`text-xs mt-1 flex justify-end font-light text-gray-500`}
+                  >
+                    {formatChatTime(chat.created_at)}
+                  </span>
+                </div>
+                <div className=" relative bottom-10">
+                  <Image
+                    src={
+                      chat.sender !== "admin"
+                        ? "/images/user.png"
+                        : "/images/logos.png"
+                    }
+                    width={40}
+                    height={40}
+                    alt=""
+                    className={`${
+                      chat.sender !== "admin" ? "float-right" : "float-left"
+                    }`}
+                  />
+                </div>
+              </section>
+            </div>
+          ))
+        ) : (
+          <div className="text-center flex flex-col items-center justify-center h-screen text-gray-500">
+            <Image
+              src={"/images/no-message.png"}
+              width={100}
+              height={100}
+              alt="no message"
+              unoptimized
+            />{" "}
+            No messages yet
+          </div>
+        )}
       </div>
       <ChatInput
         emojiIconRef={emojiIconRef}
         emojiPickerRef={emojiPickerRef}
         handleEmojiSelect={handleEmojiSelect}
         handleMenuClicked={handleMenuClicked}
-        handleSendMessage={handleSendMessage}
+        handleSendMessage={() => handleSendMessage(inputValue)}
         handleTextareaKeyDown={handleTextareaKeyDown}
         inputValue={inputValue}
         setInputValue={setInputValue}

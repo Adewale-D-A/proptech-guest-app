@@ -2,6 +2,7 @@
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+import { Booking } from "@/types/book";
 
 interface ApartmentState {
   selectedApt: Booking | null;
