@@ -22,8 +22,14 @@ import {
 import { DatePicker } from "@/components/date-picker";
 import SearchInput from "@/components/search-input";
 import ActionsDropdown from "./actions";
+import { useGetPromoQuery } from "@/redux/services/referral";
+import { format } from "date-fns";
 
 const PromoSection = () => {
+  const { data, isLoading } = useGetPromoQuery({});
+  const offerData = data?.data && data?.data?.offer && data?.data?.offer?.data;
+
+  console.log("offerData", offerData);
   const headers = [
     "S/N",
     "Discount Name ",
@@ -58,7 +64,7 @@ const PromoSection = () => {
       </Card>
       <Card className="shadow-sm  mt-10  p-4">
         <div className="flex items-center justify-between">
-          <h1 className="font-medium">Request History</h1>
+          <h1 className="font-medium">Promo History</h1>
           <SearchInput
             className="w-[28rem]"
             placeholder="Search apartment by  name, apartment type, No of Nights"
@@ -110,29 +116,40 @@ const PromoSection = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {[1, 2, 3, 4, 5, 6].map((invoice, index) => (
-              <TableRow key={invoice}>
-                <TableCell className="font-medium text-xs">
-                  {index + 1}
-                </TableCell>
-                <TableCell>Lorem ipsum dolor sit amet</TableCell>
-                <TableCell className="font-medium text-xs">
-                  DISCOUNT2024-ABC123
-                </TableCell>
-                <TableCell className="flex items-center gap-5">
-                  25/03/2024 <span className="text-[#6D6D6D]">11:23 AM</span>
-                </TableCell>
+            {offerData &&
+              offerData?.map((offer, index) => (
+                <TableRow key={offer?.id}>
+                  <TableCell className="font-medium text-xs">
+                    {index + 1}
+                  </TableCell>
+                  <TableCell>{offer?.name}</TableCell>
+                  <TableCell className="font-medium text-xs">
+                    {offer?.offer_id}
+                  </TableCell>
+                  <TableCell className="flex items-center gap-5">
+                    {format(offer?.created_at, "yyyy/MM/dd")}{" "}
+                  </TableCell>
 
-                <TableCell className="font-medium text-xs">
-                  <div className="w-16 py-2 rounded-xl bg-[#E1FFEB] flex justify-center items-center">
-                    <p className="text-xs text-[#08AD40] font-light">Active</p>
-                  </div>
-                </TableCell>
-                <TableCell className="font-medium text-xs">
-                  <ActionsDropdown onActionSelect={() => {}} />
-                </TableCell>
-              </TableRow>
-            ))}
+                  <TableCell className="font-medium text-xs">
+                    <div
+                      className={`w-16 py-2 rounded-xl ${
+                        offer?.is_active ? "bg-[#E1FFEB]" : "bg-gray-50"
+                      }  flex justify-center items-center`}
+                    >
+                      <p
+                        className={`text-xs  font-light  ${
+                          offer?.is_active ? "text-[#08AD40]" : "text-gray-500"
+                        } `}
+                      >
+                        {offer?.is_active ? "Active" : "Pending"}
+                      </p>
+                    </div>
+                  </TableCell>
+                  <TableCell className="font-medium text-xs">
+                    <ActionsDropdown onActionSelect={() => {}} />
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </Card>

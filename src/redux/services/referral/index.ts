@@ -17,7 +17,16 @@ const referralEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/referral/code`,
       }),
     }),
+    getPromo: builder.query<OfferResponse, any>({
+      query: () => ({
+        method: Methods.get,
+        url: `${Endpoints.api}user/offer`,
+      }),
+    }),
   }),
 });
-export const { useGetReferralsQuery, useGenerateReferralLinkMutation } =
-  referralEndpoints;
+export const {
+  useGetReferralsQuery,
+  useGenerateReferralLinkMutation,
+  useGetPromoQuery,
+} = referralEndpoints;

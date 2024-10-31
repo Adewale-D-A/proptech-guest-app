@@ -73,3 +73,8 @@ interface RatingPayload {
   rating: number;
   review: string;
 }
+
+interface TransferPayload {
+  booking_id: number;
+  email: string;
+}

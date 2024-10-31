@@ -7,7 +7,6 @@ import { Card } from "@/components/_shared/card";
 import { Form } from "@/components/_shared/form";
 import { LoadingButton } from "@/components/_shared/loading-button";
 import { useForm } from "react-hook-form";
-
 import {
   Select,
   SelectContent,
@@ -15,20 +14,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/_shared/select";
-
-import { DatePicker } from "@/components/date-picker";
 import SearchInput from "@/components/search-input";
-
 import { usePathname, useRouter } from "next/navigation";
 import VolumeProgressBar from "./volume-progress";
 import FirstStepForm from "./step_1";
 import SecondStepForm from "./step_2";
 import ThirdStepForm from "./step_3";
-import {
-  AdditionalServicesComponentProps,
-  UserRequestBreakdown,
-  UserRequestsResponse,
-} from "@/types/type";
+import { AdditionalServicesComponentProps } from "@/types/type";
 import RequestTable from "../make-request/request-table";
 import { format } from "date-fns/format";
 import { Modal } from "@/components/_shared/modal";
@@ -38,6 +30,7 @@ import { selectCurrentUser } from "@/redux/slices/authSlice";
 import { use99Selector } from "@/redux/hooks/hooks";
 import { useCreateAdditionalMutation } from "@/redux/services/request";
 import { useToast } from "@/components/_shared/toast/use-toast";
+import { payment_method, urlRoute } from "@/_shared/constants";
 
 const AdditionalServicesComponent = ({
   requestDataStats,
@@ -64,6 +57,7 @@ const AdditionalServicesComponent = ({
   const router = useRouter();
   const pathName = usePathname();
   const [selectedDate, setSelectedDate] = useState<string | undefined>();
+
   const form = useForm({
     defaultValues: {
       name: `${currentUser?.first_name} ${currentUser?.last_name}`,
@@ -72,8 +66,8 @@ const AdditionalServicesComponent = ({
       quantity: "",
       request_date: "",
       description: "",
-      callback_url: "/additional-services",
-      payment_method: "paystack",
+      callback_url: urlRoute.additionalPayStackUrl,
+      payment_method: payment_method.pay_stack,
     },
   });
 
@@ -85,11 +79,11 @@ const AdditionalServicesComponent = ({
   };
 
   const handleNext = () => {
-    if (step < 3) {
+    if (step === 3) {
+      form.handleSubmit(onSubmit)();
+    } else {
       setStep(step + 1);
       setVolume(volume + 5);
-    } else {
-      form.handleSubmit(onSubmit)();
     }
   };
 
@@ -252,17 +246,25 @@ const AdditionalServicesComponent = ({
                       Prev
                     </LoadingButton>
                   )}
-                  <LoadingButton
-                    type={step === 3 ? "submit" : "button"}
-                    onClick={handleNext}
-                    className="w-full ml-2 text-xs h-9"
-                  >
-                    {step === 1
-                      ? "Continue"
-                      : step === 2
-                      ? "Proceed to Payment"
-                      : "Make Payment"}
-                  </LoadingButton>
+                  {step < 3 && (
+                    <LoadingButton
+                      type={"button"}
+                      onClick={handleNext}
+                      className="w-full ml-2 text-xs h-9"
+                    >
+                      {step === 1 ? "Continue" : "Proceed to Payment"}
+                    </LoadingButton>
+                  )}
+
+                  {step === 3 && (
+                    <LoadingButton
+                      type={"submit"}
+                      onClick={handleNext}
+                      className="w-full ml-2 text-xs h-9"
+                    >
+                      Make Payment
+                    </LoadingButton>
+                  )}
                 </div>
               </form>
             </Form>

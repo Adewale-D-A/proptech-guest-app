@@ -17,32 +17,49 @@ import PhoneNumberInput from "@/components/phoneNumber";
 import { LoadingButton } from "@/components/_shared/loading-button";
 import Image from "next/image";
 import { Button } from "@/components/_shared/button";
-import { Modal } from "@/components/_shared/modal";
+import { use99Selector } from "@/redux/hooks/hooks";
+import { selectCurrentUser } from "@/redux/slices/authSlice";
+import { RootState } from "@/redux/store";
+import { useTransferBookingMutation } from "@/redux/services/booking";
 
 const TransferModal = ({ onClose }: { onClose: () => void }) => {
+  const currentUser = use99Selector(selectCurrentUser);
+  const selectedApt = use99Selector(
+    (state: RootState) => state.apt.selectedApt
+  );
   const [submit, setSubmit] = useState(false);
   const [success, setSuccess] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [transferBooking, { isLoading }] = useTransferBookingMutation();
+
   const { toast } = useToast();
   const form = useForm({
     defaultValues: {
-      repName: "",
+      repName: `${currentUser?.first_name} ${currentUser?.last_name}`,
       repPhone: "",
-      repEmail: "",
-      repBooking: "",
+      email: "",
+      booking_id: selectedApt?.id,
     },
   });
-  function onSubmit(values: any) {
+
+  async function onSubmit(values: any) {
     console.log(values);
-    if (values) {
+    const { email, booking_id } = values;
+    console.log("vaklue:::", email, booking_id);
+    try {
+      await transferBooking({ email, booking_id }).unwrap();
       toast({
         variant: "default",
         title: "Transfer done",
       });
-    } else if (!values) {
+      setSuccess(true);
+    } catch (err: any) {
+      const errorMessage =
+        err?.data?.message || "Transfer submission failed. Please try again.";
       toast({
         variant: "destructive",
-        title: "Error login!",
+        title: "Submission Error",
+        description: errorMessage,
       });
     }
   }
@@ -97,6 +114,7 @@ const TransferModal = ({ onClose }: { onClose: () => void }) => {
                                 className="bg-white font-light w-full   "
                                 placeholder="Recipient’s Name"
                                 {...field}
+                                disabled
                               />
                             </FormControl>
                             <FormMessage className="text-xs text-red-500 font-light" />
@@ -108,16 +126,17 @@ const TransferModal = ({ onClose }: { onClose: () => void }) => {
                           Phone Number
                         </FormLabel>
                         <PhoneNumberInput
-                          value={phoneNumber}
+                          value={currentUser?.phone as string}
                           onChange={setPhoneNumber}
                           includePlusPrefix
                           required={false}
                           classNames="rounded-md mt-2"
+                          disabled={true}
                         />
                       </div>
                       <FormField
                         control={form.control}
-                        name="repBooking"
+                        name="email"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-xs   font-light">
@@ -126,7 +145,7 @@ const TransferModal = ({ onClose }: { onClose: () => void }) => {
                             <FormControl className="bg-transparent">
                               <Input
                                 className="bg-white font-light w-full   "
-                                placeholder="Recipient’s Name"
+                                placeholder="Recipient’s email"
                                 {...field}
                               />
                             </FormControl>
@@ -136,7 +155,7 @@ const TransferModal = ({ onClose }: { onClose: () => void }) => {
                       />
                       <FormField
                         control={form.control}
-                        name="repName"
+                        name="booking_id"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel className="text-xs   font-light">
@@ -145,8 +164,9 @@ const TransferModal = ({ onClose }: { onClose: () => void }) => {
                             <FormControl className="bg-transparent">
                               <Input
                                 className="bg-white font-light w-full   "
-                                placeholder="Recipient’s Name"
+                                placeholder="Booking id"
                                 {...field}
+                                disabled
                               />
                             </FormControl>
                             <FormMessage className="text-xs text-red-500 font-light" />
@@ -154,11 +174,9 @@ const TransferModal = ({ onClose }: { onClose: () => void }) => {
                         )}
                       />
                       <LoadingButton
-                        onClick={() => {
-                          setSubmit(true);
-                        }}
                         className="w-full h-10 mt-4"
-                        type="button"
+                        type="submit"
+                        loading={isLoading}
                       >
                         Submit Request
                       </LoadingButton>

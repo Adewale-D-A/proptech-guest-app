@@ -1,18 +1,55 @@
 /** @format */
 
-import React from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Bath, Bed, House, MapPin, X } from "lucide-react";
 import { faker } from "@faker-js/faker";
 import { DatePicker } from "@/components/date-picker";
 import { Button } from "@/components/_shared/button";
+import { use99Selector } from "@/redux/hooks/hooks";
+import { RootState } from "@/redux/store";
+import { useGetAvailableDateMutation } from "@/redux/services/shortlet";
+import { parseISO } from "date-fns";
+
+import { LoadingButton } from "@/components/_shared/loading-button";
+import ListCard from "../../shortlets/list-card";
 
 const ExtendModal = ({
   onClose,
   onClickExtend,
+
+  due,
+  setDue,
+  setExtendDate,
+  extend,
 }: {
   onClose: () => void;
   onClickExtend: () => void;
+
+  due: Date | undefined;
+  setDue: Dispatch<SetStateAction<Date | undefined>>;
+  setExtendDate: Dispatch<SetStateAction<Date | undefined>>;
+  extend: Date | undefined;
 }) => {
+  const selectedApt = use99Selector(
+    (state: RootState) => state.apt.selectedApt
+  );
+  const [getAvailableDate, { data: availableDates }] =
+    useGetAvailableDateMutation();
+
+  useEffect(() => {
+    if (selectedApt?.shortlet?.id) {
+      getAvailableDate(selectedApt?.shortlet?.id);
+    }
+  }, [selectedApt?.shortlet?.id, getAvailableDate]);
+
+  const disabledDates = availableDates?.data?.booked_dates.concat(
+    availableDates?.data?.blocked_dates
+  );
+  const disabledDatesArray = disabledDates
+    ? disabledDates.map((date: any) => parseISO(date))
+    : [];
+
+  const yesterday = new Date();
   const ReusableCard = ({ text, amt }: { text: string; amt: string }) => {
     return (
       <div className="flex items-center justify-between">
@@ -21,6 +58,7 @@ const ExtendModal = ({
       </div>
     );
   };
+
   return (
     <div>
       <div className=" ">
@@ -42,21 +80,25 @@ const ExtendModal = ({
               className="w-[60px] h-[60px] rounded"
             />
             <div className="flex flex-col gap-1">
-              <p className="font-medium">Victoria 99 3 Bedroom</p>
+              <p className="font-medium">{selectedApt?.shortlet.name} </p>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-1">
                   <MapPin color="#6d6d6d" size={12} />
                   <p className="text-xs font-light text-gray-100">
-                    Lekki Phase II
+                    {selectedApt?.shortlet?.location}
                   </p>
                 </div>
                 <div className="flex items-center gap-1">
                   <Bed color="#6d6d6d" size={12} />
-                  <p className="text-xs font-light text-gray-100">2 bed(s)</p>
+                  <p className="text-xs font-light text-gray-100">
+                    {selectedApt?.shortlet.no_of_bedrooms} bed(s)
+                  </p>
                 </div>
                 <div className="flex items-center gap-1">
                   <Bath color="#6d6d6d" size={12} />
-                  <p className="text-xs font-light text-gray-100">2 bathroom</p>
+                  <p className="text-xs font-light text-gray-100">
+                    {selectedApt?.shortlet.no_of_bathrooms} bathroom
+                  </p>
                 </div>
               </div>
             </div>
@@ -64,16 +106,24 @@ const ExtendModal = ({
           <section className="flex flex-col gap-2  mt-4">
             <div>
               <DatePicker
-                date={undefined}
-                setDate={() => {}}
+                date={due}
+                setDate={setDue}
                 label="Due date"
+                disabledCalendar={[
+                  ...disabledDatesArray,
+                  { before: yesterday },
+                ]}
               />
             </div>
             <div>
               <DatePicker
-                date={undefined}
-                setDate={() => {}}
+                date={extend}
+                setDate={setExtendDate}
                 label="Extended date"
+                disabledCalendar={[
+                  ...disabledDatesArray,
+                  { before: yesterday },
+                ]}
               />
             </div>
             <Button
@@ -85,18 +135,30 @@ const ExtendModal = ({
             <section className="bg-black/5 rounded mt-4">
               <h1 className="border-b px-4 py-3 text-sm">Booking Summary</h1>
               <section className="p-4 flex flex-col gap-3">
-                <ReusableCard text="Initial Booking balance" amt="#0.00" />
-                <ReusableCard
-                  text="Extended Booking per Night"
-                  amt="#108,000.00"
+                <ListCard
+                  amt={selectedApt?.total_price ?? 0}
+                  costName="Initial Booking balance"
+                  currency={selectedApt?.currency}
                 />
-                <ReusableCard text="7.5% Tax" amt="#8,100.00" />
-                <ReusableCard text="No of Extended Nights " amt="0" />
+                <ListCard costName="Extended Booking per Night" amt={0} />
+                <ListCard
+                  amt={selectedApt?.tax_fee ?? 0}
+                  costName="7.5% Tax"
+                  currency={selectedApt?.currency}
+                />
+                <ListCard
+                  amt={selectedApt?.number_of_days ?? 0}
+                  costName="No of Extended Nights"
+                />
               </section>
             </section>
-            <Button onClick={onClickExtend} className="w-full h-9 text-xs mt-4">
+            <LoadingButton
+              onClick={onClickExtend}
+              className="w-full h-9 text-xs mt-4"
+              disabled={!due || !extend}
+            >
               Extend Booking
-            </Button>
+            </LoadingButton>
           </section>
         </section>
       </div>

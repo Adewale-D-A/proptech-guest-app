@@ -63,3 +63,11 @@ export function formatDate(
   const parsedDate = new Date(date);
   return new Intl.DateTimeFormat(locales, options).format(parsedDate);
 }
+
+export enum urlRoute {
+  additionalPayStackUrl = "/additional-services",
+}
+
+export enum payment_method {
+  pay_stack = "paystack",
+}

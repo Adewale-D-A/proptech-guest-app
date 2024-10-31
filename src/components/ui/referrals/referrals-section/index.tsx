@@ -1,10 +1,9 @@
 /** @format */
-/** @format */
 "use client";
 import { Button } from "@/components/_shared/button";
 import { Card } from "@/components/_shared/card";
 import Image from "next/image";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -15,7 +14,6 @@ import {
 } from "@/components/_shared/table";
 import { DatePicker } from "@/components/date-picker";
 import SearchInput from "@/components/search-input";
-
 import {
   Select,
   SelectContent,
@@ -30,7 +28,6 @@ import {
 import { SkeletonTable } from "@/components/skeleton-preview";
 import { format } from "date-fns";
 import { useToast } from "@/components/_shared/toast/use-toast";
-import { Modal } from "@/components/_shared/modal";
 import { FiCopy } from "react-icons/fi";
 import useCanvasConfetti from "@/components/_shared/animation/fire_work_3";
 const ReferralsSection = () => {
@@ -38,7 +35,14 @@ const ReferralsSection = () => {
   const [code, setCode] = useState("");
   const { toast } = useToast();
   const { data, isLoading } = useGetReferralsQuery({});
-  console.log("data", data);
+  const socialData = [
+    "/link.png",
+    "/twitter.png",
+    "/whatsapp.png",
+    "/insta.png",
+    "/fb.png",
+    "/mail.png",
+  ];
   const [generateReferralLink, { isLoading: isGenerating }] =
     useGenerateReferralLinkMutation();
   const { handleClickCanvas } = useCanvasConfetti();
@@ -102,12 +106,40 @@ const ReferralsSection = () => {
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                 eiusmod tempor incididunt ut labore et dolore.
               </p>
-              <Button
-                onClick={handleGenerateReferralLink}
-                className="w-56 mt-6"
-              >
-                {isGenerating ? "Generating..." : "Generate Referral Link"}
-              </Button>
+              {!showModal ? (
+                <Button
+                  onClick={handleGenerateReferralLink}
+                  className="w-56 mt-6"
+                >
+                  {isGenerating ? "Generating..." : "Generate Referral Link"}
+                </Button>
+              ) : (
+                <section>
+                  <section className="border h-12 rounded-md flex justify-between items-center px-2">
+                    <p>{code}</p>
+                    <div className="flex  bg-[#EAEAEA] w-20 h-8 rounded  justify-center items-center gap-2 ">
+                      <p className=" text-sm">copy</p>
+                      <FiCopy
+                        className="cursor-pointer "
+                        onClick={handleCopyCode}
+                      />{" "}
+                    </div>
+                  </section>
+                  <section className="flex items-center gap-10 mt-4">
+                    <p>SHARE</p>
+                    <div className="flex items-center gap-6">
+                      {socialData.map((data) => (
+                        <section
+                          className="border w-10 h-10 flex justify-center items-center rounded-full"
+                          key={data}
+                        >
+                          <Image src={data} alt="" width={16} height={16} />
+                        </section>
+                      ))}
+                    </div>
+                  </section>
+                </section>
+              )}
             </div>
             <div className="w-1/2 flex justify-end ">
               <Image
@@ -217,24 +249,6 @@ const ReferralsSection = () => {
             <div className="text-center mt-4">no referral data</div>
           )}
         </Card>
-        <Modal
-          showModal={showModal}
-          setShowModal={setShowModal}
-          onClose={() => setShowModal(false)}
-          className="max-w-sm py-10"
-        >
-          <h1 className="text-xl font-semibold text-center">Referral Code </h1>
-          <p className="text-center my-2.5">
-            Your referral code have been generated
-          </p>
-          <div className="flex bg-primary/10 w-40 h-10 rounded-md mx-auto justify-center items-center gap-3 mt-2">
-            <p className="font-medium text-xl text-primary">{code}</p>
-            <FiCopy
-              className="cursor-pointer text-primary"
-              onClick={handleCopyCode}
-            />{" "}
-          </div>
-        </Modal>
       </section>
     </>
   );

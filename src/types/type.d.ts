@@ -301,6 +301,7 @@ interface UserRequest {
   shortlet: Shortlet;
   name: string;
   subject: string;
+  payment_status: string;
 }
 
 interface UserRequestsResponse extends PaginationLink {

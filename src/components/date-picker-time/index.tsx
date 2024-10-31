@@ -40,6 +40,7 @@ export function DatePickerTime({
 
   const disabledDatesArray = disabledDates.map((date) => parseISO(date));
   const yesterday = new Date();
+
   yesterday.setDate(yesterday.getDate() - 1);
   const handleDateChange = (date: Date | undefined) => {
     setDate(date);

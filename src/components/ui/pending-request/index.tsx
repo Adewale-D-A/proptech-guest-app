@@ -9,7 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/_shared/table";
-import { DatePicker } from "@/components/date-picker";
 import SearchInput from "@/components/search-input";
 import { Card } from "@/components/_shared/card";
 import {
@@ -26,6 +25,7 @@ import { format } from "date-fns";
 import { Button } from "@/components/_shared/button";
 import FilterDateComponent from "../make-request/filter-component";
 import { Modal } from "@/components/_shared/modal";
+import PaginationTable from "@/components/pagination";
 const PendingRequestComponent = ({
   pendingRequest,
   setSearch,
@@ -33,6 +33,10 @@ const PendingRequestComponent = ({
   setEndDate,
   endDate,
   startDate,
+  pageIndex,
+  pageSize,
+  setPageIndex,
+  setPageSize,
 }: {
   pendingRequest: UserRequestsResponse | undefined;
   setSearch: (value: string) => void;
@@ -40,6 +44,11 @@ const PendingRequestComponent = ({
   setEndDate: (date: string | undefined) => void;
   endDate: string | undefined;
   startDate: string | undefined;
+  pageIndex: number;
+  pageSize: number;
+  setPageIndex: (index: number) => void;
+  totalPages?: number;
+  setPageSize?: (index: number) => void;
 }) => {
   const [showDate, setShowDate] = useState(false);
   const headers = [
@@ -75,7 +84,7 @@ const PendingRequestComponent = ({
   };
   const pendingRequestData =
     pendingRequest &&
-    pendingRequest.data.filter((data) => data.status === "pending");
+    pendingRequest.data.filter((data) => data.payment_status === "pending");
 
   console.log("pendingRequestData", pendingRequestData);
 
@@ -153,19 +162,23 @@ const PendingRequestComponent = ({
                     <TableRow key={req.id}>
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>
-                        {format(req.created_at, "yyyy/MM/dd")}
+                        {format(req?.created_at, "yyyy/MM/dd")}
                       </TableCell>
-                      <TableCell>{req.request_id}</TableCell>
-                      <TableCell>{req.shortlet.name}</TableCell>
-                      <TableCell>{req.subject}</TableCell>
+                      <TableCell>{req?.request_id}</TableCell>
+                      <TableCell>
+                        {req?.shortlet?.name || req?.service_type?.name}
+                      </TableCell>
+                      <TableCell>{req?.description}</TableCell>
                       <TableCell>
                         <Button
                           variant={
-                            req.status === "pending" ? "secondary" : "default"
+                            req.payment_status === "pending"
+                              ? "secondary"
+                              : "default"
                           }
                           className="h-8 text-xs"
                         >
-                          {req.status}
+                          {req?.payment_status}
                         </Button>
                       </TableCell>
                       <TableCell>
@@ -181,6 +194,17 @@ const PendingRequestComponent = ({
             <div className="text-center ">no request data </div>
           )}
         </Table>
+        <PaginationTable
+          pageSize={pageSize}
+          pageIndex={pageIndex}
+          handleOnChange={(index: number) => {
+            setPageIndex(index);
+          }}
+          setPageIndex={setPageIndex}
+          totalItemsCount={pendingRequest?.total ?? 0}
+          setPageSize={setPageSize}
+          // pageSizeOptions={[10, 25, 50]}
+        />
       </Card>
 
       <Modal

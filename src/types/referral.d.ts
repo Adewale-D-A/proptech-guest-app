@@ -76,3 +76,57 @@ interface ReBookType {
   onClose: () => void;
   availableDates: any;
 }
+
+interface OfferResponse {
+  error: boolean;
+  message: string;
+  data: {
+    offer: {
+      current_page: number;
+      data: Offer[];
+      first_page_url: string;
+      from: number;
+      last_page: number;
+      last_page_url: string;
+      links: Link[];
+      next_page_url: string | null;
+      path: string;
+      per_page: number;
+      prev_page_url: string | null;
+      to: number;
+      total: number;
+    };
+  };
+}
+
+interface Offer {
+  id: number;
+  name: string;
+  slug: string;
+  offer_id: string;
+  image: string;
+  start_date: string;
+  end_date: string;
+  applicable_to: string;
+  type: string;
+  applicable_shortlets: string;
+  minimum_number_of_nights: number;
+  maximum_number_of_nights: number;
+  price: number;
+  currency: string;
+  percentage: number | null;
+  short_description: string;
+  description: string;
+  conditions: string;
+  benefits: string;
+  is_active: number;
+  is_deleted: number;
+  created_at: string;
+  updated_at: string | null;
+}
+
+interface Link {
+  url: string | null;
+  label: string;
+  active: boolean;
+}

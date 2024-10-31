@@ -1,6 +1,5 @@
 /** @format */
 
-import { Button } from "@/components/_shared/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -37,13 +36,19 @@ const ActionsDropdown = ({
         <DropdownMenuSeparator />
         <DropdownMenuCheckboxItem
           className=" cursor-pointer text-xs "
-          onClick={() => handleActionSelect?.("extend")}
+          onClick={() => {
+            handleActionSelect?.("extend");
+            handleSelectApt(booking);
+          }}
         >
           Extend Booking
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
           className=" cursor-pointer  text-xs"
-          onClick={() => handleActionSelect?.("transfer")}
+          onClick={() => {
+            handleActionSelect?.("transfer");
+            handleSelectApt(booking);
+          }}
         >
           Transfer Booking
         </DropdownMenuCheckboxItem>
@@ -56,15 +61,15 @@ const ActionsDropdown = ({
         >
           Reschedule Booking
         </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem className=" text-xs cursor-pointer ">
+        {/* <DropdownMenuCheckboxItem className=" text-xs cursor-pointer ">
           Change Apartment
-        </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem
+        </DropdownMenuCheckboxItem> */}
+        {/* <DropdownMenuCheckboxItem
           onClick={() => handleActionSelect?.("generate", id)}
           className=" text-xs cursor-pointer "
         >
           Generate Visitors Code
-        </DropdownMenuCheckboxItem>
+        </DropdownMenuCheckboxItem> */}
       </DropdownMenuContent>
     </DropdownMenu>
   );

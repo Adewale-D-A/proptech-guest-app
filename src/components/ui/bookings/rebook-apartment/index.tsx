@@ -3,6 +3,7 @@
 import { Button } from "@/components/_shared/button";
 import { Calendar } from "@/components/_shared/calander";
 import { LoadingButton } from "@/components/_shared/loading-button";
+import { parseISO } from "date-fns";
 import React from "react";
 
 const RebookApartment = ({
@@ -16,6 +17,14 @@ const RebookApartment = ({
   onClose,
   availableDates,
 }: ReBookType) => {
+  const disabledDates = availableDates?.booked_dates.concat(
+    availableDates?.blocked_dates
+  );
+  const disabledDatesArray = disabledDates
+    ? disabledDates.map((date: any) => parseISO(date))
+    : [];
+
+  const yesterday = new Date();
   return (
     <div className="pb-4 ">
       <section className="px-10 pt-6">
@@ -34,9 +43,7 @@ const RebookApartment = ({
             onSelect={(date) =>
               handleDateSelect(date, (date) => setReBookStartDate(date))
             }
-            disabled={availableDates?.booked_dates.concat(
-              availableDates?.blocked_dates
-            )}
+            disabled={[...disabledDatesArray, { before: yesterday }]}
           />
         </div>
         <div className="border rounded-br-md rounded-tr-md">
@@ -51,9 +58,7 @@ const RebookApartment = ({
             onSelect={(date) =>
               handleDateSelect(date, (date) => setReBookEndDate(date))
             }
-            disabled={availableDates?.booked_dates.concat(
-              availableDates?.blocked_dates
-            )}
+            disabled={[...disabledDatesArray, { before: yesterday }]}
           />
         </div>
       </div>

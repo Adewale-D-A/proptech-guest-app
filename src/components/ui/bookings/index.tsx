@@ -76,8 +76,7 @@ const BookingsComponent = ({
     getAvailableDate,
     { data: availableDates, isLoading: loadingAvailableDates },
   ] = useGetAvailableDateMutation();
-  const bookingId =
-    typeof bookingInfo?.id === "string" ? parseInt(bookingInfo?.id, 10) : null;
+  const bookingId = bookingInfo && bookingInfo?.shortlet?.id;
   const handleClickModal = (type: string, booking?: Booking) => {
     setShow(true);
     setModalType(type);
@@ -112,14 +111,14 @@ const BookingsComponent = ({
 
   const handleRebook = async () => {
     const payload = {
-      shortlet_id: bookingInfo?.id,
+      shortlet_id: bookingInfo?.shortlet?.id,
       check_in_day: reBookStartDate,
       check_out_day: reBookEndDate,
       check_in_time: bookingInfo?.check_in_time,
       check_out_time: bookingInfo?.check_out_time,
       number_of_guests: Number(bookingInfo?.number_of_guests),
       payment_method: "paystack",
-      callback_url: "/booking",
+      callback_url: "/bookings",
     };
     try {
       const res = await booking(payload).unwrap();

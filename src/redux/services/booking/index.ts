@@ -78,6 +78,13 @@ const bookingEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/booking/rate`,
       }),
     }),
+    transferBooking: builder.mutation<any, TransferPayload>({
+      query: (body) => ({
+        body,
+        method: Methods.post,
+        url: `${Endpoints.api}user/booking/transfer`,
+      }),
+    }),
   }),
 });
 
@@ -90,4 +97,5 @@ export const {
   useRescheduleBookingMutation,
   useGetSingleBookingsQuery,
   useCreateRatingMutation,
+  useTransferBookingMutation,
 } = bookingEndpoints;

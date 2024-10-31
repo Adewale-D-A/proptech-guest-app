@@ -21,6 +21,7 @@ type IProps = {
   date: Date | undefined;
   setDate: React.Dispatch<React.SetStateAction<Date | undefined>>;
   disabled?: boolean;
+  disabledCalendar?: any;
 };
 
 export function DatePicker({
@@ -31,6 +32,7 @@ export function DatePicker({
   date,
   setDate,
   disabled = false,
+  disabledCalendar,
 }: IProps) {
   return (
     <Popover>
@@ -68,6 +70,7 @@ export function DatePicker({
           mode="single"
           selected={date}
           onSelect={setDate}
+          disabled={disabledCalendar}
         />
       </PopoverContent>
     </Popover>
