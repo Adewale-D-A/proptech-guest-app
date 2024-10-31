@@ -50,8 +50,7 @@ const AdditionalServicesComponent = ({
   const { toast } = useToast();
   const currentUser = use99Selector(selectCurrentUser);
   const [showDate, setShowDate] = useState(false);
-  const [createAdditional, { isLoading: isLoadingMutation }] =
-    useCreateAdditionalMutation();
+  const [createAdditional, {}] = useCreateAdditionalMutation();
   const [volume, setVolume] = useState<number>(0);
   const [step, setStep] = useState(1);
   const router = useRouter();
