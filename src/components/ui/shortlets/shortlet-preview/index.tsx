@@ -39,6 +39,7 @@ import {
 } from "@/redux/services/booking";
 import { LoadingButton } from "@/components/_shared/loading-button";
 import RotateLoader from "@/components/loader/rotate-loader";
+import { payment_method, urlRoute } from "@/_shared/constants";
 
 type FormValues = z.infer<typeof bookingSchema>;
 
@@ -117,11 +118,16 @@ const ShortLetPreviewComponent = ({
       ...values,
       number_of_guests: Number(values.number_of_guests),
       shortlet_id: params?.id,
-      payment_method: "paystack",
-      callback_url: "/",
+      payment_method: payment_method.pay_stack,
+      callback_url: urlRoute.shortletUrl,
     };
     try {
       const res = await booking(payload).unwrap();
+      console.log("res", res);
+      const paymentUrl = res.data.payment || "";
+      if (paymentUrl) {
+        window.location.href = paymentUrl;
+      }
       toast({
         variant: "default",
         title: res?.message,
@@ -388,10 +394,12 @@ const ShortLetPreviewComponent = ({
                                     <ListCard
                                       amt={estimatedPrice}
                                       costName="Estimated cost for 1 night "
+                                      currency="NGN"
                                     />
                                     <ListCard
                                       amt={estimatedPrice}
                                       costName="Total (1 Night)"
+                                      currency="NGN"
                                     />
                                   </div>
                                 </div>

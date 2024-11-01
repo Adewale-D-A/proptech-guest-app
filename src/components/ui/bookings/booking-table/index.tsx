@@ -31,6 +31,7 @@ import { IoMdCheckboxOutline } from "react-icons/io";
 import { Card } from "@/components/_shared/card";
 import ThunderLoader from "@/components/loader/thunder-loader";
 import { Booking } from "@/types/type";
+import PaginationTable from "@/components/pagination";
 
 const BookingTable = ({
   headers,
@@ -38,12 +39,20 @@ const BookingTable = ({
   bookingData,
   isLoading,
   handleActionSelect,
+  pageIndex,
+  pageSize,
+  setPageIndex,
+  setPageSize,
 }: {
   headers: string[];
   handleClickModal?: (value: string, booking?: Booking) => void;
   bookingData: BookingsResponse | null;
   isLoading: boolean;
   handleActionSelect?: (val: string) => void;
+  pageIndex: number;
+  pageSize: number;
+  setPageIndex: (index: number) => void;
+  setPageSize?: (index: number) => void;
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -181,6 +190,17 @@ const BookingTable = ({
           </TableBody>
         </Table>
       )}
+      <PaginationTable
+        pageSize={pageSize}
+        pageIndex={pageIndex}
+        handleOnChange={(index: number) => {
+          setPageIndex(index);
+        }}
+        setPageIndex={setPageIndex}
+        totalItemsCount={bookingData?.bookings?.total ?? 0}
+        setPageSize={setPageSize}
+        // pageSizeOptions={[10, 25, 50]}
+      />
       <Drawer open={isOpen} onOpenChange={handleCloseDrawer} direction="right">
         <DrawerContent className="bg-white p-4 h-screen w-screen rounded-none">
           {singleBookingLoading ? (

@@ -65,7 +65,10 @@ export function formatDate(
 }
 
 export enum urlRoute {
-  additionalPayStackUrl = "/additional-services",
+  additionalPayStackUrl = "http://localhost:3001/additional-services",
+  reBookUrl = "http://localhost:3001/bookings",
+  shortletUrl = "http://localhost:3001/shortlets",
+  activeBookingUrl = "http://localhost:3001/bookings/active-bookings",
 }
 
 export enum payment_method {

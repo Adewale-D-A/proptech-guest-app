@@ -28,7 +28,7 @@ const UserDropDown = () => {
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild className="w-full">
-          <Card className="flex cursor-pointer shadow-sm border-gray-200 w-32 justify-center h-11 items-center gap-3">
+          <Card className="flex cursor-pointer shadow-sm border-gray-200 w-fit px-2 justify-center h-11 items-center gap-3">
             <img
               src={faker.image.avatar()}
               alt=""
@@ -47,14 +47,14 @@ const UserDropDown = () => {
           forceMount
         >
           <DropdownMenuGroup>
-            <DropdownMenuItem className="cursor-pointer flex items-center gap-x-2">
+            <DropdownMenuItem className="cursor-pointer flex items-center gap-x-2 text-xs">
               Account Settings
             </DropdownMenuItem>
             <DropdownMenuItem
-              className="cursor-pointer flex items-center gap-x-2"
+              className="cursor-pointer flex text-xs items-center gap-x-2"
               onClick={handleLogout}
             >
-              <LogOut size={20} /> Logout
+              <LogOut size={16} /> Logout
             </DropdownMenuItem>{" "}
           </DropdownMenuGroup>
         </DropdownMenuContent>

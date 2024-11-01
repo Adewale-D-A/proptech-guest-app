@@ -31,6 +31,8 @@ import { useCreateBookingMutation } from "@/redux/services/booking";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import RebookApartment from "./rebook-apartment";
 import { useGetAvailableDateMutation } from "@/redux/services/shortlet";
+import { useVerifyPayment } from "@/redux/hooks/useVerifyPayment";
+import { payment_method, urlRoute } from "@/_shared/constants";
 
 const headers = [
   "S/N",
@@ -51,6 +53,10 @@ const BookingsComponent = ({
   setEndDate,
   endDate,
   startDate,
+  pageIndex,
+  pageSize,
+  setPageIndex,
+  setPageSize,
 }: {
   bookingData: BookingsResponse | null;
   isLoading: boolean;
@@ -61,6 +67,11 @@ const BookingsComponent = ({
   setEndDate: (date: string | undefined) => void;
   endDate: string | undefined;
   startDate: string | undefined;
+  pageIndex: number;
+  pageSize: number;
+  setPageIndex: (index: number) => void;
+  totalPages?: number;
+  setPageSize?: (index: number) => void;
 }) => {
   const router = useRouter();
   const { toast } = useToast();
@@ -117,15 +128,19 @@ const BookingsComponent = ({
       check_in_time: bookingInfo?.check_in_time,
       check_out_time: bookingInfo?.check_out_time,
       number_of_guests: Number(bookingInfo?.number_of_guests),
-      payment_method: "paystack",
-      callback_url: "/bookings",
+      payment_method: payment_method.pay_stack,
+      callback_url: urlRoute.reBookUrl,
     };
     try {
       const res = await booking(payload).unwrap();
+      const paymentUrl = res.data.payment || "";
+      if (paymentUrl) {
+        window.location.href = paymentUrl;
+      }
       toast({
         variant: "default",
         title: res?.message,
-        description: "Apartment booked",
+        description: "Apartment rebooked",
       });
       setShow(false);
     } catch (err) {
@@ -144,7 +159,7 @@ const BookingsComponent = ({
       getAvailableDate(bookingId);
     }
   }, [bookingId, getAvailableDate]);
-
+  useVerifyPayment();
   return (
     <div className="mt-10">
       <h1 className="font-medium text-lg">Bookings Breakdown</h1>
@@ -236,6 +251,10 @@ const BookingsComponent = ({
           handleClickModal={handleClickModal}
           bookingData={bookingData}
           isLoading={isLoading}
+          setPageIndex={setPageIndex}
+          setPageSize={setPageSize}
+          pageIndex={pageIndex}
+          pageSize={pageSize}
         />
       </Card>
       <Modal

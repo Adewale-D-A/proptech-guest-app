@@ -8,14 +8,17 @@ import {
 import React, { useState } from "react";
 
 const BookingsContainer = () => {
-    const [search, setSearch] = useState("");
-    const [startDate, setStartDate] = useState<string | undefined>(undefined);
-    const [endDate, setEndDate] = useState<string | undefined>(undefined);
-
+  const [search, setSearch] = useState("");
+  const [startDate, setStartDate] = useState<string | undefined>(undefined);
+  const [endDate, setEndDate] = useState<string | undefined>(undefined);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
   const { data, isLoading, error } = useGetBookingsQuery({
     search,
     start_date: startDate,
     end_date: endDate,
+    page: pageIndex + 1,
+    limit: pageSize,
   });
   const { data: statsData, isLoading: statsLoading } =
     useGetBookingStatsQuery();
@@ -31,6 +34,10 @@ const BookingsContainer = () => {
       setEndDate={setEndDate}
       endDate={endDate}
       startDate={startDate}
+      setPageIndex={setPageIndex}
+      setPageSize={setPageSize}
+      pageIndex={pageIndex}
+      pageSize={pageSize}
     />
   );
 };

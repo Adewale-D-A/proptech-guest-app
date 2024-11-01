@@ -3,7 +3,13 @@
 interface GeneralResponse {
   error: boolean;
   message: string;
-  // data: AuthResponseData;
+}
+
+interface CreateBookingResponse extends GeneralResponse {
+  data: {
+    reference: string;
+    payment: string;
+  };
 }
 
 interface User {

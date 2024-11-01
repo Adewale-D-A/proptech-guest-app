@@ -30,6 +30,8 @@ import { RootState } from "@/redux/store";
 import { useCreateBookingMutation } from "@/redux/services/booking";
 import { LoadingButton } from "@/components/_shared/loading-button";
 import { useToast } from "@/components/_shared/toast/use-toast";
+import { useVerifyPayment } from "@/redux/hooks/useVerifyPayment";
+import { payment_method, urlRoute } from "@/_shared/constants";
 const ActiveBookingComponent = ({
   bookingData,
   isLoading,
@@ -38,6 +40,10 @@ const ActiveBookingComponent = ({
   setEndDate,
   endDate,
   startDate,
+  pageIndex,
+  pageSize,
+  setPageIndex,
+  setPageSize,
 }: {
   bookingData: BookingsResponse | null;
   isLoading: boolean;
@@ -46,6 +52,11 @@ const ActiveBookingComponent = ({
   setEndDate: (date: string | undefined) => void;
   endDate: string | undefined;
   startDate: string | undefined;
+  pageIndex: number;
+  pageSize: number;
+  setPageIndex: (index: number) => void;
+  totalPages?: number;
+  setPageSize?: (index: number) => void;
 }) => {
   const { toast } = useToast();
   const [showDate, setShowDate] = useState(false);
@@ -125,12 +136,21 @@ const ActiveBookingComponent = ({
       check_out_time: selectedApt?.check_out_time ?? "",
       number_of_guests: selectedApt?.number_of_guests ?? "",
       shortlet_id: selectedApt?.shortlet?.id,
-      payment_method: "paystack",
-      callback_url: "/bookings",
+      payment_method: payment_method.pay_stack,
+      callback_url: urlRoute.activeBookingUrl,
     };
     try {
-      await booking(payload).unwrap();
+      const res = await booking(payload).unwrap();
+      const paymentUrl = res.data.payment || "";
+      if (paymentUrl) {
+        window.location.href = paymentUrl;
+      }
       setExtendConfirm(false);
+      toast({
+        variant: "default",
+        title: res?.message,
+        description: "Apartment extend",
+      });
     } catch (err) {
       const errorMessage =
         (err as any)?.data?.message ||
@@ -142,7 +162,7 @@ const ActiveBookingComponent = ({
       });
     }
   };
-
+  useVerifyPayment();
   return (
     <div>
       <BackButton className="mt-6 " />
@@ -200,6 +220,10 @@ const ActiveBookingComponent = ({
           bookingData={bookingData}
           isLoading={isLoading}
           handleActionSelect={handleActionSelect}
+          setPageIndex={setPageIndex}
+          setPageSize={setPageSize}
+          pageIndex={pageIndex}
+          pageSize={pageSize}
         />
       </Card>
       <Modal

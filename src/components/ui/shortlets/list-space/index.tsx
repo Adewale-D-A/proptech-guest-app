@@ -1,7 +1,7 @@
 /** @format */
 "use client";
 import { Button } from "@/components/_shared/button";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Heart, MapPin, Search, CalendarCheck2 } from "lucide-react";
 import { Input } from "@/components/_shared/input";
 import { Label } from "@/components/_shared/label";
@@ -24,18 +24,16 @@ import { ShortletType } from "@/types/type";
 import Image from "next/image";
 import { Card } from "@/components/_shared/card";
 import { Wifi } from "lucide-react";
-import {
-  allAmenities,
-  apartments,
-  howLong,
-  shortletAmount,
-} from "@/_shared/data";
+import { allAmenities, howLong, shortletAmount } from "@/_shared/data";
 import AnimatedContainer from "@/components/_shared/framer/animate-div";
 import SparkleEffect from "@/components/_shared/framer/sparkle-effect";
 import LoveSparkEffect from "@/components/_shared/framer/love-spark";
 import { usePathname, useRouter } from "next/navigation";
 import { Checkbox } from "@/components/_shared/check-box";
 import CardSkeleton from "@/components/card-skeleton";
+import { useVerifyPaymentQuery } from "@/redux/services/booking";
+import { useToast } from "@/components/_shared/toast/use-toast";
+import { useVerifyPayment } from "@/redux/hooks/useVerifyPayment";
 
 const ListSpace = ({
   setShowModal,
@@ -52,7 +50,6 @@ const ListSpace = ({
   const [location, setLocation] = useState<string>("");
   const [numOfRooms, setNumOfRooms] = useState<string>("");
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
-  console.log("selected:::", selectedAmenities);
 
   const handleAmenityChange = (amenityId: string) => {
     setSelectedAmenities((prevSelected) =>
@@ -61,8 +58,6 @@ const ListSpace = ({
         : [...prevSelected, amenityId]
     );
   };
-
-  console.log("numOfRooms", numOfRooms);
 
   const handleSearch = () => {
     setFilters({
@@ -74,6 +69,8 @@ const ListSpace = ({
   const skeletonRows = Array.from({ length: 5 }, (_, index) => (
     <CardSkeleton key={index} />
   ));
+
+  useVerifyPayment();
   return (
     <div className=" relative bottom-10 z-40">
       <div className="max-w-screen-custom mx-auto px-4">

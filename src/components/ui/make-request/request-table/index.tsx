@@ -1,6 +1,5 @@
 /** @format */
 
-import { Button } from "@/components/_shared/button";
 import {
   Table,
   TableBody,
@@ -69,9 +68,53 @@ const RequestTable = ({
                         : req?.subject}
                     </TableCell>
                     <TableCell>
-                      <Button variant="secondary" className="h-8 text-xs">
-                        {req?.booking?.payment_status || req.status}
-                      </Button>
+                      {pathName === "/additional-services" ? (
+                        <>
+                          <div
+                            className={`h-8  flex justify-center items-center w-20 rounded-full text-xs ${
+                              req?.booking?.payment_status === "pending"
+                                ? "border"
+                                : req?.booking?.payment_status === "success"
+                                ? "text-[#00C814] bg-[#F0FDEF]"
+                                : "bg-[#E9E9E9]"
+                            } `}
+                          >
+                            <span
+                              className={`${
+                                req.status === "pending"
+                                  ? ""
+                                  : req.status === "completed"
+                                  ? "text-[#00C814]"
+                                  : ""
+                              }`}
+                            >
+                              {req?.booking?.payment_status}
+                            </span>
+                          </div>
+                        </>
+                      ) : (
+                        <div
+                          className={`h-8  flex justify-center items-center  w-20 rounded-full text-xs ${
+                            req.status === "pending"
+                              ? "border"
+                              : req.status === "completed"
+                              ? "text-[#00C814] bg-[#F0FDEF]"
+                              : "bg-[#E9E9E9]"
+                          } `}
+                        >
+                          <span
+                            className={`${
+                              req.status === "pending"
+                                ? ""
+                                : req.status === "completed"
+                                ? "text-[#00C814]"
+                                : ""
+                            }`}
+                          >
+                            {req.status}
+                          </span>
+                        </div>
+                      )}
                     </TableCell>
                     <TableCell>
                       <div className="w-9 bg-[#E6F2FF] h-9 flex items-center justify-center cursor-pointer rounded">
@@ -86,6 +129,7 @@ const RequestTable = ({
           <div className="text-center ">no request data </div>
         )}
       </Table>
+
       <PaginationTable
         pageSize={pageSize}
         pageIndex={pageIndex}

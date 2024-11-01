@@ -143,7 +143,7 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
       );
 
       if (newCheckOutDay) {
-        setNewCheckout(newCheckOutDay);
+        setNewCheckout(addDays(newCheckOutDay, 1));
       }
     }
   }, [form.watch("check_in_day"), selectedApt?.number_of_days]);

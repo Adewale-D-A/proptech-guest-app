@@ -11,7 +11,7 @@ import { BookingsResponseData } from "@/types/book";
 
 const bookingEndpoints = injectEndpoints({
   endpoints: (builder) => ({
-    createBooking: builder.mutation<GeneralResponse, any>({
+    createBooking: builder.mutation<CreateBookingResponse, any>({
       query: (body) => ({
         body,
         method: "POST",
@@ -25,20 +25,17 @@ const bookingEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/booking/get-fees`,
       }),
     }),
-    getBookings: builder.query<
-      BookingsResponseData,
-      { start_date?: string; end_date?: string; search?: string }
-    >({
+    getBookings: builder.query<BookingsResponseData, Record<string, any>>({
       query: (params) => {
-        const { start_date, end_date, search } = params;
-        const queryParams = new URLSearchParams();
-        if (start_date) queryParams.append("start_date", start_date);
-        if (end_date) queryParams.append("end_date", end_date);
-        if (search) queryParams.append("search", search);
-
+        const searchParams = new URLSearchParams();
+        Object.keys(params).forEach((key) => {
+          if (params[key]) {
+            searchParams.append(key, params[key]);
+          }
+        });
         return {
           method: Methods.get,
-          url: `${Endpoints.api}user/booking?${queryParams.toString()}`,
+          url: `${Endpoints.api}user/booking?${searchParams.toString()}`,
         };
       },
     }),
@@ -85,6 +82,12 @@ const bookingEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/booking/transfer`,
       }),
     }),
+    verifyPayment: builder.query<GeneralResponse, string>({
+      query: (reference) => ({
+        method: Methods.get,
+        url: `${Endpoints.api}user/booking/verify-booking-payment?reference=${reference}`,
+      }),
+    }),
   }),
 });
 
@@ -98,4 +101,5 @@ export const {
   useGetSingleBookingsQuery,
   useCreateRatingMutation,
   useTransferBookingMutation,
+  useVerifyPaymentQuery,
 } = bookingEndpoints;
