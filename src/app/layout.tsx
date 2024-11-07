@@ -22,7 +22,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="scroll-smooth">{children}</body>
+      <body className="scroll-smooth">
+        {children}
+        <ScrollToTopButton />
+        <Toaster />
+      </body>
     </html>
   );
 }
