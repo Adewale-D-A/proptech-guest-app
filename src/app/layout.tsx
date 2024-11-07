@@ -1,11 +1,16 @@
 /** @format */
 
 // import { fontHandwriting, fontHeading, fontSans } from "@/_shared/utils/font";
+import { Poppins } from "next/font/google";
 import ScrollToTopButton from "@/components/scroll-to-top";
 import "../styles/globals.css";
 import type { Metadata } from "next";
 import { Toaster } from "@/components/_shared/toast/toaster";
 
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700"],
+});
 export const metadata: Metadata = {
   title: "99Apartment  ",
   description: "",
@@ -22,7 +27,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="scroll-smooth">
+      <body className={`${poppins.className} antialiased scroll-smooth`}>
         {children}
         <ScrollToTopButton />
         <Toaster />
