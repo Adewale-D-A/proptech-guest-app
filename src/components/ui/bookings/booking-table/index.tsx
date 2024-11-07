@@ -173,6 +173,9 @@ const BookingTable = ({
                         handleClickModalRebook={() =>
                           handleClickModal?.("rebook", book)
                         }
+                        handleClickModalCaution={() =>
+                          handleClickModal?.("caution", book)
+                        }
                         handleOpenSingleBooking={() =>
                           handleOpenSingleBooking(book.shortlet.id)
                         }

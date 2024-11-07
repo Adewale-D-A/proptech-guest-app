@@ -1,6 +1,7 @@
 /** @format */
 "use client";
 import BookingsComponent from "@/components/ui/bookings";
+import { useGetBanksQuery } from "@/redux/services/banks";
 import {
   useGetBookingsQuery,
   useGetBookingStatsQuery,
@@ -22,6 +23,9 @@ const BookingsContainer = () => {
   });
   const { data: statsData, isLoading: statsLoading } =
     useGetBookingStatsQuery();
+  const { data: banksData, isLoading: banksLoading } = useGetBanksQuery({});
+
+  console.log("banks::", banksData);
 
   return (
     <BookingsComponent
@@ -32,6 +36,7 @@ const BookingsContainer = () => {
       setSearch={setSearch}
       setStartDate={setStartDate}
       setEndDate={setEndDate}
+      banksData={banksData?.data?.banks ?? []}
       endDate={endDate}
       startDate={startDate}
       setPageIndex={setPageIndex}

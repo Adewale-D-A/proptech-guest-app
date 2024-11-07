@@ -88,6 +88,13 @@ const bookingEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/booking/verify-booking-payment?reference=${reference}`,
       }),
     }),
+    cautionFeeBooking: builder.mutation<any, any>({
+      query: (body) => ({
+        body,
+        method: Methods.post,
+        url: `${Endpoints.api}user/booking/caution-fee-refund`,
+      }),
+    }),
   }),
 });
 
@@ -102,4 +109,5 @@ export const {
   useCreateRatingMutation,
   useTransferBookingMutation,
   useVerifyPaymentQuery,
+  useCautionFeeBookingMutation,
 } = bookingEndpoints;

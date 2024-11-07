@@ -15,11 +15,13 @@ const HomeActionsDropdown = ({
   handleOpenSingleBooking,
   handleClickModalRate,
   handleClickModalRebook,
+  handleClickModalCaution,
 }: {
   handleClickModal?: (value: string) => void;
   handleOpenSingleBooking: () => void;
   handleClickModalRate: () => void;
   handleClickModalRebook: () => void;
+  handleClickModalCaution: () => void;
 }) => {
   return (
     <DropdownMenu>
@@ -44,7 +46,7 @@ const HomeActionsDropdown = ({
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
           className=" text-xs cursor-pointer p-0"
-          onClick={() => handleClickModal?.("caution")}
+          onClick={handleClickModalCaution}
         >
           Request Caution fee
         </DropdownMenuCheckboxItem>

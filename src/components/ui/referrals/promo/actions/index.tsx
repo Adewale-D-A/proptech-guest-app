@@ -29,12 +29,6 @@ const ActionsDropdown = ({
         <DropdownMenuCheckboxItem className=" cursor-pointer text-xs ">
           View Offer
         </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem className=" cursor-pointer  text-xs">
-          Delete Offer
-        </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem className=" text-xs cursor-pointer ">
-          Clear all
-        </DropdownMenuCheckboxItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

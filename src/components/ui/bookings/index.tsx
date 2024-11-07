@@ -27,12 +27,18 @@ import { BookingsResponse } from "@/types/book";
 import { format } from "date-fns";
 import { Button } from "@/components/_shared/button";
 import FilterDateComponent from "../make-request/filter-component";
-import { useCreateBookingMutation } from "@/redux/services/booking";
+import {
+  useCautionFeeBookingMutation,
+  useCreateBookingMutation,
+} from "@/redux/services/booking";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import RebookApartment from "./rebook-apartment";
 import { useGetAvailableDateMutation } from "@/redux/services/shortlet";
 import { useVerifyPayment } from "@/redux/hooks/useVerifyPayment";
 import { payment_method, urlRoute } from "@/_shared/constants";
+import { Form } from "@/components/_shared/form";
+import { useForm } from "react-hook-form";
+import { useVerifyBankMutation } from "@/redux/services/banks";
 
 const headers = [
   "S/N",
@@ -57,6 +63,7 @@ const BookingsComponent = ({
   pageSize,
   setPageIndex,
   setPageSize,
+  banksData,
 }: {
   bookingData: BookingsResponse | null;
   isLoading: boolean;
@@ -72,6 +79,7 @@ const BookingsComponent = ({
   setPageIndex: (index: number) => void;
   totalPages?: number;
   setPageSize?: (index: number) => void;
+  banksData: Bank[];
 }) => {
   const router = useRouter();
   const { toast } = useToast();
@@ -82,11 +90,16 @@ const BookingsComponent = ({
   const [modalType, setModalType] = useState("");
   const [reBookStartDate, setReBookStartDate] = useState<string | undefined>();
   const [reBookEndDate, setReBookEndDate] = useState<string | undefined>();
+  const [selectedBank, setSelectedBank] = useState({ code: "", name: "" });
   const [bookingInfo, setBookingInfo] = useState<any>(null);
+  const [getAvailableDate, { data: availableDates }] =
+    useGetAvailableDateMutation();
   const [
-    getAvailableDate,
-    { data: availableDates, isLoading: loadingAvailableDates },
-  ] = useGetAvailableDateMutation();
+    verifyBank,
+    { data: bankDetails, isLoading: verifyBankLoading, error: verifyError },
+  ] = useVerifyBankMutation();
+  const [cautionFeeBooking, { isLoading: isCautionLoading }] =
+    useCautionFeeBookingMutation();
   const bookingId = bookingInfo && bookingInfo?.shortlet?.id;
   const handleClickModal = (type: string, booking?: Booking) => {
     setShow(true);
@@ -160,6 +173,65 @@ const BookingsComponent = ({
     }
   }, [bookingId, getAvailableDate]);
   useVerifyPayment();
+
+  const form = useForm({
+    defaultValues: {
+      booking_id: 0,
+      account_name: "",
+      account_number: "",
+      bank_name: "",
+    },
+  });
+
+  const onSubmit = async (values: any) => {
+    const payload = {
+      ...values,
+      booking_id: bookingInfo?.id,
+      bank_name: selectedBank?.name,
+    };
+    try {
+      await cautionFeeBooking(payload).unwrap();
+      handleClickModal("success");
+      form.reset();
+    } catch (err) {
+      const errorMessage =
+        (err as any)?.data?.message || "Failed . Please try again.";
+      toast({
+        variant: "destructive",
+        title: "Error!",
+        description: errorMessage,
+      });
+    }
+  };
+
+  const accountNumber = form.watch("account_number");
+
+  useEffect(() => {
+    if (selectedBank && accountNumber.length === 10) {
+      verifyBank({
+        bank_code: selectedBank?.code,
+        account_number: accountNumber,
+      });
+    }
+  }, [selectedBank, accountNumber, verifyBank]);
+
+  useEffect(() => {
+    if (bankDetails?.data?.account_name) {
+      form.setValue("account_name", bankDetails.data.account_name);
+    }
+  }, [bankDetails, form]);
+  useEffect(() => {
+    if (accountNumber.length !== 10) {
+      form.setValue("account_name", "");
+    }
+  }, [accountNumber, form]);
+  useEffect(() => {
+    if (selectedBank) {
+      form.setValue("account_number", "");
+      form.setValue("account_name", "");
+    }
+  }, [selectedBank]);
+
   return (
     <div className="mt-10">
       <h1 className="font-medium text-lg">Bookings Breakdown</h1>
@@ -307,7 +379,20 @@ const BookingsComponent = ({
           ) : null}
 
           {modalType === "caution" && (
-            <CautionForm onSuccess={() => handleClickModal("success")} />
+            <section>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
+                  <CautionForm
+                    banksData={banksData}
+                    form={form}
+                    setSelectedBank={setSelectedBank}
+                    verifyBankLoading={verifyBankLoading}
+                    verifyError={verifyError}
+                    isCautionLoading={isCautionLoading}
+                  />
+                </form>
+              </Form>
+            </section>
           )}
           {modalType === "success" && (
             <SuccessfulMessage
