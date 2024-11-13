@@ -1,7 +1,7 @@
 /** @format */
 "use client";
 import { Button } from "@/components/_shared/button";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Heart, MapPin, Search, CalendarCheck2 } from "lucide-react";
 import { Input } from "@/components/_shared/input";
 import { Label } from "@/components/_shared/label";
@@ -9,7 +9,6 @@ import { Separator } from "@/components/_shared/separator";
 import { SlidersHorizontal } from "lucide-react";
 import { FaStar } from "react-icons/fa";
 import { TbBed, TbPool, TbAirConditioning } from "react-icons/tb";
-import { LuMonitor } from "react-icons/lu";
 import { Heater } from "lucide-react";
 
 import {
@@ -31,9 +30,8 @@ import LoveSparkEffect from "@/components/_shared/framer/love-spark";
 import { usePathname, useRouter } from "next/navigation";
 import { Checkbox } from "@/components/_shared/check-box";
 import CardSkeleton from "@/components/card-skeleton";
-import { useVerifyPaymentQuery } from "@/redux/services/booking";
-import { useToast } from "@/components/_shared/toast/use-toast";
 import { useVerifyPayment } from "@/redux/hooks/useVerifyPayment";
+import { RiBarcodeFill } from "react-icons/ri";
 
 const ListSpace = ({
   setShowModal,
@@ -211,38 +209,26 @@ const ListSpace = ({
                               </div>
                             </div>
                             <div className="flex justify-between bg-[#F4F6FF] p-4 mt-4">
-                              {apartment.amenities[0]?.id === 4 && (
-                                <div className="flex flex-col items-center gap-y-1">
-                                  <TbPool size={16} />
-                                  <p className="text-xs font-light">
-                                    {apartment.amenities[0]?.name}
-                                  </p>
-                                </div>
-                              )}
-                              {apartment.amenities[2]?.id === 3 && (
-                                <div className="flex flex-col items-center gap-y-1">
-                                  <Heater size={16} />
-                                  <p className="text-xs font-light">
-                                    {apartment.amenities[2].name}
-                                  </p>
-                                </div>
-                              )}
-                              {apartment.amenities[1].id === 2 && (
-                                <div className="flex flex-col items-center gap-y-1">
-                                  <TbAirConditioning size={16} />
-                                  <p className="text-xs font-light">
-                                    {apartment.amenities[1]?.name}
-                                  </p>
-                                </div>
-                              )}
-                              {apartment.amenities[0].id === 1 && (
-                                <div className="flex flex-col items-center gap-y-1">
-                                  <Wifi size={16} />
-                                  <p className="text-xs font-light">
-                                    {apartment.amenities[0].name}
-                                  </p>
-                                </div>
-                              )}
+                              {apartment &&
+                                apartment.amenities?.map((am, index) => (
+                                  <section key={index}>
+                                    <div className="flex flex-col items-center gap-y-1">
+                                      {am?.image ? (
+                                        <Image
+                                          src={am.image as string}
+                                          width={16}
+                                          height={16}
+                                          alt={am.name || "Amenity"}
+                                        />
+                                      ) : (
+                                        <RiBarcodeFill size={16} />
+                                      )}
+                                      <p className="text-xs font-light">
+                                        {am?.name || "Unnamed Amenity"}
+                                      </p>
+                                    </div>
+                                  </section>
+                                ))}
                             </div>
                             <div className="flex justify-between items-center mt-4">
                               <div className="flex text-primary items-center gap-2">

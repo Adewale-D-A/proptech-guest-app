@@ -26,10 +26,9 @@ import { useGetPromoQuery } from "@/redux/services/referral";
 import { format } from "date-fns";
 
 const PromoSection = () => {
-  const { data, isLoading } = useGetPromoQuery({});
+  const { data } = useGetPromoQuery({});
   const offerData = data?.data && data?.data?.offer && data?.data?.offer?.data;
 
-  console.log("offerData", offerData);
   const headers = [
     "S/N",
     "Discount Name ",

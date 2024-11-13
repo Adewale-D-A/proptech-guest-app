@@ -86,8 +86,6 @@ const PendingRequestComponent = ({
     pendingRequest &&
     pendingRequest.data.filter((data) => data.payment_status === "pending");
 
-  console.log("pendingRequestData", pendingRequestData);
-
   return (
     <section>
       <BackButton className="my-6 " />

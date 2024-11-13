@@ -3,6 +3,8 @@
 import countries from "../data/countries";
 import { format, isYesterday, parseISO } from "date-fns";
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
+export const NEXT_PUBLIC_REDIRECT_URL = process.env
+  .NEXT_PUBLIC_REDIRECT_URL as string;
 export const buildQueryString = (params: any) =>
   Object.keys(params)
     .map(
@@ -64,12 +66,12 @@ export function formatDate(
   return new Intl.DateTimeFormat(locales, options).format(parsedDate);
 }
 
-export enum urlRoute {
-  additionalPayStackUrl = "http://localhost:3001/additional-services",
-  reBookUrl = "http://localhost:3001/bookings",
-  shortletUrl = "http://localhost:3001/shortlets",
-  activeBookingUrl = "http://localhost:3001/bookings/active-bookings",
-}
+export const urlRoute = {
+  additionalPayStackUrl: `${NEXT_PUBLIC_REDIRECT_URL}/additional-services`,
+  reBookUrl: `${NEXT_PUBLIC_REDIRECT_URL}/bookings`,
+  shortletUrl: `${NEXT_PUBLIC_REDIRECT_URL}/shortlets`,
+  activeBookingUrl: `${NEXT_PUBLIC_REDIRECT_URL}/bookings/active-bookings`,
+} as const;
 
 export enum payment_method {
   pay_stack = "paystack",

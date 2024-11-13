@@ -29,7 +29,7 @@ import { useForm } from "react-hook-form";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import { Form } from "@/components/_shared/form";
 import { use99Selector } from "@/redux/hooks/hooks";
-import { selectCurrentUser } from "@/redux/slices/authSlice";
+import { selectCurrentUser, selectUserToken } from "@/redux/slices/authSlice";
 import { bookingSchema } from "@/_shared/validate";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -38,8 +38,8 @@ import {
   useGetBookingPriceMutation,
 } from "@/redux/services/booking";
 import { LoadingButton } from "@/components/_shared/loading-button";
-import RotateLoader from "@/components/loader/rotate-loader";
 import { payment_method, urlRoute } from "@/_shared/constants";
+import ThunderLoader from "@/components/loader/thunder-loader";
 
 type FormValues = z.infer<typeof bookingSchema>;
 
@@ -50,6 +50,7 @@ const ShortLetPreviewComponent = ({
   apartmentDetails: any;
   availableDates: any;
 }) => {
+  const token = use99Selector(selectUserToken);
   const params = useParams();
   const { toast } = useToast();
   const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
@@ -121,9 +122,10 @@ const ShortLetPreviewComponent = ({
       payment_method: payment_method.pay_stack,
       callback_url: urlRoute.shortletUrl,
     };
+
     try {
       const res = await booking(payload).unwrap();
-      console.log("res", res);
+
       const paymentUrl = res.data.payment || "";
       if (paymentUrl) {
         window.location.href = paymentUrl;
@@ -151,7 +153,14 @@ const ShortLetPreviewComponent = ({
     const checkOutDay = form.watch("check_out_day");
     const checkOutTime = form.watch("check_out_time");
     const numberOfGuests = form.watch("number_of_guests");
-
+    if (!token) {
+      toast({
+        variant: "destructive",
+        title: "Login required",
+        description: "Please log in to book an apartment",
+      });
+      return;
+    }
     if (
       checkInDay &&
       checkInTime &&
@@ -380,7 +389,7 @@ const ShortLetPreviewComponent = ({
                       <section className="bg-[#F9F9F9] rounded-md mt-5">
                         {priceLoading ? (
                           <div className="flex pt-5 items-center justify-center">
-                            <RotateLoader />
+                            <ThunderLoader />
                           </div>
                         ) : (
                           <>

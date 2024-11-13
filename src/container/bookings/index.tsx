@@ -23,9 +23,7 @@ const BookingsContainer = () => {
   });
   const { data: statsData, isLoading: statsLoading } =
     useGetBookingStatsQuery();
-  const { data: banksData, isLoading: banksLoading } = useGetBanksQuery({});
-
-  console.log("banks::", banksData);
+  const { data: banksData } = useGetBanksQuery({});
 
   return (
     <BookingsComponent

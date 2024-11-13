@@ -68,7 +68,7 @@ const PersonaInfo = () => {
       profile_photo: profileImage,
       dob,
     };
-    console.log("ayload::", payload);
+
     try {
       await updateUser(payload).unwrap();
       setSuccessModal(true);
@@ -81,8 +81,6 @@ const PersonaInfo = () => {
       });
     }
   };
-
-  console.log("profileImage", profileImage);
 
   const handleSaveChangesClick = async () => {
     const isValid = await form.trigger();

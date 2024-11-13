@@ -62,7 +62,7 @@ const VerifyAccount = () => {
     };
     const formData = new FormData();
     formData.append("identity_document", profileDoc);
-    console.log(payload);
+
     try {
       await updateUserDoc(formData as any).unwrap();
       setSuccessModal(true);

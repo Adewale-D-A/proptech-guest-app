@@ -60,7 +60,6 @@ const ReferralsSection = () => {
       handleClickCanvas();
       setShowModal(true);
     } catch (err) {
-      console.error("Failed to generate referral link:", err);
       const errorMessage =
         (err as any)?.data?.message || "Failed to generate the link.";
       toast({

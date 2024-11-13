@@ -50,19 +50,16 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
   const onSubmit = async (values: FormValues) => {
     const check_out_day_format =
       checkOutDateFromStore && format(checkOutDateFromStore, "yyyy-MM-dd");
-    console.log("Submit triggered");
+
     const payload = {
       ...values,
       booking_id: selectedApt?.id,
       check_out_day: check_out_day_format,
       check_out_time: "12:00",
     };
-    console.log("Form Values:", payload);
-    try {
-      console.log("Form Values:", payload);
 
+    try {
       const response = await resheduleBooking(payload).unwrap();
-      // console.log("Reschedule Response:", response);
 
       toast({
         variant: "default",

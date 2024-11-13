@@ -26,7 +26,6 @@ import {
 
 import { Textarea } from "@/components/_shared/textarea";
 import { Label } from "@/components/_shared/label";
-import { DatePicker } from "@/components/date-picker";
 import SearchInput from "@/components/search-input";
 import {
   Tooltip,
@@ -38,16 +37,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { Modal } from "@/components/_shared/modal";
 import Image from "next/image";
 import { Button } from "@/components/_shared/button";
-import {
-  CreateRequestBody,
-  MakeARequestResponseData,
-  UserRequestBreakdown,
-  UserRequestsResponse,
-} from "@/types/type";
+import { CreateRequestBody, MakeARequestResponseData } from "@/types/type";
 import RequestTable from "./request-table";
 import { use99Selector } from "@/redux/hooks/hooks";
 import { selectCurrentUser } from "@/redux/slices/authSlice";
-import { Booking } from "@/types/book";
 import { apartmentOptions } from "@/_shared/data";
 import { useCreateRequestMutation } from "@/redux/services/request";
 import { useToast } from "@/components/_shared/toast/use-toast";

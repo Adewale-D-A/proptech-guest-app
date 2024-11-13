@@ -42,7 +42,6 @@ const OtpForm = ({
   const dispatch = use99Dispatch();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
-  console.log("email", email);
   const { toast } = useToast();
   const form = useForm({
     defaultValues: {
@@ -81,7 +80,7 @@ const OtpForm = ({
       });
     } catch (err) {
       const error = err as ToastResponse;
-      console.log("resend error:", err);
+
       toast({
         variant: "destructive",
         title: error?.data?.message || "Unable to resend OTP",

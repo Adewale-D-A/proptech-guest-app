@@ -87,13 +87,12 @@ const AdditionalServicesComponent = ({
     }
   };
 
-  console.log("selectedDate", selectedDate);
-
   const onSubmit = async (values: any) => {
     const payload = {
       ...values,
       request_date: selectedDate,
     };
+
     try {
       const response = await createAdditional(payload).unwrap();
       toast({

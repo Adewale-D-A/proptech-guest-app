@@ -50,11 +50,7 @@ const ForgetPasswordOtp = ({
     try {
       const verifyData = { ...values, email };
       const response = await verifyPasswordOtp(verifyData).unwrap();
-      console.log(
-        "response?.data?.token",
-        response?.data?.token,
-        response?.data
-      );
+
       setToken(response?.data?.token);
       toast({
         variant: "default",
@@ -82,7 +78,7 @@ const ForgetPasswordOtp = ({
       });
     } catch (err) {
       const error = err as ToastResponse;
-      console.log("resend error:", err);
+
       toast({
         variant: "destructive",
         title: error?.data?.message || "Unable to resend OTP",
