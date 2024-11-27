@@ -79,6 +79,12 @@ const BookingTable = ({
     return;
   };
 
+  const handleBookingChat = (bookingId: string | number) => {
+    if (bookingId) {
+      router.push(`/contact-us/chat-with-us?id=${bookingId} `);
+    }
+  };
+
   const handleCloseDrawer = (open: boolean) => {
     setIsOpen(open);
     if (!open) {
@@ -178,6 +184,9 @@ const BookingTable = ({
                         }
                         handleOpenSingleBooking={() =>
                           handleOpenSingleBooking(book.shortlet.id)
+                        }
+                        handleBookingChat={() =>
+                          handleBookingChat(book?.shortlet?.id)
                         }
                       />
                     ) : (

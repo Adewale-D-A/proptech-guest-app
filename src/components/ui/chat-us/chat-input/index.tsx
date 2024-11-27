@@ -34,7 +34,15 @@ const ChatInput = ({
   emojiIconRef,
   handleMenuClicked,
   showMenu,
+  hardCodedValue,
 }: ChatInputProps) => {
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    if (value.startsWith(hardCodedValue)) {
+      setInputValue(value.slice(hardCodedValue.length));
+    }
+  };
+
   const Actions = [
     {
       color: "#4da5fe",
@@ -65,8 +73,8 @@ const ChatInput = ({
   return (
     <div className="w-full  pt-4 bg-white sticky bottom-0 left-0 ">
       <textarea
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
+        value={hardCodedValue + inputValue}
+        onChange={handleChange}
         placeholder="Type your message..."
         className={`w-full border max-h-28 min-h-20  overflow-y-auto rounded-lg   outline-none relative py-7 pr-16 pl-20 resize-none text-sm`}
         ref={textareaRef}

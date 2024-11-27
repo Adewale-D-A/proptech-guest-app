@@ -12,6 +12,7 @@ interface ChatUsComponentProps {
   isLoading: boolean;
   inputValue: string;
   setInputValue: (value: string) => void;
+  hardCodedValue: string;
 }
 
 const ChatUsComponent = ({
@@ -20,6 +21,7 @@ const ChatUsComponent = ({
   isLoading,
   setInputValue,
   inputValue,
+  hardCodedValue,
 }: ChatUsComponentProps) => {
   const allChatMessageData = chatData && chatData.data.data;
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -180,6 +182,7 @@ const ChatUsComponent = ({
         showEmoji={showEmoji}
         textareaRef={textareaRef}
         showMenu={showMenu}
+        hardCodedValue={hardCodedValue}
       />
     </div>
   );

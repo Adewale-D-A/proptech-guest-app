@@ -45,6 +45,7 @@ interface ChatInputProps {
   emojiIconRef: RefObject<HTMLDivElement>;
   handleMenuClicked: () => void;
   showMenu: boolean;
+  hardCodedValue: string;
 }
 
 interface ToastResponse {

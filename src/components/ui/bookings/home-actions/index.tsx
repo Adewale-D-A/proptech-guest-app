@@ -16,12 +16,14 @@ const HomeActionsDropdown = ({
   handleClickModalRate,
   handleClickModalRebook,
   handleClickModalCaution,
+  handleBookingChat,
 }: {
   handleClickModal?: (value: string) => void;
   handleOpenSingleBooking: () => void;
   handleClickModalRate: () => void;
   handleClickModalRebook: () => void;
   handleClickModalCaution: () => void;
+  handleBookingChat: () => void;
 }) => {
   return (
     <DropdownMenu>
@@ -55,6 +57,12 @@ const HomeActionsDropdown = ({
           onClick={handleClickModalRate}
         >
           Rate your Experience
+        </DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem
+          className=" text-xs cursor-pointer p-0"
+          onClick={handleBookingChat}
+        >
+          Chat with us
         </DropdownMenuCheckboxItem>
       </DropdownMenuContent>
     </DropdownMenu>
