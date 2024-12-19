@@ -8,7 +8,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/_shared/drop-down";
-import { faker } from "@faker-js/faker";
 import React from "react";
 import { LogOut } from "lucide-react";
 import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
@@ -24,13 +23,14 @@ const UserDropDown = () => {
     router.push("/landing");
     Cookies.remove("access_token");
   };
+
   return (
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild className="w-full">
           <Card className="flex cursor-pointer shadow-sm border-gray-200 w-fit px-2 justify-center h-11 items-center gap-3">
             <img
-              src={faker.image.avatar()}
+              src={currentUser?.profile_photo}
               alt=""
               className="w-8 h-8 rounded-full"
             />

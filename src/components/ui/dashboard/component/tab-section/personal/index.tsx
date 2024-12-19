@@ -2,7 +2,7 @@
 "use client";
 import Image from "next/image";
 import React, { useState } from "react";
-import { Camera, Eye, EyeOff, Link, LockKeyhole, MailIcon } from "lucide-react";
+import { Camera } from "lucide-react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -30,18 +30,27 @@ import { updateProfileSchema } from "@/_shared/validate";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DatePicker } from "@/components/date-picker";
 import { format } from "date-fns";
-import { useUpdateUserMutation } from "@/redux/services/auth/auth";
+import {
+  useGetUsersQuery,
+  useUpdateUserMutation,
+} from "@/redux/services/auth/auth";
 import { ToastResponse } from "@/types/type";
 import { toast } from "@/components/_shared/toast/use-toast";
+import { use99Selector } from "@/redux/hooks/hooks";
+import { selectUserToken } from "@/redux/slices/authSlice";
 
 const PersonaInfo = () => {
   const [updateUser, { isLoading }] = useUpdateUserMutation();
   const [show, setShow] = useState(false);
   const [phone, setPhone] = useState("");
   const [successModal, setSuccessModal] = useState(false);
-  const [profileImage, setProfileImage] = useState<File | null>(null); // Store image file
+  const [profileDoc, setProfileDoc] = useState<File | null>(null); // Store image file
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [dateOfBirth, setDateOfBirth] = useState<Date | undefined>();
+  const token = use99Selector(selectUserToken);
+  const { refetch } = useGetUsersQuery(undefined, {
+    skip: !token,
+  });
 
   const form = useForm<z.infer<typeof updateProfileSchema>>({
     resolver: zodResolver(updateProfileSchema),
@@ -55,23 +64,35 @@ const PersonaInfo = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setProfileImage(file);
+      setProfileDoc(file);
       setImagePreview(URL.createObjectURL(file));
     }
   };
 
   const onSubmit = async (values: z.infer<typeof updateProfileSchema>) => {
+    if (!profileDoc) {
+      toast({
+        variant: "destructive",
+        title: "Please upload a file.",
+        description: "An error occurred during verify identity",
+      });
+      return;
+    }
     const dob = dateOfBirth ? format(dateOfBirth, "yyyy-MM-dd") : null;
-    const payload: UpdateUserPayload = {
-      ...values,
-      phone,
-      profile_photo: profileImage,
-      dob,
-    };
+    const formData = new FormData();
+    formData.append("profile_photo", profileDoc);
+    formData.append("first_name", values.first_name);
+    formData.append("last_name", values.last_name);
+    formData.append("email", values.email);
+    formData.append("gender", values.gender);
+    formData.append("phone", phone);
+    if (dob) formData.append("dob", dob);
 
     try {
-      await updateUser(payload).unwrap();
+      await updateUser(formData as any).unwrap();
       setSuccessModal(true);
+      setShow(false);
+      refetch();
     } catch (err) {
       const error = err as ToastResponse;
       toast({

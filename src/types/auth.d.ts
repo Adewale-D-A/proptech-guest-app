@@ -68,7 +68,6 @@ interface UpdateUserPayload {
   gender: string;
   phone: string;
   dob: string | null;
-  profile_photo: File | null;
 }
 interface UpdateUserDocPayload {
   identity_document: File | null;

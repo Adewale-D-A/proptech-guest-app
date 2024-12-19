@@ -22,10 +22,7 @@ import { z } from "zod";
 import { Button } from "@/components/_shared/button";
 import { Checkbox } from "@/components/_shared/check-box";
 import { LoadingButton } from "@/components/_shared/loading-button";
-import {
-  useGetUsersQuery,
-  useSignInMutation,
-} from "@/redux/services/auth/auth";
+import { useSignInMutation } from "@/redux/services/auth/auth";
 import { use99Dispatch } from "@/redux/hooks/hooks";
 import { setUserDetails, setUserToken } from "@/redux/slices/authSlice";
 import Cookies from "js-cookie";
