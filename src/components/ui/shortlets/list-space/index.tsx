@@ -31,7 +31,6 @@ import { useVerifyPayment } from "@/redux/hooks/useVerifyPayment";
 import { RiBarcodeFill } from "react-icons/ri";
 import { useGetAvailableDateMutation } from "@/redux/services/shortlet";
 import { Calendar } from "@/components/_shared/calander";
-import StarLoader from "@/components/loader/star-loader";
 import ThunderLoader from "@/components/loader/thunder-loader";
 
 const ListSpace = ({
