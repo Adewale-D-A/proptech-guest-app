@@ -39,9 +39,8 @@ export function DatePickerTime({
   const [time, setTime] = React.useState<string>("");
 
   const disabledDatesArray = disabledDates.map((date) => parseISO(date));
-  const yesterday = new Date();
-
-  yesterday.setDate(yesterday.getDate() - 1);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const handleDateChange = (date: Date | undefined) => {
     setDate(date);
     onDateChange(date);
@@ -91,7 +90,7 @@ export function DatePickerTime({
                 mode="single"
                 selected={date}
                 onSelect={handleDateChange}
-                disabled={[...disabledDatesArray, { before: yesterday }]}
+                disabled={[...disabledDatesArray, { before: today }]}
               />
               <section className="p-4">
                 <Input

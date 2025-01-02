@@ -15,7 +15,11 @@ const password = z
   .min(1, "Password field is required")
   .min(7, "Password must be at least 7 characters long");
 
-export const signInValidationSchema = z.object({ email, password });
+export const signInValidationSchema = z.object({
+  email,
+  password,
+  rememberMe: z.boolean(),
+});
 export const signUpValidationSchema = z
   .object({
     first_name,

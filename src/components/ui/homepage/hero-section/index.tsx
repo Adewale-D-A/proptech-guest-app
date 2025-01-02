@@ -96,7 +96,7 @@ const HeroSection = () => {
       ))}
 
       {/* Dots for navigation */}
-      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex space-x-1 z-30">
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-1 z-30">
         {slides.map((_, index) => (
           <div
             key={index}

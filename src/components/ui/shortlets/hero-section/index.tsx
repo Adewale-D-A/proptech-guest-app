@@ -40,7 +40,7 @@ const HeroSection = () => {
   return (
     <div
       id="hero-section"
-      className="relative w-full h-[840px] overflow-hidden"
+      className="relative w-full h-[640px] overflow-hidden"
     >
       <div
         className={`absolute w-full h-full`}

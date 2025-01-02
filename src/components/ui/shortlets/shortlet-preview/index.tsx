@@ -1,7 +1,7 @@
 /** @format */
 "use client";
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/_shared/button";
 import { MdArrowBack } from "react-icons/md";
 import { IoArrowForward } from "react-icons/io5";
@@ -28,7 +28,7 @@ import { DatePickerTime } from "@/components/date-picker-time";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import { Form } from "@/components/_shared/form";
-import { use99Selector } from "@/redux/hooks/hooks";
+import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
 import { selectCurrentUser, selectUserToken } from "@/redux/slices/authSlice";
 import { bookingSchema } from "@/_shared/validate";
 import { z } from "zod";
@@ -40,6 +40,9 @@ import {
 import { LoadingButton } from "@/components/_shared/loading-button";
 import { payment_method, urlRoute } from "@/_shared/constants";
 import ThunderLoader from "@/components/loader/thunder-loader";
+import { clearEmail, selectEmail } from "@/redux/slices/emailSlice";
+import AuthModal from "../../auth/auth-modal";
+import { addDays } from "date-fns";
 
 type FormValues = z.infer<typeof bookingSchema>;
 
@@ -50,10 +53,17 @@ const ShortLetPreviewComponent = ({
   apartmentDetails: any;
   availableDates: any;
 }) => {
+  const router = useRouter();
+  const dispatch = use99Dispatch();
+  const searchParams = useSearchParams();
   const token = use99Selector(selectUserToken);
   const params = useParams();
   const { toast } = useToast();
   const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
+  const [tokens, setTokens] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [type, setType] = useState("");
+  const email = use99Selector(selectEmail);
   const [booking, { isLoading }] = useCreateBookingMutation();
   const [bookingPrice, { isLoading: priceLoading }] =
     useGetBookingPriceMutation();
@@ -108,6 +118,7 @@ const ShortLetPreviewComponent = ({
 
   const onSubmit = async (values: FormValues) => {
     if (!currentUser) {
+      handleOpen(true, "sign-in");
       toast({
         variant: "destructive",
         title: "Error",
@@ -125,7 +136,6 @@ const ShortLetPreviewComponent = ({
 
     try {
       const res = await booking(payload).unwrap();
-
       const paymentUrl = res.data.payment || "";
       if (paymentUrl) {
         window.location.href = paymentUrl;
@@ -153,14 +163,14 @@ const ShortLetPreviewComponent = ({
     const checkOutDay = form.watch("check_out_day");
     const checkOutTime = form.watch("check_out_time");
     const numberOfGuests = form.watch("number_of_guests");
-    if (!token) {
-      toast({
-        variant: "destructive",
-        title: "Login required",
-        description: "Please log in to book an apartment",
-      });
-      return;
-    }
+    // if (!token) {
+    //   toast({
+    //     variant: "destructive",
+    //     title: "Login required",
+    //     description: "Please log in to book an apartment",
+    //   });
+    //   return;
+    // }
     if (
       checkInDay &&
       checkInTime &&
@@ -201,10 +211,36 @@ const ShortLetPreviewComponent = ({
     form.watch("number_of_guests"),
   ]);
 
+  useEffect(() => {
+    const modalType = searchParams.get("auth");
+    if (modalType) {
+      handleOpen(true, modalType, email);
+    }
+  }, [searchParams]);
+
+  const handleOpen = (open: boolean, modalType: string, params?: string) => {
+    setShowModal(open);
+    setType(modalType);
+    if (open) {
+      router.push(`?auth=${modalType}${params ? `&email=${params}` : ""}`, {
+        shallow: true,
+      } as any);
+    } else {
+      router.push(window.location.pathname, {
+        shallow: true,
+      } as any);
+    }
+  };
+
+  const handleClose = () => {
+    dispatch(clearEmail());
+    handleOpen(false, type);
+  };
+
   return (
     <div className="pt-24">
       <section className="max-w-screen-custom mx-auto px-4">
-        <BackButton />
+        <BackButton navigation="/shortlets" />
         <AnimatedContainer className="flex mt-6 gap-4">
           <div className="w-full relative">
             <img
@@ -282,7 +318,7 @@ const ShortLetPreviewComponent = ({
         </div>
         <div className="flex gap-6 mt-5 relative h-full">
           <DetailsSection apartmentDetails={apartmentDetails} />
-          <div className="sticky top-[130px]"></div>
+
           <AnimatedContainer className="w-1/2">
             <Card className="shadow-sm border border-black/5">
               <div className="flex border-b p-4 justify-between items-center">
@@ -436,6 +472,16 @@ const ShortLetPreviewComponent = ({
         <ShareReview />
         <AnythingElse />
       </section>
+      <AuthModal
+        handleClose={handleClose}
+        handleOpen={handleOpen}
+        onClose={handleClose}
+        setShowModal={setShowModal}
+        setToken={setTokens}
+        showModal={showModal}
+        token={tokens}
+        type={type}
+      />
     </div>
   );
 };

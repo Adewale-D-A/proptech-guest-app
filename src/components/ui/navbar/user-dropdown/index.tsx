@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/_shared/drop-down";
 import React from "react";
-import { LogOut } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
 import { logout, selectCurrentUser } from "@/redux/slices/authSlice";
 import { useRouter } from "next/navigation";
@@ -29,11 +29,17 @@ const UserDropDown = () => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild className="w-full">
           <Card className="flex cursor-pointer shadow-sm border-gray-200 w-fit px-2 justify-center h-11 items-center gap-3">
-            <img
-              src={currentUser?.profile_photo}
-              alt=""
-              className="w-8 h-8 rounded-full"
-            />
+            {currentUser?.profile_photo ? (
+              <img
+                src={currentUser?.profile_photo}
+                alt=""
+                className="w-8 h-8 rounded-full"
+              />
+            ) : (
+              <section className="shadow-sm w-8 h-8 rounded-full flex items-center justify-center border">
+                <User size={16} />
+              </section>
+            )}
             <div>
               <h1 className="text-xs font-semibold">
                 {currentUser?.first_name} {currentUser?.last_name}{" "}

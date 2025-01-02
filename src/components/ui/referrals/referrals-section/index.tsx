@@ -30,9 +30,10 @@ import { format } from "date-fns";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import { FiCopy } from "react-icons/fi";
 import useCanvasConfetti from "@/components/_shared/animation/fire_work_3";
+import { use99Selector } from "@/redux/hooks/hooks";
+import { selectCurrentUser } from "@/redux/slices/authSlice";
 const ReferralsSection = () => {
-  const [showModal, setShowModal] = useState(false);
-  const [code, setCode] = useState("");
+  const currentUser = use99Selector(selectCurrentUser);
   const { toast } = useToast();
   const { data, isLoading } = useGetReferralsQuery({});
   const socialData = [
@@ -43,36 +44,36 @@ const ReferralsSection = () => {
     "/fb.png",
     "/mail.png",
   ];
-  const [generateReferralLink, { isLoading: isGenerating }] =
-    useGenerateReferralLinkMutation();
+  // const [generateReferralLink, { isLoading: isGenerating }] =
+  //   useGenerateReferralLinkMutation();
   const { handleClickCanvas } = useCanvasConfetti();
-  const handleGenerateReferralLink = async () => {
-    try {
-      const response = await generateReferralLink().unwrap();
-      if (response) {
-        toast({
-          variant: "default",
-          title: "Success!",
-          description: "Referral link generated successfully!",
-        });
-      }
-      setCode(response?.data?.referral_code);
-      handleClickCanvas();
-      setShowModal(true);
-    } catch (err) {
-      const errorMessage =
-        (err as any)?.data?.message || "Failed to generate the link.";
-      toast({
-        variant: "destructive",
-        title: "Error!",
-        description: errorMessage,
-      });
-    }
-  };
+  // const handleGenerateReferralLink = async () => {
+  //   try {
+  //     const response = await generateReferralLink().unwrap();
+  //     if (response) {
+  //       toast({
+  //         variant: "default",
+  //         title: "Success!",
+  //         description: "Referral link generated successfully!",
+  //       });
+  //     }
+  //     setCode(response?.data?.referral_code);
+  //     handleClickCanvas();
+  //     setShowModal(true);
+  //   } catch (err) {
+  //     const errorMessage =
+  //       (err as any)?.data?.message || "Failed to generate the link.";
+  //     toast({
+  //       variant: "destructive",
+  //       title: "Error!",
+  //       description: errorMessage,
+  //     });
+  //   }
+  // };
 
   const handleCopyCode = () => {
-    if (code) {
-      navigator.clipboard.writeText(code);
+    if (currentUser?.referral_code) {
+      navigator.clipboard.writeText(currentUser?.referral_code);
       toast({
         variant: "default",
         title: "Copied!",
@@ -105,40 +106,32 @@ const ReferralsSection = () => {
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                 eiusmod tempor incididunt ut labore et dolore.
               </p>
-              {!showModal ? (
-                <Button
-                  onClick={handleGenerateReferralLink}
-                  className="w-56 mt-6"
-                >
-                  {isGenerating ? "Generating..." : "Generate Referral Link"}
-                </Button>
-              ) : (
-                <section>
-                  <section className="border h-12 rounded-md flex justify-between items-center px-2">
-                    <p>{code}</p>
-                    <div className="flex  bg-[#EAEAEA] w-20 h-8 rounded  justify-center items-center gap-2 ">
-                      <p className=" text-sm">copy</p>
-                      <FiCopy
-                        className="cursor-pointer "
-                        onClick={handleCopyCode}
-                      />{" "}
-                    </div>
-                  </section>
-                  <section className="flex items-center gap-10 mt-4">
-                    <p>SHARE</p>
-                    <div className="flex items-center gap-6">
-                      {socialData.map((data) => (
-                        <section
-                          className="border w-10 h-10 flex justify-center items-center rounded-full"
-                          key={data}
-                        >
-                          <Image src={data} alt="" width={16} height={16} />
-                        </section>
-                      ))}
-                    </div>
-                  </section>
+
+              <section>
+                <section className="border h-12 rounded-md flex justify-between items-center px-2">
+                  <p>{currentUser?.referral_code}</p>
+                  <div className="flex  bg-[#EAEAEA] w-20 h-8 rounded  justify-center items-center gap-2 ">
+                    <p className=" text-sm">copy</p>
+                    <FiCopy
+                      className="cursor-pointer "
+                      onClick={handleCopyCode}
+                    />{" "}
+                  </div>
                 </section>
-              )}
+                <section className="flex items-center gap-10 mt-4">
+                  <p>SHARE</p>
+                  <div className="flex items-center gap-6">
+                    {socialData.map((data) => (
+                      <section
+                        className="border w-10 h-10 flex justify-center items-center rounded-full"
+                        key={data}
+                      >
+                        <Image src={data} alt="" width={16} height={16} />
+                      </section>
+                    ))}
+                  </div>
+                </section>
+              </section>
             </div>
             <div className="w-1/2 flex justify-end ">
               <Image

@@ -1,16 +1,14 @@
 /** @format */
 "use client";
 import { Button } from "@/components/_shared/button";
-import React, { useState } from "react";
-import { Heart, MapPin, Search, CalendarCheck2 } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Heart, MapPin, Search, CalendarCheck2, X } from "lucide-react";
 import { Input } from "@/components/_shared/input";
 import { Label } from "@/components/_shared/label";
 import { Separator } from "@/components/_shared/separator";
 import { SlidersHorizontal } from "lucide-react";
 import { FaStar } from "react-icons/fa";
-import { TbBed, TbPool, TbAirConditioning } from "react-icons/tb";
-import { Heater } from "lucide-react";
-
+import { TbBed } from "react-icons/tb";
 import {
   Select,
   SelectContent,
@@ -19,10 +17,9 @@ import {
   SelectValue,
 } from "@/components/_shared/select";
 import { Modal } from "@/components/_shared/modal";
-import { ShortletType } from "@/types/type";
+import { Shortlet, ShortletType } from "@/types/type";
 import Image from "next/image";
 import { Card } from "@/components/_shared/card";
-import { Wifi } from "lucide-react";
 import { allAmenities, howLong, shortletAmount } from "@/_shared/data";
 import AnimatedContainer from "@/components/_shared/framer/animate-div";
 import SparkleEffect from "@/components/_shared/framer/sparkle-effect";
@@ -32,6 +29,10 @@ import { Checkbox } from "@/components/_shared/check-box";
 import CardSkeleton from "@/components/card-skeleton";
 import { useVerifyPayment } from "@/redux/hooks/useVerifyPayment";
 import { RiBarcodeFill } from "react-icons/ri";
+import { useGetAvailableDateMutation } from "@/redux/services/shortlet";
+import { Calendar } from "@/components/_shared/calander";
+import StarLoader from "@/components/loader/star-loader";
+import ThunderLoader from "@/components/loader/thunder-loader";
 
 const ListSpace = ({
   setShowModal,
@@ -45,9 +46,19 @@ const ListSpace = ({
   const handleRoute = (aptName: string, id: number) => {
     router.push(`${pathName}/${aptName}/${id}`);
   };
+  const [shortlet, setShortlet] = useState<Shortlet | null>(null);
+  const [date, setDate] = React.useState<Date | undefined>(undefined);
   const [location, setLocation] = useState<string>("");
   const [numOfRooms, setNumOfRooms] = useState<string>("");
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+  const [dateAvailability, setDateAvailability] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [showDate, setShowDate] = useState(false);
+  const [
+    getAvailableDate,
+    { data: availableDates, isLoading: loadingAvailableDates },
+  ] = useGetAvailableDateMutation();
 
   const handleAmenityChange = (amenityId: string) => {
     setSelectedAmenities((prevSelected) =>
@@ -68,7 +79,84 @@ const ListSpace = ({
     <CardSkeleton key={index} />
   ));
 
+  const handleClickSingleApt = (shortlet: Shortlet) => {
+    if (shortlet) {
+      setShortlet(shortlet);
+      setShowDate(true);
+    }
+  };
+
+  useEffect(() => {
+    if (shortlet?.id) {
+      const aptId = shortlet?.id;
+      getAvailableDate(aptId);
+    }
+  }, [shortlet?.id, getAvailableDate]);
+
+  const handleDateChange = (date: Date | undefined) => {
+    setDate(date);
+  };
+  const [availableChecked, setAvailableChecked] = useState(false);
+  const [unavailableChecked, setUnavailableChecked] = useState(false);
+  const [filteredDates, setFilteredDates] = useState<Date[]>([]);
+
+  const bookedDates = availableDates?.data?.booked_dates || [];
+  const blockedDates = availableDates?.data?.blocked_dates || [];
+  const allUnavailableDates = [...bookedDates, ...blockedDates];
+
+  const handleAvailableToggle = (checked: boolean) => {
+    if (checked) {
+      setAvailableChecked(true);
+      setUnavailableChecked(false);
+    } else {
+      setAvailableChecked(false);
+    }
+  };
+
+  const handleUnavailableToggle = (checked: boolean) => {
+    if (checked) {
+      setUnavailableChecked(true);
+      setAvailableChecked(false);
+    } else {
+      setUnavailableChecked(false);
+    }
+  };
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const filterDates = () => {
+    let filtered: Date[] = [];
+
+    if (availableChecked) {
+      // Available dates: Exclude the dates that are in the blocked and booked dates
+      filtered =
+        blockedDates.length === 0
+          ? []
+          : blockedDates
+              .filter((date) => !allUnavailableDates.includes(date))
+              .map((date) => new Date(date)); // Convert to Date objects
+    }
+
+    if (unavailableChecked) {
+      // Unavailable dates: Include blocked and booked dates
+      filtered = [
+        ...filtered,
+        ...allUnavailableDates.map((date) => new Date(date)),
+      ];
+    }
+    setFilteredDates(filtered);
+  };
+  useEffect(() => {
+    filterDates();
+  }, [availableChecked, unavailableChecked]);
+
+  useEffect(() => {
+    filterDates();
+  }, [availableChecked, unavailableChecked]);
+
   useVerifyPayment();
+
   return (
     <div className=" relative bottom-10 z-40">
       <div className="max-w-screen-custom mx-auto px-4">
@@ -165,10 +253,6 @@ const ListSpace = ({
                             sizes="100vw"
                             loading="eager"
                           />
-                          {/* <a
-                            href="#"
-                            className=" rounded-t-md absolute w-full h-60 top-0 left-0 bg-black opacity-0 z-10 transition-opacity duration-300 hover:opacity-30 "
-                          ></a> */}
                           <div className="absolute top-2 px-2 flex justify-between items-center flex-1 w-full">
                             <SparkleEffect>
                               <div className="flex items-center gap-2 w-14 h-6 rounded justify-center bg-black/10 bg-opacity-60 cursor-pointer backdrop-blur-md z-40">
@@ -231,7 +315,10 @@ const ListSpace = ({
                                 ))}
                             </div>
                             <div className="flex justify-between items-center mt-4">
-                              <div className="flex text-primary items-center gap-2">
+                              <div
+                                className="flex text-primary cursor-pointer items-center gap-2"
+                                onClick={() => handleClickSingleApt(apartment)}
+                              >
                                 <CalendarCheck2 size={16} />
                                 <p className="text-sm">Check Availability</p>
                               </div>
@@ -307,7 +394,7 @@ const ListSpace = ({
             </div>
             <div className="flex mt-4 flex-col gap-2">
               {shortletAmount.map((amenity) => (
-                <div key={amenity.id} className="flex items-center gap-1 mb-2">
+                <div key={amenity.id} className="flex items-center gap-1 mb-2 ">
                   <Checkbox
                     id={amenity.id}
                     checked={selectedAmenities.includes(amenity.id)}
@@ -330,6 +417,64 @@ const ListSpace = ({
             </Button>
             <Button className="h-9 w-24 text-xs">Search</Button>
           </div>
+        </section>
+      </Modal>
+
+      <Modal
+        showModal={showDate}
+        setShowModal={setShowDate}
+        onClose={() => setShowDate(false)}
+        className="w-fit max-w-lg"
+      >
+        <section>
+          {loadingAvailableDates ? (
+            <ThunderLoader />
+          ) : (
+            <section className="p-4">
+              <section className="flex justify-between items-center">
+                <h1 className="font-medium ">{shortlet?.name}</h1>
+                <X size={16} onClick={() => setShowDate(false)} />
+              </section>
+              <Calendar
+                mode="single"
+                selected={
+                  filteredDates.length > 0 ? filteredDates[0] : undefined
+                }
+                onSelect={handleDateChange}
+                disabled={[
+                  (date) =>
+                    filteredDates.some(
+                      (d) =>
+                        d.toISOString().split("T")[0] ===
+                        date.toISOString().split("T")[0]
+                    ),
+                  { before: new Date() },
+                ]}
+                className="pt-10"
+              />
+              <section className="flex justify-between items-center mt-6 px-5">
+                <section className="flex items-center gap-2">
+                  <Checkbox
+                    checked={availableChecked}
+                    onCheckedChange={handleAvailableToggle}
+                  />
+                  <span className="text-xs text-[#606569] font-medium">
+                    Available Dates
+                  </span>
+                </section>
+                <section className="flex items-center gap-2">
+                  <Checkbox
+                    checked={unavailableChecked}
+                    onCheckedChange={handleUnavailableToggle}
+                  />
+
+                  <span className="text-xs text-[#606569] font-medium ">
+                    Unavailable Dates
+                  </span>
+                </section>
+              </section>
+            </section>
+          )}
         </section>
       </Modal>
     </div>

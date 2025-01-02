@@ -36,6 +36,7 @@ interface User {
   pm_type: string | null;
   pm_last_four: string | null;
   trial_ends_at: string | null;
+  referral_code: string;
 }
 
 interface AuthResponseData extends GeneralResponse {

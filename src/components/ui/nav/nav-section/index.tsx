@@ -26,7 +26,7 @@ const NavSectionTabs = ({
           <Link href="/" legacyBehavior passHref>
             {isMainRoute ? (
               <NavigationMenuLink
-                className={`${navigationMenuTriggerStyle()} bg-transparent font-normal text-xs  ${
+                className={`${navigationMenuTriggerStyle()} bg-transparent font-normal   ${
                   scrolled ? "text-black" : "text-white"
                 } `}
               >
@@ -34,7 +34,7 @@ const NavSectionTabs = ({
               </NavigationMenuLink>
             ) : (
               <NavigationMenuLink
-                className={`${navigationMenuTriggerStyle()} bg-transparent font-normal text-xs  text-black `}
+                className={`${navigationMenuTriggerStyle()} bg-transparent font-normal   text-black `}
               >
                 Home
               </NavigationMenuLink>
@@ -45,7 +45,7 @@ const NavSectionTabs = ({
           <Link href="/pricing" legacyBehavior passHref>
             {isMainRoute ? (
               <NavigationMenuLink
-                className={`${navigationMenuTriggerStyle()} bg-none font-normal text-xs ${
+                className={`${navigationMenuTriggerStyle()} bg-none font-normal  ${
                   scrolled ? "text-black" : "text-white"
                 }`}
               >
@@ -53,7 +53,7 @@ const NavSectionTabs = ({
               </NavigationMenuLink>
             ) : (
               <NavigationMenuLink
-                className={`${navigationMenuTriggerStyle()} bg-none font-normal text-xs text-black`}
+                className={`${navigationMenuTriggerStyle()} bg-none font-normal  text-black`}
               >
                 About Us
               </NavigationMenuLink>
@@ -64,7 +64,7 @@ const NavSectionTabs = ({
         <NavigationMenuItem className="">
           {isMainRoute ? (
             <NavigationMenuTrigger
-              className={` font-normal bg-transparent text-xs text-white ${
+              className={` font-normal bg-transparent  text-white ${
                 scrolled ? "text-black" : "text-white"
               }`}
             >
@@ -72,7 +72,7 @@ const NavSectionTabs = ({
             </NavigationMenuTrigger>
           ) : (
             <NavigationMenuTrigger
-              className={` font-normal bg-transparent text-xs text-white text-black`}
+              className={` font-normal bg-transparent  text-black `}
             >
               Products
             </NavigationMenuTrigger>
@@ -85,7 +85,7 @@ const NavSectionTabs = ({
           <Link href="/pricing" legacyBehavior passHref>
             {isMainRoute ? (
               <NavigationMenuLink
-                className={`${navigationMenuTriggerStyle()} bg-transparent font-normal text-xs ${
+                className={`${navigationMenuTriggerStyle()} bg-transparent font-normal  ${
                   scrolled ? "text-black" : "text-white"
                 }`}
               >
@@ -93,7 +93,7 @@ const NavSectionTabs = ({
               </NavigationMenuLink>
             ) : (
               <NavigationMenuLink
-                className={`${navigationMenuTriggerStyle()} bg-transparent font-normal text-xs text-black`}
+                className={`${navigationMenuTriggerStyle()} bg-transparent font-normal  text-black`}
               >
                 Additional Services
               </NavigationMenuLink>
@@ -109,7 +109,7 @@ const NavSectionTabs = ({
           >
             {isMainRoute ? (
               <NavigationMenuLink
-                className={`${navigationMenuTriggerStyle()} bg-transparent font-normal text-xs ${
+                className={`${navigationMenuTriggerStyle()} bg-transparent font-normal  ${
                   scrolled ? "text-black" : "text-white"
                 }`}
               >
@@ -117,7 +117,7 @@ const NavSectionTabs = ({
               </NavigationMenuLink>
             ) : (
               <NavigationMenuLink
-                className={`${navigationMenuTriggerStyle()} bg-transparent font-normal text-xs text-black`}
+                className={`${navigationMenuTriggerStyle()} bg-transparent font-normal  text-black`}
               >
                 Blog
               </NavigationMenuLink>
@@ -128,7 +128,7 @@ const NavSectionTabs = ({
           <Link href="/pricing" legacyBehavior passHref>
             {isMainRoute ? (
               <NavigationMenuLink
-                className={`${navigationMenuTriggerStyle()} bg-transparent font-normal text-xs ${
+                className={`${navigationMenuTriggerStyle()} bg-transparent font-normal  ${
                   scrolled ? "text-black" : "text-white"
                 }`}
               >
@@ -136,7 +136,7 @@ const NavSectionTabs = ({
               </NavigationMenuLink>
             ) : (
               <NavigationMenuLink
-                className={`${navigationMenuTriggerStyle()} bg-transparent font-normal text-xs text-black`}
+                className={`${navigationMenuTriggerStyle()} bg-transparent font-normal  text-black`}
               >
                 Subscription
               </NavigationMenuLink>

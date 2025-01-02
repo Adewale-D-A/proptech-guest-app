@@ -4,26 +4,17 @@ import React, { useEffect, useState } from "react";
 import Logo from "../logo";
 import { Button } from "@/components/_shared/button";
 import NavSectionTabs from "./nav-section";
-import { Modal } from "@/components/_shared/modal";
-import {
-  ChangePasswordForm,
-  ForgetPasswordOtp,
-  ForgotPasswordForm,
-  OtpForm,
-  SignInform,
-  SignUpForm,
-  SuccessfulModal,
-} from "../auth";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Menu } from "lucide-react";
 import { clearEmail, selectEmail } from "@/redux/slices/emailSlice";
 import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
-import { logout, selectCurrentUser } from "@/redux/slices/authSlice";
-import Cookies from "js-cookie";
+import { selectCurrentUser, selectUserToken } from "@/redux/slices/authSlice";
 import { setActiveTab } from "@/redux/slices/active_tab";
 import { MdOutlineDateRange } from "react-icons/md";
+import AuthModal from "../auth/auth-modal";
 const HomeNavBar = () => {
   const currentUser = use99Selector(selectCurrentUser);
+  const userToken = use99Selector(selectUserToken);
   const router = useRouter();
   const dispatch = use99Dispatch();
   const searchParams = useSearchParams();
@@ -76,11 +67,11 @@ const HomeNavBar = () => {
     handleOpen(false, type);
   };
 
-  const handleLogout = () => {
-    dispatch(logout());
-    router.push("/landing");
-    Cookies.remove("access_token");
-  };
+  // const handleLogout = () => {
+  //   dispatch(logout());
+  //   router.push("/landing");
+  //   Cookies.remove("access_token");
+  // };
 
   const handleGoToDashboard = () => {
     router.push("/bookings");
@@ -121,7 +112,7 @@ const HomeNavBar = () => {
             <div className="lg:flex hidden">
               <NavSectionTabs scrolled={scrolled} isMainRoute={isMainRoute} />
             </div>
-            {currentUser ? (
+            {currentUser && userToken ? (
               <div className="flex items-center gap-4">
                 {isMainRoute ? (
                   <p
@@ -169,69 +160,18 @@ const HomeNavBar = () => {
             )}
           </div>
         </div>
-        <Modal
-          showModal={showModal}
-          onClose={handleClose}
-          setShowModal={setShowModal}
-          className={`relative p-6 ${
-            type === "sign-in" ||
-            type === "forgot-password" ||
-            type === "otp" ||
-            type === "forget-password-otp" ||
-            type === "change-password" ||
-            type === "successful"
-              ? "min-w-[400px]"
-              : "min-w-[550px]"
-          } ${
-            type === "create" ||
-            type === "change-password" ||
-            type === "successful"
-              ? "h-fit"
-              : "h-[450px]"
-          } bg-white`}
-        >
-          {type === "sign-in" && (
-            <SignInform
-              onClick={() => handleOpen(true, "create")}
-              onClickForgetPassword={() => handleOpen(true, "forgot-password")}
-              handleClose={handleClose}
-            />
-          )}
-          {type === "forgot-password" && (
-            <ForgotPasswordForm
-              onClickLogin={() => handleOpen(true, "sign-in")}
-              handleOpen={handleOpen}
-            />
-          )}
-          {type === "create" && (
-            <SignUpForm
-              onClickLogin={() => handleOpen(true, "sign-in")}
-              handleOpen={handleOpen}
-            />
-          )}
-          {type === "otp" && (
-            <OtpForm
-              onClickChangePassword={() => handleOpen(true, "change-password")}
-              onClickLogin={() => handleOpen(true, "sign-in")}
-              handleOpen={handleOpen}
-            />
-          )}
-          {type === "change-password" && (
-            <ChangePasswordForm token={token} handleOpen={handleOpen} />
-          )}
-          {type === "successful" && (
-            <SuccessfulModal onClickLogin={() => handleOpen(true, "sign-in")} />
-          )}
-
-          {type === "forget-password-otp" && (
-            <ForgetPasswordOtp
-              onClickChangePassword={() => handleOpen(true, "change-password")}
-              onClickLogin={() => handleOpen(true, "sign-in")}
-              handleOpen={handleOpen}
-              setToken={setToken}
-            />
-          )}
-        </Modal>
+        {(pathName === "/shortlets" || pathName === "/landing") && (
+          <AuthModal
+            handleClose={handleClose}
+            handleOpen={handleOpen}
+            onClose={handleClose}
+            setShowModal={setShowModal}
+            setToken={setToken}
+            showModal={showModal}
+            token={token}
+            type={type}
+          />
+        )}
       </div>
     </>
   );

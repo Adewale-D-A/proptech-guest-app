@@ -1,6 +1,5 @@
 /** @format */
 "use client";
-
 import Navbar from "@/components/ui/navbar";
 import SideBarScreen from "@/components/ui/side-bar";
 import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
