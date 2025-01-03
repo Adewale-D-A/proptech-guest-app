@@ -22,7 +22,7 @@ const bookingEndpoints = injectEndpoints({
       query: (body) => ({
         body,
         method: Methods.post,
-        url: `${Endpoints.api}user/booking/get-fees`,
+        url: `${Endpoints.api}guest/shortlet/get-fees`,
       }),
     }),
     getBookings: builder.query<BookingsResponseData, Record<string, any>>({
