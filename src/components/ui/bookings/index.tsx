@@ -440,7 +440,7 @@ serve you."
         showModal={showDate}
         setShowModal={setShowDate}
         onClose={() => setShowDate(false)}
-        className="max-w-xl py-10"
+        className="max-w-2xl py-10"
       >
         <FilterDateComponent
           endDate={endDate}
