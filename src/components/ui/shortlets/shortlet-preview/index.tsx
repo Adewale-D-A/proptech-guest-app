@@ -5,7 +5,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/_shared/button";
 import { MdArrowBack } from "react-icons/md";
 import { IoArrowForward } from "react-icons/io5";
-import { CalendarCheck2 } from "lucide-react";
+import { CalendarCheck2, X } from "lucide-react";
 import { Card } from "@/components/_shared/card";
 import { TiStarFullOutline } from "react-icons/ti";
 import { Label } from "@/components/_shared/label";
@@ -42,7 +42,7 @@ import { payment_method, urlRoute } from "@/_shared/constants";
 import ThunderLoader from "@/components/loader/thunder-loader";
 import { clearEmail, selectEmail } from "@/redux/slices/emailSlice";
 import AuthModal from "../../auth/auth-modal";
-import { addDays } from "date-fns";
+import { Modal } from "@/components/_shared/modal";
 
 type FormValues = z.infer<typeof bookingSchema>;
 
@@ -56,7 +56,6 @@ const ShortLetPreviewComponent = ({
   const router = useRouter();
   const dispatch = use99Dispatch();
   const searchParams = useSearchParams();
-  const token = use99Selector(selectUserToken);
   const params = useParams();
   const { toast } = useToast();
   const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
@@ -70,6 +69,7 @@ const ShortLetPreviewComponent = ({
   const currentUser = use99Selector(selectCurrentUser);
   const [currentIndex, setCurrentIndex] = useState(0);
   const imgLength = apartmentDetails && apartmentDetails?.images.length;
+  const [showError, setShowError] = useState(false);
   const handleNext = () => {
     if (apartmentDetails) {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % imgLength);
@@ -83,7 +83,7 @@ const ShortLetPreviewComponent = ({
       );
     }
   };
-
+  const time_stamp = "12:00";
   const totalImages = apartmentDetails?.images.length || 0;
   const startIndex = Math.max(currentIndex - 2, 0);
   const endIndex = Math.min(startIndex + 4, totalImages);
@@ -107,9 +107,9 @@ const ShortLetPreviewComponent = ({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
       check_in_day: "",
-      check_in_time: "",
+      check_in_time: time_stamp,
       check_out_day: "",
-      check_out_time: "",
+      check_out_time: time_stamp,
       number_of_guests: "",
     },
   });
@@ -149,19 +149,23 @@ const ShortLetPreviewComponent = ({
     } catch (err) {
       const errorMessage =
         (err as any)?.data?.message || "Submission failed. Please try again.";
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: errorMessage,
-      });
+      if (errorMessage === "User has identity has not been verified") {
+        setShowError(true);
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: errorMessage,
+        });
+      }
     }
   };
 
   useEffect(() => {
     const checkInDay = form.watch("check_in_day");
-    const checkInTime = form.watch("check_in_time");
+    const checkInTime = time_stamp;
     const checkOutDay = form.watch("check_out_day");
-    const checkOutTime = form.watch("check_out_time");
+    const checkOutTime = time_stamp;
     const numberOfGuests = form.watch("number_of_guests");
     // if (!token) {
     //   toast({
@@ -180,9 +184,9 @@ const ShortLetPreviewComponent = ({
     ) {
       const payload = {
         check_in_day: checkInDay ?? "",
-        check_in_time: checkInTime ?? "",
+        check_in_time: time_stamp,
         check_out_day: checkOutDay ?? "",
-        check_out_time: checkOutTime ?? "",
+        check_out_time: time_stamp,
         number_of_guests: numberOfGuests ?? "",
         shortlet_id: params?.id,
       };
@@ -205,9 +209,9 @@ const ShortLetPreviewComponent = ({
     }
   }, [
     form.watch("check_in_day"),
-    form.watch("check_in_time"),
+    time_stamp,
     form.watch("check_out_day"),
-    form.watch("check_out_time"),
+    time_stamp,
     form.watch("number_of_guests"),
   ]);
 
@@ -482,6 +486,28 @@ const ShortLetPreviewComponent = ({
         token={tokens}
         type={type}
       />
+      <Modal
+        setShowModal={setShowError}
+        showModal={showError}
+        onClose={() => setShowError(false)}
+        className=""
+      >
+        <section className="flex justify-between border-b p-4 items-center">
+          <h1 className="font-semibold">Account Not Verified</h1>
+          <X
+            size={16}
+            className="cursor-pointer"
+            onClick={() => setShowError(false)}
+          />
+        </section>
+
+        <div className="text-red-500 text-4xl mt-4 text-center ">⚠️</div>
+
+        <p className=" p-5  font-medium text-center">
+          Your account has not been verified by an admin. Please contact support
+          or wait for the verification process to be completed.{" "}
+        </p>
+      </Modal>
     </div>
   );
 };

@@ -92,14 +92,14 @@ export function DatePickerTime({
                 onSelect={handleDateChange}
                 disabled={[...disabledDatesArray, { before: today }]}
               />
-              <section className="p-4">
+              {/* <section className="p-4">
                 <Input
                   type="time"
                   value={time}
                   onChange={handleTimeChange}
                   className="border h-10"
                 />
-              </section>
+              </section> */}
             </div>
           </div>
         </PopoverContent>
