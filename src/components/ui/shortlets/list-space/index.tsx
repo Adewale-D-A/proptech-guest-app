@@ -32,6 +32,7 @@ import { RiBarcodeFill } from "react-icons/ri";
 import { useGetAvailableDateMutation } from "@/redux/services/shortlet";
 import { Calendar } from "@/components/_shared/calander";
 import ThunderLoader from "@/components/loader/thunder-loader";
+import useCheckAvaliability from "@/redux/hooks/check-avaliable-date";
 
 const ListSpace = ({
   setShowModal,
@@ -50,9 +51,6 @@ const ListSpace = ({
   const [location, setLocation] = useState<string>("");
   const [numOfRooms, setNumOfRooms] = useState<string>("");
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
-  const [dateAvailability, setDateAvailability] = useState<{
-    [key: string]: boolean;
-  }>({});
   const [showDate, setShowDate] = useState(false);
   const [
     getAvailableDate,
@@ -66,7 +64,10 @@ const ListSpace = ({
         : [...prevSelected, amenityId]
     );
   };
-
+  const { actions, state } = useCheckAvaliability({
+    blockedDates: availableDates?.data?.blocked_dates || [],
+    bookedDates: availableDates?.data?.booked_dates || [],
+  });
   const handleSearch = () => {
     setFilters({
       location,
@@ -95,64 +96,9 @@ const ListSpace = ({
   const handleDateChange = (date: Date | undefined) => {
     setDate(date);
   };
-  const [availableChecked, setAvailableChecked] = useState(false);
-  const [unavailableChecked, setUnavailableChecked] = useState(false);
-  const [filteredDates, setFilteredDates] = useState<Date[]>([]);
-
-  const bookedDates = availableDates?.data?.booked_dates || [];
-  const blockedDates = availableDates?.data?.blocked_dates || [];
-  const allUnavailableDates = [...bookedDates, ...blockedDates];
-
-  const handleAvailableToggle = (checked: boolean) => {
-    if (checked) {
-      setAvailableChecked(true);
-      setUnavailableChecked(false);
-    } else {
-      setAvailableChecked(false);
-    }
-  };
-
-  const handleUnavailableToggle = (checked: boolean) => {
-    if (checked) {
-      setUnavailableChecked(true);
-      setAvailableChecked(false);
-    } else {
-      setUnavailableChecked(false);
-    }
-  };
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-
-  const filterDates = () => {
-    let filtered: Date[] = [];
-
-    if (availableChecked) {
-      // Available dates: Exclude the dates that are in the blocked and booked dates
-      filtered =
-        blockedDates.length === 0
-          ? []
-          : blockedDates
-              .filter((date) => !allUnavailableDates.includes(date))
-              .map((date) => new Date(date)); // Convert to Date objects
-    }
-
-    if (unavailableChecked) {
-      // Unavailable dates: Include blocked and booked dates
-      filtered = [
-        ...filtered,
-        ...allUnavailableDates.map((date) => new Date(date)),
-      ];
-    }
-    setFilteredDates(filtered);
-  };
-  useEffect(() => {
-    filterDates();
-  }, [availableChecked, unavailableChecked]);
-
-  useEffect(() => {
-    filterDates();
-  }, [availableChecked, unavailableChecked]);
 
   useVerifyPayment();
 
@@ -437,12 +383,14 @@ const ListSpace = ({
               <Calendar
                 mode="single"
                 selected={
-                  filteredDates.length > 0 ? filteredDates[0] : undefined
+                  state?.filteredDates?.length > 0
+                    ? state?.filteredDates[0]
+                    : undefined
                 }
                 onSelect={handleDateChange}
                 disabled={[
                   (date) =>
-                    filteredDates.some(
+                    state?.filteredDates?.some(
                       (d) =>
                         d.toISOString().split("T")[0] ===
                         date.toISOString().split("T")[0]
@@ -454,8 +402,8 @@ const ListSpace = ({
               <section className="flex justify-between items-center mt-6 px-5">
                 <section className="flex items-center gap-2">
                   <Checkbox
-                    checked={availableChecked}
-                    onCheckedChange={handleAvailableToggle}
+                    checked={state?.availableChecked}
+                    onCheckedChange={actions?.handleAvailableToggle}
                   />
                   <span className="text-xs text-[#606569] font-medium">
                     Available Dates
@@ -463,8 +411,8 @@ const ListSpace = ({
                 </section>
                 <section className="flex items-center gap-2">
                   <Checkbox
-                    checked={unavailableChecked}
-                    onCheckedChange={handleUnavailableToggle}
+                    checked={state?.unavailableChecked}
+                    onCheckedChange={actions?.handleUnavailableToggle}
                   />
 
                   <span className="text-xs text-[#606569] font-medium ">

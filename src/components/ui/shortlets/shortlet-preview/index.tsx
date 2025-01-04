@@ -43,15 +43,20 @@ import ThunderLoader from "@/components/loader/thunder-loader";
 import { clearEmail, selectEmail } from "@/redux/slices/emailSlice";
 import AuthModal from "../../auth/auth-modal";
 import { Modal } from "@/components/_shared/modal";
+import { Checkbox } from "@/components/_shared/check-box";
+import { Calendar } from "@/components/_shared/calander";
+import useCheckAvaliability from "@/redux/hooks/check-avaliable-date";
 
 type FormValues = z.infer<typeof bookingSchema>;
 
 const ShortLetPreviewComponent = ({
   apartmentDetails,
   availableDates,
+  loadingAvailableDates,
 }: {
   apartmentDetails: any;
   availableDates: any;
+  loadingAvailableDates: boolean;
 }) => {
   const router = useRouter();
   const dispatch = use99Dispatch();
@@ -69,7 +74,17 @@ const ShortLetPreviewComponent = ({
   const currentUser = use99Selector(selectCurrentUser);
   const [currentIndex, setCurrentIndex] = useState(0);
   const imgLength = apartmentDetails && apartmentDetails?.images.length;
+  const [date, setDate] = React.useState<Date | undefined>(undefined);
+  const [showDate, setShowDate] = useState(false);
+
   const [showError, setShowError] = useState(false);
+  const { actions, state } = useCheckAvaliability({
+    blockedDates: availableDates?.blocked_dates || [],
+    bookedDates: availableDates?.booked_dates || [],
+  });
+  const handleDateChange = (date: Date | undefined) => {
+    setDate(date);
+  };
   const handleNext = () => {
     if (apartmentDetails) {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % imgLength);
@@ -241,6 +256,8 @@ const ShortLetPreviewComponent = ({
     handleOpen(false, type);
   };
 
+  console.log("id::", apartmentDetails);
+
   return (
     <div className="pt-24">
       <section className="max-w-screen-custom mx-auto px-4">
@@ -315,6 +332,7 @@ const ShortLetPreviewComponent = ({
             <Button
               variant={"outline"}
               className="text-xs text-primary-1 flex items-center gap-2"
+              onClick={() => setShowDate(true)}
             >
               <CalendarCheck2 size={16} /> Check Availability
             </Button>
@@ -507,6 +525,65 @@ const ShortLetPreviewComponent = ({
           Your account has not been verified by an admin. Please contact support
           or wait for the verification process to be completed.{" "}
         </p>
+      </Modal>
+      <Modal
+        showModal={showDate}
+        setShowModal={setShowDate}
+        onClose={() => setShowDate(false)}
+        className="w-fit max-w-lg"
+      >
+        <section>
+          {loadingAvailableDates ? (
+            <ThunderLoader />
+          ) : (
+            <section className="p-4">
+              <section className="flex justify-between items-center">
+                <h1 className="font-medium "> {apartmentDetails?.name}</h1>
+                <X size={16} onClick={() => setShowDate(false)} />
+              </section>
+              <Calendar
+                mode="single"
+                selected={
+                  state?.filteredDates?.length > 0
+                    ? state?.filteredDates[0]
+                    : undefined
+                }
+                onSelect={handleDateChange}
+                disabled={[
+                  (date) =>
+                    state?.filteredDates?.some(
+                      (d) =>
+                        d.toISOString().split("T")[0] ===
+                        date.toISOString().split("T")[0]
+                    ),
+                  { before: new Date() },
+                ]}
+                className="pt-10"
+              />
+              <section className="flex justify-between items-center mt-6 px-5">
+                <section className="flex items-center gap-2">
+                  <Checkbox
+                    checked={state?.availableChecked}
+                    onCheckedChange={actions?.handleAvailableToggle}
+                  />
+                  <span className="text-xs text-[#606569] font-medium">
+                    Available Dates
+                  </span>
+                </section>
+                <section className="flex items-center gap-2">
+                  <Checkbox
+                    checked={state?.unavailableChecked}
+                    onCheckedChange={actions?.handleUnavailableToggle}
+                  />
+
+                  <span className="text-xs text-[#606569] font-medium ">
+                    Unavailable Dates
+                  </span>
+                </section>
+              </section>
+            </section>
+          )}
+        </section>
       </Modal>
     </div>
   );
