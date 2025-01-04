@@ -1,12 +1,10 @@
 /** @format */
 
 import { NavLink } from "@/types/type";
-import { IoSettingsOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa";
 import { MdOutlineDateRange } from "react-icons/md";
 import { TbPointerShare, TbUserQuestion } from "react-icons/tb";
 import { CgAddR } from "react-icons/cg";
-import { LiaMountainSolid } from "react-icons/lia";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { MdOutlineHelpOutline } from "react-icons/md";
 

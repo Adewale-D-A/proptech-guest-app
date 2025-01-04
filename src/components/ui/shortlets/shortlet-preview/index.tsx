@@ -29,7 +29,7 @@ import { useForm } from "react-hook-form";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import { Form } from "@/components/_shared/form";
 import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
-import { selectCurrentUser, selectUserToken } from "@/redux/slices/authSlice";
+import { selectCurrentUser } from "@/redux/slices/authSlice";
 import { bookingSchema } from "@/_shared/validate";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";

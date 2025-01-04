@@ -1,6 +1,6 @@
 /** @format */
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
@@ -8,7 +8,6 @@ import { ArrowLeft } from "lucide-react";
 import { AiOutlineHome } from "react-icons/ai";
 
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import {
   Tooltip,
   TooltipContent,
