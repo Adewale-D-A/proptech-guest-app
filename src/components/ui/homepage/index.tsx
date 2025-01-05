@@ -18,9 +18,9 @@ const HomePageComponent = () => {
       <OurProduct />
       <PropertyNeeds />
       <NightFree />
-      <CustomerSection />
+      {/* <CustomerSection />
       <OurPartner />
-      <Subscribe />
+      <Subscribe /> */}
     </>
   );
 };

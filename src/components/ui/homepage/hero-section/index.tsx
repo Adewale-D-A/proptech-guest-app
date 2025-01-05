@@ -71,9 +71,12 @@ const HeroSection = () => {
           {/* Black background overlay */}
           <div className="absolute inset-0 bg-black opacity-60 z-20" />
 
-          <div className="relative flex flex-col items-center justify-center w-full h-full z-30">
-            <h1 className="text-white text-3xl  md:text-4xl lg:text-6xl font-semibold">
+          <div className="relative px-4 flex flex-col items-center justify-center w-full h-full z-30">
+            <h1 className="text-white  hidden md:flex  text-4xl lg:text-6xl font-semibold">
               <GradualSpacing text={slide.title} />{" "}
+            </h1>
+            <h1 className="text-white leading-tight w-full text-center md:hidden  text-5xl lg:text-6xl font-semibold">
+              {slide.title}
             </h1>
             <AnimatedContainer>
               <p className="text-white text-center sm:text-xl mt-4">
@@ -82,11 +85,11 @@ const HeroSection = () => {
             </AnimatedContainer>
             <AnimatedContainer className="flex mt-12 items-center gap-x-3">
               <Link href={"/shortlets"}>
-                <Button className="text-xs w-28 h-8">Shortlet</Button>
+                <Button className="text-xs w-full md:w-28 h-8">Shortlet</Button>
               </Link>
               <Button
                 variant={"outline"}
-                className="text-xs w-56 h-8 border-white text-white"
+                className="text-xs sm:w-56 h-8 border-white text-white"
               >
                 Split Eazy (Shared Housing)
               </Button>
