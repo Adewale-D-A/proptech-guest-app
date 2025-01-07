@@ -256,8 +256,6 @@ const ShortLetPreviewComponent = ({
     handleOpen(false, type);
   };
 
-  console.log("id::", apartmentDetails);
-
   return (
     <div className="pt-24">
       <section className="max-w-screen-custom mx-auto px-4">
