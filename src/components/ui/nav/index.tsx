@@ -38,10 +38,8 @@ const HomeNavBar = () => {
 
   useEffect(() => {
     const tokenFromCookies = Cookies.get("access_token");
-
     if (!currentUser || !userToken || !tokenFromCookies) {
       dispatch(logout());
-      router.push("/landing");
       Cookies.remove("access_token");
     }
   }, [currentUser, userToken, dispatch, router]);
