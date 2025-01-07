@@ -1,7 +1,9 @@
 /** @format */
 
+import { toast } from "@/components/_shared/toast/use-toast";
 import countries from "../data/countries";
 import { format, isYesterday, parseISO } from "date-fns";
+import { ErrorResponse } from "@/types/type";
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 export const NEXT_PUBLIC_REDIRECT_URL = process.env
   .NEXT_PUBLIC_REDIRECT_URL as string;
@@ -76,3 +78,49 @@ export const urlRoute = {
 export enum payment_method {
   pay_stack = "paystack",
 }
+
+// export default function errorHandler(data: {
+//   message: any;
+//   status: string;
+//   data: { message: any };
+// }) {
+//   const values =
+//     typeof data?.data?.message === "object"
+//       ? Object.values(data?.data?.message).join(", ")
+//       : data?.message || data?.status;
+//   return toast({
+//     variant: "destructive",
+//     title: "Error!",
+//     description: values || "Please try again later",
+//   });
+// }
+
+export const errorHandler = (error: any): void => {
+  if (error?.data?.data?.message) {
+    const messages = error.data.data.message;
+    const firstKey = Object.keys(messages)[0];
+    if (firstKey && messages[firstKey]?.length > 0) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: messages[firstKey][0],
+      });
+      return;
+    }
+  }
+
+  if (error?.data) {
+    toast({
+      variant: "destructive",
+      title: "Error",
+      description: error?.data?.message,
+    });
+    return;
+  }
+
+  toast({
+    variant: "destructive",
+    title: "Error",
+    description: "An unexpected error occurred. Please try again.",
+  });
+};

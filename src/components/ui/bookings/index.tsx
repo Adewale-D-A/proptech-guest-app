@@ -35,7 +35,7 @@ import { useToast } from "@/components/_shared/toast/use-toast";
 import RebookApartment from "./rebook-apartment";
 import { useGetAvailableDateMutation } from "@/redux/services/shortlet";
 import { useVerifyPayment } from "@/redux/hooks/useVerifyPayment";
-import { payment_method, urlRoute } from "@/_shared/constants";
+import { errorHandler, payment_method, urlRoute } from "@/_shared/constants";
 import { Form } from "@/components/_shared/form";
 import { useForm } from "react-hook-form";
 import { useVerifyBankMutation } from "@/redux/services/banks";
@@ -194,13 +194,7 @@ const BookingsComponent = ({
       handleClickModal("success");
       form.reset();
     } catch (err) {
-      const errorMessage =
-        (err as any)?.data?.message || "Failed . Please try again.";
-      toast({
-        variant: "destructive",
-        title: "Error!",
-        description: errorMessage,
-      });
+      errorHandler(err as any);
     }
   };
 

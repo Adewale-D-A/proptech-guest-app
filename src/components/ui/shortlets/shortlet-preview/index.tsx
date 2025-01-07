@@ -38,7 +38,7 @@ import {
   useGetBookingPriceMutation,
 } from "@/redux/services/booking";
 import { LoadingButton } from "@/components/_shared/loading-button";
-import { payment_method, urlRoute } from "@/_shared/constants";
+import { errorHandler, payment_method, urlRoute } from "@/_shared/constants";
 import ThunderLoader from "@/components/loader/thunder-loader";
 import { clearEmail, selectEmail } from "@/redux/slices/emailSlice";
 import AuthModal from "../../auth/auth-modal";
@@ -162,16 +162,10 @@ const ShortLetPreviewComponent = ({
       });
       reset();
     } catch (err) {
-      const errorMessage =
-        (err as any)?.data?.message || "Submission failed. Please try again.";
+      errorHandler(err as any);
+      const errorMessage = (err as any)?.data?.message;
       if (errorMessage === "User has identity has not been verified") {
         setShowError(true);
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: errorMessage,
-        });
       }
     }
   };
@@ -211,14 +205,7 @@ const ShortLetPreviewComponent = ({
           const res = await bookingPrice(payload).unwrap();
           setEstimatedPrice(res?.data?.total_cost);
         } catch (err) {
-          const errorMessage =
-            (err as any)?.data?.message || "shortlet failed. Please try again.";
-          toast({
-            variant: "destructive",
-            title: "Error fees!",
-            description:
-              errorMessage || "Failed to calculate the price. Please try again",
-          });
+          errorHandler(err as any);
         }
       })();
     }

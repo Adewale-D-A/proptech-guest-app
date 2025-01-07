@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useVerifyPaymentQuery } from "../services/booking";
 import { useToast } from "@/components/_shared/toast/use-toast";
+import { errorHandler } from "@/_shared/constants";
 
 interface UseVerifyPaymentResult {
   verificationData: any;
@@ -45,13 +46,7 @@ export const useVerifyPayment = (): UseVerifyPaymentResult => {
     }
 
     if (isError) {
-      const errorMessage =
-        (error as any)?.data?.message || "Verification failed.";
-      toast({
-        variant: "destructive",
-        title: "Verification Error",
-        description: errorMessage,
-      });
+      errorHandler(isError as any);
     }
   }, [verificationData, isError, error]);
 

@@ -48,6 +48,7 @@ import { useToast } from "@/components/_shared/toast/use-toast";
 import { format } from "date-fns/format";
 
 import FilterDateComponent from "./filter-component";
+import { errorHandler } from "@/_shared/constants";
 
 const MakeRequestComponent = ({
   requestDataStats,
@@ -108,13 +109,7 @@ const MakeRequestComponent = ({
       onNewRequest();
       setShowModal(true);
     } catch (err) {
-      const errorMessage =
-        (err as any)?.data?.message || "Login failed. Please try again.";
-      toast({
-        variant: "destructive",
-        title: "Error login!",
-        description: errorMessage,
-      });
+      errorHandler(err as any);
     }
   };
 

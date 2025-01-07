@@ -10,7 +10,7 @@ const ActiveBookingContainer = () => {
   const [endDate, setEndDate] = useState<string | undefined>(undefined);
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const { data, isLoading, error } = useGetBookingsQuery({
+  const { data, isLoading } = useGetBookingsQuery({
     search,
     start_date: startDate,
     end_date: endDate,

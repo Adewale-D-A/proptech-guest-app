@@ -1,7 +1,7 @@
 /** @format */
 "use client";
 import React, { useState } from "react";
-
+import { AxiosError } from "axios";
 import SearchInput from "@/components/search-input";
 import { Card } from "@/components/_shared/card";
 import {
@@ -31,7 +31,8 @@ import { useCreateBookingMutation } from "@/redux/services/booking";
 import { LoadingButton } from "@/components/_shared/loading-button";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import { useVerifyPayment } from "@/redux/hooks/useVerifyPayment";
-import { payment_method, urlRoute } from "@/_shared/constants";
+import { errorHandler, payment_method, urlRoute } from "@/_shared/constants";
+import { ErrorResponse } from "@/types/type";
 const ActiveBookingComponent = ({
   bookingData,
   isLoading,
@@ -152,14 +153,7 @@ const ActiveBookingComponent = ({
         description: "Apartment extend",
       });
     } catch (err) {
-      const errorMessage =
-        (err as any)?.data?.message ||
-        "Failed to extend booking. Please try again.";
-      toast({
-        variant: "destructive",
-        title: "Error!",
-        description: errorMessage,
-      });
+      errorHandler(err as any);
     }
   };
   useVerifyPayment();

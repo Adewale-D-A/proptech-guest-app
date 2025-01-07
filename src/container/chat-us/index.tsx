@@ -1,5 +1,6 @@
 /** @format */
 "use client";
+import { errorHandler } from "@/_shared/constants";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import ChatUsComponent from "@/components/ui/chat-us";
 import {
@@ -35,14 +36,7 @@ const ChatUsContainer = () => {
         setHardCodedValue("");
         refetch();
       } catch (err) {
-        const errorMessage =
-          (err as any)?.data?.message ||
-          "Failed to send message. Please try again.";
-        toast({
-          variant: "destructive",
-          title: "Error!",
-          description: errorMessage,
-        });
+        errorHandler(err as any);
       }
     }
   };

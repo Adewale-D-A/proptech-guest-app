@@ -24,6 +24,7 @@ import { useSignInMutation } from "@/redux/services/auth/auth";
 import { use99Dispatch } from "@/redux/hooks/hooks";
 import { setUserDetails, setUserToken } from "@/redux/slices/authSlice";
 import Cookies from "js-cookie";
+import { errorHandler } from "@/_shared/constants";
 const SignInform = ({
   onClick,
   onClickForgetPassword,
@@ -66,13 +67,7 @@ const SignInform = ({
       });
       handleClose();
     } catch (err) {
-      const errorMessage =
-        (err as any)?.data?.message || "Login failed. Please try again.";
-      toast({
-        variant: "destructive",
-        title: "Error login!",
-        description: errorMessage,
-      });
+      errorHandler(err as any);
     }
   };
 

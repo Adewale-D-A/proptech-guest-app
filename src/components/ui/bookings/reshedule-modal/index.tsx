@@ -19,6 +19,7 @@ import { useGetAvailableDateMutation } from "@/redux/services/shortlet";
 import { addDays, format } from "date-fns";
 import { useRescheduleBookingMutation } from "@/redux/services/booking";
 import { LoadingButton } from "@/components/_shared/loading-button";
+import { errorHandler } from "@/_shared/constants";
 
 type FormValues = z.infer<typeof bookingUpdateSchema>;
 const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
@@ -68,13 +69,7 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
       });
       reset();
     } catch (err) {
-      const errorMessage =
-        (err as any)?.data?.message || "Submission failed. Please try again.";
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: errorMessage,
-      });
+      errorHandler(err as any);
     }
   };
 

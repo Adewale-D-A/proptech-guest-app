@@ -466,3 +466,10 @@ interface MakeARequestResponseData extends Pagination {
   endDate: string | undefined;
   startDate: string | undefined;
 }
+interface ErrorResponse {
+  status: number;
+  data: {
+    message?: Record<string, string[]>;
+    error?: string;
+  };
+}

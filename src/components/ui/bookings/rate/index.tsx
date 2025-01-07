@@ -1,5 +1,6 @@
 /** @format */
 
+import { errorHandler } from "@/_shared/constants";
 import { Label } from "@/components/_shared/label";
 import { LoadingButton } from "@/components/_shared/loading-button";
 import { Textarea } from "@/components/_shared/textarea";
@@ -41,13 +42,7 @@ const Rating = ({
       });
       handleClickModalSuccessRate();
     } catch (err: any) {
-      const errorMessage =
-        err?.data?.message || "Rating submission failed. Please try again.";
-      toast({
-        variant: "destructive",
-        title: "Submission Error",
-        description: errorMessage,
-      });
+      errorHandler(err as any);
     }
   };
 
