@@ -334,7 +334,7 @@ const BookingsComponent = ({
         setShowModal={setShow}
         onClose={() => setShow(false)}
         className={`relative   rounded-none  ${
-          modalType === "rebook" ? "max-w-xl" : "max-w-md"
+          modalType === "rebook" ? "max-w-2xl" : "max-w-md"
         } `}
       >
         <section>
