@@ -8,11 +8,17 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { clearEmail, selectEmail } from "@/redux/slices/emailSlice";
 import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
-import { selectCurrentUser, selectUserToken } from "@/redux/slices/authSlice";
+import {
+  logout,
+  selectCurrentUser,
+  selectUserToken,
+} from "@/redux/slices/authSlice";
 import { setActiveTab } from "@/redux/slices/active_tab";
 import { MdOutlineDateRange } from "react-icons/md";
 import AuthModal from "../auth/auth-modal";
 import { motion } from "framer-motion";
+import Cookies from "js-cookie";
+
 const HomeNavBar = () => {
   const currentUser = use99Selector(selectCurrentUser);
   const userToken = use99Selector(selectUserToken);
@@ -28,8 +34,17 @@ const HomeNavBar = () => {
   const isMainRoute = pathName === "/shortlets" || pathName === "/landing";
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
-
   const closeSidebar = () => setIsSidebarOpen(false);
+
+  useEffect(() => {
+    const tokenFromCookies = Cookies.get("access_token");
+
+    if (!currentUser || !userToken || !tokenFromCookies) {
+      dispatch(logout());
+      router.push("/landing");
+      Cookies.remove("access_token");
+    }
+  }, [currentUser, userToken, dispatch, router]);
 
   useEffect(() => {
     const handleScroll = () => {
