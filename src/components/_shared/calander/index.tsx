@@ -52,7 +52,7 @@ function Calendar({
         day_range_start: "day-range-start ",
         day_range_end: "day-range-end ",
         day_selected:
-          "border border-[#00BB40] bg-[#00BB40] text-white    focus:border-[#00BB40] focus:text-white",
+          "border border-green bg-green text-white    focus:border-green focus:text-white",
         day_today: "bg-accent text-accent-foreground",
         day_outside:
           "day-outside text-muted-foreground aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",

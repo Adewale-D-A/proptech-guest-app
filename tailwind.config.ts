@@ -50,6 +50,7 @@ const config: Config = {
         foreground: "hsl(var(--foreground))",
         lightBlue: "#5A76D9",
         yellow: "#FFDE4E",
+        green: "#00BB40",
         gray: {
           100: "#6D6D6D",
         },
