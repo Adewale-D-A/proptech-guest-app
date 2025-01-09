@@ -60,8 +60,6 @@ const NotificationComponent = ({
       </section>
     );
 
-
-
   return (
     <Card className="mt-6 shadow-sm">
       <div className="flex items-center justify-between border-b p-4">
@@ -79,6 +77,7 @@ const NotificationComponent = ({
               className="w-60 mt-0 h-9"
               date={undefined}
               setDate={() => {}}
+              removeBg={true}
             />
           </div>
           <div className="flex ml-4 items-center  gap-1">

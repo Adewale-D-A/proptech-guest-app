@@ -157,6 +157,7 @@ const ReferralsSection = () => {
                   date={undefined}
                   setDate={() => {}}
                   className="w-60 mt-0 h-9"
+                  removeBg={true}
                 />
               </div>
               <div className="flex items-center  gap-1">

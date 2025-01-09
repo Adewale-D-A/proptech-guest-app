@@ -13,8 +13,9 @@ function Calendar({
   classNames,
   showOutsideDays = true,
   disabled = [],
+  removeBg = false,
   ...props
-}: CalendarProps) {
+}: CalendarProps & { removeBg?: boolean }) {
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -46,9 +47,12 @@ function Calendar({
         ),
         day: cn(
           buttonVariants({ variant: "ghost" }),
-          "h-8 w-8 m-1 font-normal aria-selected:opacity-100 bg-[#E9E9E9] rounded-[5px] relative",
-          "after:content-[''] after:absolute after:top-0 after:right-0 after:w-2 after:h-2 after:bg-[#00BB40] after:rounded-none"
+          "h-8 w-8 m-1 font-normal aria-selected:opacity-100 rounded-[5px] relative",
+          "bg-[#E9E9E9]",
+          !removeBg && "after:bg-[#00BB40]",
+          "after:content-[''] after:absolute after:top-0 after:right-0 after:w-2 after:h-2 after:rounded-none"
         ),
+
         day_range_start: "day-range-start ",
         day_range_end: "day-range-end ",
         day_selected:
