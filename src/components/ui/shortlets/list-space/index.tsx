@@ -33,6 +33,7 @@ import { useGetAvailableDateMutation } from "@/redux/services/shortlet";
 import { Calendar } from "@/components/_shared/calander";
 import ThunderLoader from "@/components/loader/thunder-loader";
 import useCheckAvaliability from "@/redux/hooks/check-avaliable-date";
+import { parseISO } from "date-fns";
 
 const ListSpace = ({
   setShowModal,
@@ -99,7 +100,13 @@ const ListSpace = ({
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-
+  const disabledDates = availableDates?.data?.blocked_dates.concat(
+    availableDates?.data?.booked_dates
+  );
+  const disabledDatesArray = disabledDates
+    ? disabledDates.map((date: any) => parseISO(date))
+    : [];
+  const yesterday = new Date();
   useVerifyPayment();
 
   return (
@@ -381,39 +388,19 @@ const ListSpace = ({
                 <X size={16} onClick={() => setShowDate(false)} />
               </section>
               <Calendar
+                className=" "
                 mode="single"
-                selected={
-                  state?.filteredDates?.length > 0
-                    ? state?.filteredDates[0]
-                    : undefined
-                }
-                onSelect={handleDateChange}
-                disabled={[
-                  (date) =>
-                    state?.filteredDates?.some(
-                      (d) =>
-                        d.toISOString().split("T")[0] ===
-                        date.toISOString().split("T")[0]
-                    ),
-                  { before: new Date() },
-                ]}
-                className="pt-10"
+                disabled={[...disabledDatesArray, { before: yesterday }]}
               />
               <section className="flex justify-between items-center mt-6 px-5">
                 <section className="flex items-center gap-2">
-                  <Checkbox
-                    checked={state?.availableChecked}
-                    onCheckedChange={actions?.handleAvailableToggle}
-                  />
+                  <div className="w-3 h-3 bg-[#00BB40] border border-[#00BB40] rounded-[2px]" />
                   <span className="text-xs text-[#606569] font-medium">
                     Available Dates
                   </span>
                 </section>
                 <section className="flex items-center gap-2">
-                  <Checkbox
-                    checked={state?.unavailableChecked}
-                    onCheckedChange={actions?.handleUnavailableToggle}
-                  />
+                  <div className="w-3 h-3 border border-[#98999a] rounded-[2px]" />
 
                   <span className="text-xs text-[#606569] font-medium ">
                     Unavailable Dates
