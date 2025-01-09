@@ -46,17 +46,21 @@ function Calendar({
         ),
         day: cn(
           buttonVariants({ variant: "ghost" }),
-          "h-8 w-8 m-1 font-normal aria-selected:opacity-100 bg-[#E9E9E9] rounded-[5px] "
+          "h-8 w-8 m-1 font-normal aria-selected:opacity-100 bg-[#E9E9E9] rounded-[5px] relative",
+          "after:content-[''] after:absolute after:top-0 after:right-0 after:w-2 after:h-2 after:bg-[#00BB40] after:rounded-none"
         ),
         day_range_start: "day-range-start ",
         day_range_end: "day-range-end ",
         day_selected:
-          "border border-primary bg-primary text-white    focus:border-primary focus:text-white",
+          "border border-[#00BB40] bg-[#00BB40] text-white    focus:border-[#00BB40] focus:text-white",
         day_today: "bg-accent text-accent-foreground",
         day_outside:
-          "day-outside text-muted-foreground opacity-50  aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
-        day_disabled:
-          "text-muted-foreground  opacity-50 bg-[#E9E9E9] cursor-not-allowed rounded-[5px]",
+          "day-outside text-muted-foreground aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
+        day_disabled: cn(
+          "text-muted-foreground opacity-50 bg-[#E9E9E9] cursor-not-allowed rounded-[5px] z-30 relative",
+          "[&:after]:content-none"
+        ),
+
         day_range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
