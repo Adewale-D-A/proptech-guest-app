@@ -45,6 +45,12 @@ const bookingEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/booking/${id}`,
       }),
     }),
+    getUserActiveBookings: builder.query<any, number>({
+      query: (user_id) => ({
+        method: Methods.get,
+        url: `${Endpoints.api}user/booking/active/${user_id}`,
+      }),
+    }),
     getBookingStats: builder.query<BookingStats, void>({
       query: () => ({
         method: Methods.get,
@@ -110,4 +116,5 @@ export const {
   useTransferBookingMutation,
   useVerifyPaymentQuery,
   useCautionFeeBookingMutation,
+  useGetUserActiveBookingsQuery,
 } = bookingEndpoints;

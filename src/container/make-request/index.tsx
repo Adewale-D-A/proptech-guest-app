@@ -1,15 +1,18 @@
 /** @format */
 "use client";
 import MakeRequestComponent from "@/components/ui/make-request";
-import { useGetBookingsQuery } from "@/redux/services/booking";
+import { use99Selector } from "@/redux/hooks/hooks";
+import { useGetUserActiveBookingsQuery } from "@/redux/services/booking";
 import {
   useGetRequestQuery,
   useGetRequestStatsQuery,
 } from "@/redux/services/request";
+import { selectCurrentUser } from "@/redux/slices/authSlice";
 import React, { useEffect, useState } from "react";
 
 const MakeRequestContainer = () => {
   const [pageIndex, setPageIndex] = useState(0);
+  const currentUser = use99Selector(selectCurrentUser);
   const [pageSize, setPageSize] = useState(10);
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
@@ -23,12 +26,8 @@ const MakeRequestContainer = () => {
     page: pageIndex + 1,
     limit: pageSize,
   });
-  const {
-    data: shortlet,
-    error,
-    refetch: refetchBookings,
-  } = useGetBookingsQuery({});
-
+  const { data: shortlet, refetch: refetchBookings } =
+    useGetUserActiveBookingsQuery(currentUser?.id as number);
   useEffect(() => {
     if (shouldRefetch) {
       refetchRequests();
@@ -47,7 +46,7 @@ const MakeRequestContainer = () => {
       requestDataStats={data}
       requestData={requestData?.data?.user_requests}
       isLoading={isLoading}
-      shortlet={shortlet?.data?.bookings?.data ?? []}
+      shortlet={shortlet?.data?.bookings ?? []}
       onNewRequest={handleNewRequest}
       searchTerm={searchTerm}
       setSearchTerm={setSearchTerm}

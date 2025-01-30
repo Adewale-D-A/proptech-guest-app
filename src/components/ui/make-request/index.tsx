@@ -1,6 +1,6 @@
 /** @format */
 "use client";
-import React, { SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import { TbMessageReply } from "react-icons/tb";
 import ReusableCard from "../reusable-card";
 import { Card } from "@/components/_shared/card";
@@ -43,12 +43,10 @@ import { use99Selector } from "@/redux/hooks/hooks";
 import { selectCurrentUser } from "@/redux/slices/authSlice";
 import { apartmentOptions } from "@/_shared/data";
 import { useCreateRequestMutation } from "@/redux/services/request";
-import { useToast } from "@/components/_shared/toast/use-toast";
-
 import { format } from "date-fns/format";
-
 import FilterDateComponent from "./filter-component";
 import { errorHandler } from "@/_shared/constants";
+import { useToast } from "@/components/_shared/toast/use-toast";
 
 const MakeRequestComponent = ({
   requestDataStats,
@@ -67,11 +65,12 @@ const MakeRequestComponent = ({
   setPageIndex,
   setPageSize,
 }: MakeARequestResponseData) => {
-  const { toast } = useToast();
   const [showDate, setShowDate] = useState(false);
   const currentUser = use99Selector(selectCurrentUser);
   const [createRequest, { isLoading: createLoading }] =
     useCreateRequestMutation();
+  const { toast } = useToast();
+
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const pathName = usePathname();
@@ -99,6 +98,13 @@ const MakeRequestComponent = ({
   };
 
   const onSubmit = async (data: any) => {
+    if (!data.shortlet_id || !data.subject || !data.description) {
+      return toast({
+        variant: "destructive",
+        title: `missing field`,
+        description: "some input field are missing",
+      });
+    }
     const requestBody: CreateRequestBody = {
       shortlet_id: Number(data.shortlet_id),
       subject: data.subject,
@@ -236,14 +242,20 @@ const MakeRequestComponent = ({
                                 />
                               </SelectTrigger>
                               <SelectContent>
-                                {shortlet.map((item) => (
-                                  <SelectItem
-                                    key={item.shortlet.id}
-                                    value={String(item.shortlet.id)}
-                                  >
-                                    {item.shortlet.name}
-                                  </SelectItem>
-                                ))}
+                                {shortlet.length > 0 ? (
+                                  <>
+                                    {shortlet.map((item) => (
+                                      <SelectItem
+                                        key={item.shortlet.id}
+                                        value={String(item.shortlet.id)}
+                                      >
+                                        {item.shortlet.name}
+                                      </SelectItem>
+                                    ))}
+                                  </>
+                                ) : (
+                                  <p className="text-sm">No Apartment</p>
+                                )}
                               </SelectContent>
                             </Select>
                             <FormMessage className="text-xs text-red-500 font-light" />
