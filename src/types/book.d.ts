@@ -102,3 +102,21 @@ export interface GetAvailableDateResponse extends GeneralResponseStatus {
     blocked_dates: string[];
   };
 }
+
+export type BookingsInterface = {
+  bookingData: BookingsResponse | null;
+  isLoading: boolean;
+  statsLoading: boolean;
+  statsData: BookingData | null;
+  setSearch: (value: string) => void;
+  setStartDate: (date: string | undefined) => void;
+  setEndDate: (date: string | undefined) => void;
+  endDate: string | undefined;
+  startDate: string | undefined;
+  pageIndex: number;
+  pageSize: number;
+  setPageIndex: (index: number) => void;
+  totalPages?: number;
+  setPageSize?: (index: number) => void;
+  banksData: Bank[];
+};

@@ -25,6 +25,7 @@ import { use99Dispatch } from "@/redux/hooks/hooks";
 import { setUserDetails, setUserToken } from "@/redux/slices/authSlice";
 import Cookies from "js-cookie";
 import { errorHandler } from "@/_shared/constants";
+import { setToken } from "@/_shared";
 const SignInform = ({
   onClick,
   onClickForgetPassword,
@@ -52,12 +53,12 @@ const SignInform = ({
       const response = await signIn(values).unwrap();
       const token = response?.data?.access_token;
       dispatch(setUserToken(response?.data?.access_token));
-      Cookies.set("access_token", response?.data?.access_token, { expires: 7 });
+      setToken(response?.data?.access_token);
       const rememberMe = form.getValues("rememberMe");
       if (rememberMe) {
-        Cookies.set("access_token", token, { expires: 30 });
+        setToken(response?.data?.access_token);
       } else {
-        Cookies.set("access_token", token, { expires: 7 });
+        setToken(response?.data?.access_token);
       }
       dispatch(setUserDetails(response?.data?.user));
       toast({

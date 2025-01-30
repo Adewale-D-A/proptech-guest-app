@@ -23,7 +23,7 @@ import SuccessfulMessage from "./success-message";
 import Rating from "./rate";
 import BookingTable from "./booking-table";
 import { Booking, BookingData } from "@/types/type";
-import { BookingsResponse } from "@/types/book";
+import { BookingsInterface, BookingsResponse } from "@/types/book";
 import { format } from "date-fns";
 import { Button } from "@/components/_shared/button";
 import FilterDateComponent from "../make-request/filter-component";
@@ -64,23 +64,7 @@ const BookingsComponent = ({
   setPageIndex,
   setPageSize,
   banksData,
-}: {
-  bookingData: BookingsResponse | null;
-  isLoading: boolean;
-  statsLoading: boolean;
-  statsData: BookingData | null;
-  setSearch: (value: string) => void;
-  setStartDate: (date: string | undefined) => void;
-  setEndDate: (date: string | undefined) => void;
-  endDate: string | undefined;
-  startDate: string | undefined;
-  pageIndex: number;
-  pageSize: number;
-  setPageIndex: (index: number) => void;
-  totalPages?: number;
-  setPageSize?: (index: number) => void;
-  banksData: Bank[];
-}) => {
+}: BookingsInterface) => {
   const router = useRouter();
   const { toast } = useToast();
   const [booking, { isLoading: reBookingLoading }] = useCreateBookingMutation();
@@ -391,16 +375,14 @@ const BookingsComponent = ({
           {modalType === "success" && (
             <SuccessfulMessage
               heading="  Thank You for Reaching Out"
-              text="   Your message has been received, and your request will be addressed
-          shortly, Kindly check your notifications for update on your request."
+              text="   Your message has been received, and your request will be addressed shortly, Kindly check your notifications for update on your request."
               onClose={() => setShow(false)}
             />
           )}
           {modalType === "rate-success" && (
             <SuccessfulMessage
               heading=" Thanks for the Review"
-              text="  Thank you for your valuable feedback! Your review means a lot to us and helps us improve to better 
-serve you."
+              text="  Thank you for your valuable feedback! Your review means a lot to us and helps us improve to better serve you."
               onClose={() => setShow(false)}
               src="/images/success.png"
             />

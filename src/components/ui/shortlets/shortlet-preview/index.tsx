@@ -63,7 +63,11 @@ const ShortLetPreviewComponent = ({
   const searchParams = useSearchParams();
   const params = useParams();
   const { toast } = useToast();
-  const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null);
+  const [priceDetails, setPriceDetails] = useState({
+    estimatedPrice: null as number | null,
+    cautionPrice: null as number | null,
+    taxFee: null as number | null,
+  });
   const [tokens, setTokens] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [type, setType] = useState("");
@@ -203,7 +207,11 @@ const ShortLetPreviewComponent = ({
       (async () => {
         try {
           const res = await bookingPrice(payload).unwrap();
-          setEstimatedPrice(res?.data?.total_cost);
+          setPriceDetails({
+            estimatedPrice: res?.data?.total_cost,
+            cautionPrice: res?.data?.caution_fee,
+            taxFee: res?.data?.tax_fee,
+          });
         } catch (err) {
           errorHandler(err as any);
         }
@@ -436,7 +444,7 @@ const ShortLetPreviewComponent = ({
                           </div>
                         ) : (
                           <>
-                            {estimatedPrice && (
+                            {priceDetails.estimatedPrice !== null && (
                               <section>
                                 <div className="border-b p-4">
                                   <h1 className="">Booking Summary</h1>
@@ -444,13 +452,23 @@ const ShortLetPreviewComponent = ({
                                 <div className="p-4">
                                   <div className="border-b py-3 flex flex-col gap-3">
                                     <ListCard
-                                      amt={estimatedPrice}
+                                      amt={priceDetails.estimatedPrice}
                                       costName="Estimated cost for 1 night "
                                       currency="NGN"
                                     />
                                     <ListCard
-                                      amt={estimatedPrice}
+                                      amt={priceDetails.cautionPrice}
+                                      costName="Refundable Caution fee"
+                                      currency="NGN"
+                                    />
+                                    <ListCard
+                                      amt={priceDetails.estimatedPrice}
                                       costName="Total (1 Night)"
+                                      currency="NGN"
+                                    />
+                                    <ListCard
+                                      amt={priceDetails.taxFee}
+                                      costName="Tax (7.5%)"
                                       currency="NGN"
                                     />
                                   </div>

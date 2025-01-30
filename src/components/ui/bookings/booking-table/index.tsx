@@ -56,7 +56,7 @@ const BookingTable = ({
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const id = String(searchParams.get("id"));
+  const id = Number(searchParams.get("id"));
   const pathName = usePathname();
   const skeletonRows = Array.from({ length: 5 }, (_, index) => (
     <SkeletonTable key={index} />
@@ -69,7 +69,7 @@ const BookingTable = ({
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const handleOpenSingleBooking = (bookingId: any) => {
+  const handleOpenSingleBooking = (bookingId: number) => {
     if (bookingId) {
       router.push(`?id=${bookingId}`, {
         shallow: true,
@@ -109,6 +109,7 @@ const BookingTable = ({
 
     return () => clearInterval(interval);
   }, [images.length]);
+
   return (
     <div>
       {isLoading ? (
@@ -183,7 +184,7 @@ const BookingTable = ({
                           handleClickModal?.("caution", book)
                         }
                         handleOpenSingleBooking={() =>
-                          handleOpenSingleBooking(book.shortlet.id)
+                          handleOpenSingleBooking(book.id)
                         }
                         handleBookingChat={() =>
                           handleBookingChat(book?.shortlet?.id)
@@ -225,7 +226,7 @@ const BookingTable = ({
             <section className="flex gap-10 h-full">
               <Card className=" w-1/2 pb-8 p-4 shadow-sm h-full overflow-y-auto">
                 <section>
-                  {images?.length > 0 && (
+                  {images && images?.length > 0 && (
                     <div className="w-full relative">
                       <div
                         style={{
@@ -320,7 +321,7 @@ const BookingTable = ({
                   <Separator orientation="vertical" className="bg-gray-200" />
                   <div className="">
                     <p className="text-sm font-medium">Confirmation Code</p>
-                    <span className="text-xs text-gray-400">BKG1234XYZ</span>
+                    <span className="text-xs text-gray-400">nil</span>
                   </div>
                 </section>
                 <section className="my-4">

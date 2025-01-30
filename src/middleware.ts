@@ -16,7 +16,6 @@ export function middleware(request: NextRequest) {
     "/referrals",
     "/make-a-request",
   ];
-
   if (
     protectedRoutes.some((route) => request.nextUrl.pathname.startsWith(route))
   ) {
@@ -37,7 +36,7 @@ export function middleware(request: NextRequest) {
 
 function redirectToLogin(request: NextRequest) {
   const loginUrl = new URL("/landing", request.url);
-  loginUrl.searchParams.set("redirect", request.nextUrl.pathname);
+  loginUrl.searchParams.set("auth", "sign-in");
   return NextResponse.redirect(loginUrl);
 }
 

@@ -39,7 +39,7 @@ const bookingEndpoints = injectEndpoints({
         };
       },
     }),
-    getSingleBookings: builder.query<ShortletDataResponse, string>({
+    getSingleBookings: builder.query<ShortletDataResponse, number>({
       query: (id) => ({
         method: Methods.get,
         url: `${Endpoints.api}user/booking/${id}`,
