@@ -86,6 +86,7 @@ const ShortLetPreviewComponent = ({
     blockedDates: availableDates?.blocked_dates || [],
     bookedDates: availableDates?.booked_dates || [],
   });
+  console.log("apartmentDetails", apartmentDetails?.max_guests);
   const handleDateChange = (date: Date | undefined) => {
     setDate(date);
   };
@@ -107,10 +108,13 @@ const ShortLetPreviewComponent = ({
   const startIndex = Math.max(currentIndex - 2, 0);
   const endIndex = Math.min(startIndex + 4, totalImages);
   const imagesToShow = apartmentDetails?.images.slice(startIndex, endIndex);
-  const number_of_guests = Array.from({ length: 10 }, (_, i) => ({
-    key: i + 1,
-    value: i + 1,
-  }));
+  const number_of_guests = Array.from(
+    { length: apartmentDetails?.max_guests },
+    (_, i) => ({
+      key: i + 1,
+      value: i + 1,
+    })
+  );
   const adjustedStartIndex =
     imagesToShow?.length < 4 && totalImages > 4
       ? Math.max(totalImages - 4, 0)
