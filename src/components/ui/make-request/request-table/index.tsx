@@ -51,7 +51,10 @@ const RequestTable = ({
         <p className="text-[#6D6D6D]">{title}</p>
         {title === "Status of request" ? (
           <>
-            <StatusBadge desc={desc} status={singleData?.status ?? ""} />
+            <StatusBadge
+              desc={desc}
+              status={singleData?.booking?.payment_status ?? ""}
+            />
           </>
         ) : (
           <h2 className="font-medium">{desc}</h2>
@@ -59,7 +62,7 @@ const RequestTable = ({
       </div>
     );
   };
-
+  console.log("requestData", requestData);
   return (
     <>
       <Table className="mt-6">
@@ -120,7 +123,10 @@ const RequestTable = ({
                           </div>
                         </>
                       ) : (
-                        <StatusBadge desc={req.status} status={req.status} />
+                        <StatusBadge
+                          desc={req?.booking?.payment_status}
+                          status={req?.booking?.payment_status}
+                        />
                       )}
                     </TableCell>
                     <TableCell>
@@ -163,27 +169,30 @@ const RequestTable = ({
             <X size={16} onClick={() => setShowModal(false)} />
           </div>
           <section className="p-4 flex flex-col ">
-            <ReusableCard
-              title="Apartment Name"
-              desc={singleData?.shortlet?.name ?? ""}
-            />
-            <ReusableCard
-              title="Request Subject"
-              desc={singleData?.subject ?? ""}
-            />
-            <ReusableCard title="Date & Time" desc={formattedDate} />
-            <ReusableCard
-              title="Request ID"
-              desc={singleData?.request_id ?? ""}
-            />
-            <ReusableCard
-              title="Description"
-              desc={singleData?.description ?? ""}
-            />
-            <ReusableCard
-              title="Status of request"
-              desc={singleData?.status ?? ""}
-            />
+            {singleData?.shortlet?.name && (
+              <ReusableCard
+                title="Apartment Name"
+                desc={singleData.shortlet.name}
+              />
+            )}
+            {singleData?.subject && (
+              <ReusableCard title="Request Subject" desc={singleData.subject} />
+            )}
+            {formattedDate && (
+              <ReusableCard title="Date & Time" desc={formattedDate} />
+            )}
+            {singleData?.request_id && (
+              <ReusableCard title="Request ID" desc={singleData.request_id} />
+            )}
+            {singleData?.description && (
+              <ReusableCard title="Description" desc={singleData.description} />
+            )}
+            {singleData?.booking?.payment_status && (
+              <ReusableCard
+                title="Status of request"
+                desc={singleData.booking.payment_status}
+              />
+            )}
             <Button className="mt-6">Escalate</Button>
           </section>
         </section>

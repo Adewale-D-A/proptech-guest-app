@@ -12,7 +12,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, desc }) => {
     switch (status) {
       case "pending":
         return "border";
-      case "completed":
+      case "success":
         return "text-[#00C814] bg-[#F0FDEF]";
       default:
         return "bg-[#E9E9E9]";
@@ -20,7 +20,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, desc }) => {
   };
 
   const getTextStyles = () => {
-    return status === "completed" ? "text-[#00C814]" : "";
+    return status === "success" ? "text-[#00C814]" : "";
   };
 
   return (
