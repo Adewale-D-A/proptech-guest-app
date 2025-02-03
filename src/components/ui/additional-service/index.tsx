@@ -47,6 +47,7 @@ const AdditionalServicesComponent = ({
   pageSize,
   setPageIndex,
   setPageSize,
+  shortlet,
 }: AdditionalServicesComponentProps) => {
   const { toast } = useToast();
   const currentUser = use99Selector(selectCurrentUser);
@@ -215,7 +216,9 @@ const AdditionalServicesComponent = ({
                         ? "Review details of your order"
                         : "Provide your request details below"}
                     </h1>
-                    {step === 1 && <FirstStepForm form={form} />}
+                    {step === 1 && (
+                      <FirstStepForm shortlet={shortlet} form={form} />
+                    )}
                     {step === 2 && (
                       <SecondStepForm
                         form={form}

@@ -451,6 +451,7 @@ interface AdditionalServicesComponentProps extends Pagination {
   setEndDate: Dispatch<SetStateAction<string>>;
   endDate: string | undefined;
   startDate: string | undefined;
+  shortlet: Booking[];
 }
 
 interface MakeARequestResponseData extends Pagination {

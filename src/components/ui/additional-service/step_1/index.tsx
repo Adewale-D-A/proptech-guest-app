@@ -18,15 +18,22 @@ import {
 } from "@/components/_shared/select";
 import { useGetBookingsQuery } from "@/redux/services/booking";
 import { useGetServiceTypeQuery } from "@/redux/services/request";
+import { Booking } from "@/types/type";
 
 import React from "react";
 
-const FirstStepForm = ({ form }: { form: any }) => {
+const FirstStepForm = ({
+  form,
+  shortlet,
+}: {
+  form: any;
+  shortlet: Booking[];
+}) => {
   const { data } = useGetServiceTypeQuery();
   const serviceData = data && data?.data && data?.data?.serviceTypes?.data;
-  const { data: shortlet } = useGetBookingsQuery({});
+  // const { data: shortlet } = useGetBookingsQuery({});
 
-  const shortletData = (shortlet && shortlet?.data?.bookings?.data) ?? [];
+  // const shortletData = (shortlet && shortlet?.data?.bookings?.data) ?? [];
   return (
     <div className="flex flex-col gap-y-2">
       <FormField
@@ -63,14 +70,20 @@ const FirstStepForm = ({ form }: { form: any }) => {
                   />
                 </SelectTrigger>
                 <SelectContent>
-                  {shortletData.map((item) => (
-                    <SelectItem
-                      key={item.shortlet.id}
-                      value={String(item.shortlet.id)}
-                    >
-                      {item.shortlet.name}
-                    </SelectItem>
-                  ))}
+                  {shortlet.length > 0 ? (
+                    <>
+                      {shortlet.map((item) => (
+                        <SelectItem
+                          key={item.shortlet.id}
+                          value={String(item.shortlet.id)}
+                        >
+                          {item.shortlet.name}
+                        </SelectItem>
+                      ))}
+                    </>
+                  ) : (
+                    <p className="text-sm">No Apartment</p>
+                  )}
                 </SelectContent>
               </Select>
               <FormMessage className="text-xs text-red-500 font-light" />
