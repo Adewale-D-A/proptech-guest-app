@@ -3,7 +3,6 @@
 import { toast } from "@/components/_shared/toast/use-toast";
 import countries from "../data/countries";
 import { format, isYesterday, parseISO } from "date-fns";
-import { ErrorResponse } from "@/types/type";
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 export const NEXT_PUBLIC_REDIRECT_URL = process.env
   .NEXT_PUBLIC_REDIRECT_URL as string;
@@ -30,6 +29,9 @@ export const formatCurrency = (
 };
 
 export const formatDateTime = (dateString: string) => {
+  if (!dateString || isNaN(new Date(dateString).getTime())) {
+    return "Invalid date";
+  }
   const date = new Date(dateString);
   return new Intl.DateTimeFormat("en-GB", {
     day: "2-digit",

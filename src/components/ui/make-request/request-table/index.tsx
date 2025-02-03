@@ -43,6 +43,7 @@ const RequestTable = ({
     setShowModal(true);
     setSingleData(data);
   };
+  const formattedDate = formatDateTime(singleData?.created_at ?? "");
 
   const ReusableCard = ({ desc, title }: { title: string; desc: string }) => {
     return (
@@ -170,10 +171,7 @@ const RequestTable = ({
               title="Request Subject"
               desc={singleData?.subject ?? ""}
             />
-            <ReusableCard
-              title="Date & Time"
-              desc={formatDateTime(singleData?.created_at ?? "")}
-            />
+            <ReusableCard title="Date & Time" desc={formattedDate} />
             <ReusableCard
               title="Request ID"
               desc={singleData?.request_id ?? ""}
