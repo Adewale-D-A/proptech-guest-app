@@ -165,7 +165,7 @@ const BookingTable = ({
                     {formatCurrency(book.total_price, book.currency)}
                   </TableCell>
                   <TableCell className="font-medium text-xs">
-                    {formatDateTime(book.shortlet.created_at)}
+                    {formatDateTime(book.created_at)}
                   </TableCell>
                   <TableCell className="font-medium text-xs">
                     {book.number_of_days} Night
