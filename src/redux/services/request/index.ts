@@ -86,6 +86,13 @@ const requestEndpoints = injectEndpoints({
         };
       },
     }),
+    escalate: builder.mutation<any, { request_id: number; body: any }>({
+      query: ({ request_id, body }) => ({
+        url: `${Endpoints.api}user/request/escalate/${request_id}`,
+        method: Methods.put,
+        body,
+      }),
+    }),
   }),
 });
 
@@ -98,4 +105,5 @@ export const {
   useCreateAdditionalMutation,
   useRequestFeeMutation,
   useGetAdditionalRequestQuery,
+  useEscalateMutation,
 } = requestEndpoints;
