@@ -1,6 +1,6 @@
 /** @format */
 
-import { formatDateTime } from "@/_shared/constants";
+import { formatCurrency, formatDateTime } from "@/_shared/constants";
 import { Button } from "@/components/_shared/button";
 import { Modal } from "@/components/_shared/modal";
 import {
@@ -45,24 +45,30 @@ const RequestTable = ({
   };
   const formattedDate = formatDateTime(singleData?.created_at ?? "");
 
-  const ReusableCard = ({ desc, title }: { title: string; desc: string }) => {
+  const ReusableCard = ({
+    desc,
+    title,
+  }: {
+    title: string;
+    desc?: React.ReactNode | string;
+  }) => {
+    if (!desc) return null;
     return (
       <div className="flex justify-between border-b py-4 items-center">
-        <p className="text-[#6D6D6D]">{title}</p>
+        <p className="text-[#6D6D6D] text-sm">{title}</p>
         {title === "Status of request" ? (
           <>
             <StatusBadge
-              desc={desc}
+              desc={String(desc)}
               status={singleData?.booking?.payment_status ?? ""}
             />
           </>
         ) : (
-          <h2 className="font-medium">{desc}</h2>
+          <h2 className="font-medium text-sm">{desc}</h2>
         )}
       </div>
     );
   };
-  console.log("requestData", requestData);
   return (
     <>
       <Table className="mt-6">
@@ -183,6 +189,15 @@ const RequestTable = ({
             )}
             {singleData?.request_id && (
               <ReusableCard title="Request ID" desc={singleData.request_id} />
+            )}
+            {singleData?.amount_charged && (
+              <ReusableCard
+                title="Amount Paid"
+                desc={formatCurrency(
+                  Number(singleData?.amount_paid),
+                  singleData?.currency
+                )}
+              />
             )}
             {singleData?.description && (
               <ReusableCard title="Description" desc={singleData.description} />
