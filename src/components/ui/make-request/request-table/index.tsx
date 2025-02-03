@@ -1,5 +1,8 @@
 /** @format */
 
+import { formatDateTime } from "@/_shared/constants";
+import { Button } from "@/components/_shared/button";
+import { Modal } from "@/components/_shared/modal";
 import {
   Table,
   TableBody,
@@ -9,12 +12,12 @@ import {
   TableRow,
 } from "@/components/_shared/table";
 import PaginationTable from "@/components/pagination";
-import { UserRequestsResponse } from "@/types/type";
+import { UserRequest, UserRequestsResponse } from "@/types/type";
 import { format } from "date-fns";
-import { ScanSearch } from "lucide-react";
+import { ScanSearch, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 
-import React from "react";
+import React, { useState } from "react";
 
 const RequestTable = ({
   headers,
@@ -32,6 +35,49 @@ const RequestTable = ({
   setPageSize?: (index: number) => void;
 }) => {
   const pathName = usePathname();
+  const [showModal, setShowModal] = useState(false);
+  const [singleData, setSingleData] = useState<UserRequest>();
+
+  const handleModalShow = (data: UserRequest) => {
+    setShowModal(true);
+    setSingleData(data);
+  };
+
+  const ReusableCard = ({ desc, title }: { title: string; desc: string }) => {
+    return (
+      <div className="flex justify-between border-b py-4 items-center">
+        <p className="text-[#6D6D6D]">{title}</p>
+        {title === "Status of request" ? (
+          <>
+            <div
+              className={`h-8  flex justify-center items-center  w-20 rounded-full text-xs ${
+                singleData?.status === "pending"
+                  ? "border"
+                  : singleData?.status === "completed"
+                  ? "text-[#00C814] bg-[#F0FDEF]"
+                  : "bg-[#E9E9E9]"
+              } `}
+            >
+              <span
+                className={`${
+                  singleData?.status === "pending"
+                    ? ""
+                    : singleData?.status === "completed"
+                    ? "text-[#00C814]"
+                    : ""
+                }`}
+              >
+                {desc}
+              </span>
+            </div>
+          </>
+        ) : (
+          <h2 className="font-medium">{desc}</h2>
+        )}
+      </div>
+    );
+  };
+  console.log("data::", singleData);
 
   return (
     <>
@@ -117,7 +163,10 @@ const RequestTable = ({
                       )}
                     </TableCell>
                     <TableCell>
-                      <div className="w-9 bg-[#E6F2FF] h-9 flex items-center justify-center cursor-pointer rounded">
+                      <div
+                        className="w-9 bg-[#E6F2FF] h-9 flex items-center justify-center cursor-pointer rounded"
+                        onClick={() => handleModalShow(req)}
+                      >
                         <ScanSearch size={18} />
                       </div>
                     </TableCell>
@@ -141,6 +190,46 @@ const RequestTable = ({
         setPageSize={setPageSize}
         // pageSizeOptions={[10, 25, 50]}
       />
+      <Modal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        onClose={() => setShowModal(false)}
+        className="max-w-md"
+      >
+        <section>
+          <div className="flex p-4 border-b justify-between items-center">
+            <h1>Request Details</h1>
+            <X size={16} onClick={() => setShowModal(false)} />
+          </div>
+          <section className="p-4 flex flex-col ">
+            <ReusableCard
+              title="Apartment Name"
+              desc={singleData?.shortlet?.name ?? ""}
+            />
+            <ReusableCard
+              title="Request Subject"
+              desc={singleData?.subject ?? ""}
+            />
+            <ReusableCard
+              title="Date & Time"
+              desc={formatDateTime(singleData?.created_at ?? "")}
+            />
+            <ReusableCard
+              title="Request ID"
+              desc={singleData?.request_id ?? ""}
+            />
+            <ReusableCard
+              title="Description"
+              desc={singleData?.description ?? ""}
+            />
+            <ReusableCard
+              title="Status of request"
+              desc={singleData?.status ?? ""}
+            />
+            <Button className="mt-6">Escalate</Button>
+          </section>
+        </section>
+      </Modal>
     </>
   );
 };
