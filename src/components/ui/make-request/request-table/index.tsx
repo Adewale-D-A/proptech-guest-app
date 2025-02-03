@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/_shared/table";
 import PaginationTable from "@/components/pagination";
+import StatusBadge from "@/components/status-badge";
 import { UserRequest, UserRequestsResponse } from "@/types/type";
 import { format } from "date-fns";
 import { ScanSearch, X } from "lucide-react";
@@ -49,27 +50,7 @@ const RequestTable = ({
         <p className="text-[#6D6D6D]">{title}</p>
         {title === "Status of request" ? (
           <>
-            <div
-              className={`h-8  flex justify-center items-center  w-20 rounded-full text-xs ${
-                singleData?.status === "pending"
-                  ? "border"
-                  : singleData?.status === "completed"
-                  ? "text-[#00C814] bg-[#F0FDEF]"
-                  : "bg-[#E9E9E9]"
-              } `}
-            >
-              <span
-                className={`${
-                  singleData?.status === "pending"
-                    ? ""
-                    : singleData?.status === "completed"
-                    ? "text-[#00C814]"
-                    : ""
-                }`}
-              >
-                {desc}
-              </span>
-            </div>
+            <StatusBadge desc={desc} status={singleData?.status ?? ""} />
           </>
         ) : (
           <h2 className="font-medium">{desc}</h2>
@@ -77,7 +58,6 @@ const RequestTable = ({
       </div>
     );
   };
-  console.log("data::", singleData);
 
   return (
     <>
@@ -139,27 +119,7 @@ const RequestTable = ({
                           </div>
                         </>
                       ) : (
-                        <div
-                          className={`h-8  flex justify-center items-center  w-20 rounded-full text-xs ${
-                            req.status === "pending"
-                              ? "border"
-                              : req.status === "completed"
-                              ? "text-[#00C814] bg-[#F0FDEF]"
-                              : "bg-[#E9E9E9]"
-                          } `}
-                        >
-                          <span
-                            className={`${
-                              req.status === "pending"
-                                ? ""
-                                : req.status === "completed"
-                                ? "text-[#00C814]"
-                                : ""
-                            }`}
-                          >
-                            {req.status}
-                          </span>
-                        </div>
+                        <StatusBadge desc={req.status} status={req.status} />
                       )}
                     </TableCell>
                     <TableCell>

@@ -86,7 +86,6 @@ const ShortLetPreviewComponent = ({
     blockedDates: availableDates?.blocked_dates || [],
     bookedDates: availableDates?.booked_dates || [],
   });
-  console.log("apartmentDetails", apartmentDetails?.max_guests);
   const handleDateChange = (date: Date | undefined) => {
     setDate(date);
   };
