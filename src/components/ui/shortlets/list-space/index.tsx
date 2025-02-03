@@ -34,6 +34,7 @@ import { Calendar } from "@/components/_shared/calander";
 import ThunderLoader from "@/components/loader/thunder-loader";
 import useCheckAvaliability from "@/redux/hooks/check-avaliable-date";
 import { parseISO } from "date-fns";
+import { DatePicker } from "@/components/date-picker";
 
 const ListSpace = ({
   setShowModal,
@@ -52,6 +53,8 @@ const ListSpace = ({
   const [location, setLocation] = useState<string>("");
   const [numOfRooms, setNumOfRooms] = useState<string>("");
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+  const [from, setFrom] = useState<Date | undefined>();
+  const [to, setTo] = useState<Date | undefined>();
   const [showDate, setShowDate] = useState(false);
   const [
     getAvailableDate,
@@ -160,12 +163,32 @@ const ListSpace = ({
                 orientation="vertical"
                 className=" bg-black/10  h-20"
               />
-              <div
-                onClick={() => setShowModal(true)}
-                className="w-1/2 cursor-pointer flex  pl-6 items-center"
-              >
-                <SlidersHorizontal />
-              </div>
+              <section className="pt-2 flex items-center">
+                <section>
+                  <p className="text-gray-100 text-xs">From</p>
+                  <DatePicker
+                    className="w-32 border-none mt-0"
+                    date={from}
+                    setDate={setFrom}
+                    removeBg={true}
+                    placeholder="dd/mm/yyyy"
+                    rightIcon
+                    showIcon={false}
+                  />
+                </section>
+                <section>
+                  <p className="text-gray-100 text-xs">To</p>
+                  <DatePicker
+                    className="w-32 border-none mt-0"
+                    date={to}
+                    setDate={setTo}
+                    placeholder="dd/mm/yyyy"
+                    removeBg={true}
+                    rightIcon
+                    showIcon={false}
+                  />
+                </section>
+              </section>
             </div>
             <div className="h-full cursor-pointer">
               <Button

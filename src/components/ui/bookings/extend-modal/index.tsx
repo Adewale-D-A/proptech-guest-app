@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { Bath, Bed, House, MapPin, X } from "lucide-react";
 import { faker } from "@faker-js/faker";
 import { DatePicker } from "@/components/date-picker";

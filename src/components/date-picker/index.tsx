@@ -23,6 +23,7 @@ type IProps = {
   disabled?: boolean;
   disabledCalendar?: any;
   removeBg?: boolean;
+  rightIcon?: boolean;
 };
 
 export function DatePicker({
@@ -35,6 +36,7 @@ export function DatePicker({
   disabled = false,
   disabledCalendar,
   removeBg,
+  rightIcon,
 }: IProps) {
   return (
     <Popover>
@@ -50,7 +52,10 @@ export function DatePicker({
           )}
           disabled={disabled}
         >
-          <div className="flex justify-between w-full">
+          <div className="flex items-center justify-between w-full">
+            {rightIcon && (
+              <CalandarIcon className="mr-2 text-xs h-4 w-4" size={20} />
+            )}
             <div className="flex w-full font-light items-center">
               {date ? (
                 format(date, "yyyy-MM-dd")
