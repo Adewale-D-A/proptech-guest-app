@@ -14,6 +14,7 @@ import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
 import { logout, selectCurrentUser } from "@/redux/slices/authSlice";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import Image from "next/image";
 const UserDropDown = () => {
   const router = useRouter();
   const currentUser = use99Selector(selectCurrentUser);
@@ -23,16 +24,18 @@ const UserDropDown = () => {
     router.push("/landing");
     Cookies.remove("access_token");
   };
-
+  console.log("currentUser?.profile_photo", currentUser?.profile_photo);
   return (
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild className="w-full">
           <Card className="flex cursor-pointer shadow-sm border-gray-200 w-fit px-2 justify-center h-11 items-center gap-3">
             {currentUser?.profile_photo ? (
-              <img
+              <Image
                 src={currentUser?.profile_photo}
                 alt=""
+                width={32}
+                height={32}
                 className="w-8 h-8 rounded-full"
               />
             ) : (

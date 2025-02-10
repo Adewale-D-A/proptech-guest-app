@@ -22,7 +22,7 @@ const PointInterest = ({
   return (
     <AnimatedContainer className="">
       <div className="border-b p-4">
-        <h1 className="font-medium ">Cancellation Policies </h1>
+        <h1 className="font-medium ">Points of Interest</h1>
       </div>
       <div className="p-4 flex justify-between">
         <div className="flex gap-3">

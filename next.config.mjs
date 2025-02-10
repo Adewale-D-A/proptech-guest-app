@@ -5,7 +5,10 @@
 
 const nextConfig = {
   images: {
-    domains: ["99apt-shortlet.fra1.digitaloceanspaces.com"],
+    domains: [
+      "99apt-shortlet.fra1.digitaloceanspaces.com",
+      "via.placeholder.com",
+    ],
   },
   webpack(
     config,

@@ -75,8 +75,6 @@ const RequestTable = ({
     },
   });
 
-  console.log("escalataSchema", singleData);
-
   function handleClose() {
     setEscalateModal(false);
     setShowModal(false);
@@ -185,10 +183,7 @@ const RequestTable = ({
                           </div>
                         </>
                       ) : (
-                        <StatusBadge
-                          desc={req?.booking?.payment_status}
-                          status={req?.booking?.payment_status}
-                        />
+                        <StatusBadge desc={req?.status} status={req?.status} />
                       )}
                     </TableCell>
                     <TableCell>
