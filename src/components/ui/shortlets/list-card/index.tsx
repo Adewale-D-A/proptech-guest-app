@@ -14,9 +14,19 @@ const ListCard = ({
 }) => {
   return (
     <div className="flex justify-between items-center">
-      <p className="text-[#545454] text-xs font-light">{costName}</p>
+      <p
+        className={`text-[#545454] text-xs font-light ${
+          costName === "Total" ? " text-primary-1 font-semibold" : ""
+        }`}
+      >
+        {costName}
+      </p>
       {amt !== null && (
-        <p className="text-sm">
+        <p
+          className={`text-sm ${
+            costName === "Total" ? " text-primary-1 font-semibold" : ""
+          }`}
+        >
           {currency ? formatCurrency(amt, currency) : amt.toLocaleString()}
         </p>
       )}

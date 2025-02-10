@@ -2,7 +2,6 @@
 
 import AnimatedContainer from "@/components/_shared/framer/animate-div";
 import { Shortlet } from "@/types/type";
-import { Car } from "lucide-react";
 import React from "react";
 import { TbPointerPin } from "react-icons/tb";
 

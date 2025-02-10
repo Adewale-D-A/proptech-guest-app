@@ -46,6 +46,7 @@ import { Modal } from "@/components/_shared/modal";
 import { Checkbox } from "@/components/_shared/check-box";
 import { Calendar } from "@/components/_shared/calander";
 import useCheckAvaliability from "@/redux/hooks/check-avaliable-date";
+import { Separator } from "@/components/_shared/separator";
 
 type FormValues = z.infer<typeof bookingSchema>;
 
@@ -64,9 +65,10 @@ const ShortLetPreviewComponent = ({
   const params = useParams();
   const { toast } = useToast();
   const [priceDetails, setPriceDetails] = useState({
-    estimatedPrice: null as number | null,
+    totalPrice: null as number | null,
     cautionPrice: null as number | null,
     taxFee: null as number | null,
+    baseCost: null as number | null,
   });
   const [tokens, setTokens] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -211,9 +213,10 @@ const ShortLetPreviewComponent = ({
         try {
           const res = await bookingPrice(payload).unwrap();
           setPriceDetails({
-            estimatedPrice: res?.data?.total_cost,
+            totalPrice: res?.data?.total_cost,
             cautionPrice: res?.data?.caution_fee,
             taxFee: res?.data?.tax_fee,
+            baseCost: res?.data?.base_cost,
           });
         } catch (err) {
           errorHandler(err as any);
@@ -447,15 +450,15 @@ const ShortLetPreviewComponent = ({
                           </div>
                         ) : (
                           <>
-                            {priceDetails.estimatedPrice !== null && (
+                            {priceDetails.totalPrice !== null && (
                               <section>
                                 <div className="border-b p-4">
                                   <h1 className="">Booking Summary</h1>
                                 </div>
                                 <div className="p-4">
-                                  <div className="border-b py-3 flex flex-col gap-3">
+                                  <div className=" py-3 flex flex-col gap-3">
                                     <ListCard
-                                      amt={priceDetails.estimatedPrice}
+                                      amt={priceDetails.baseCost}
                                       costName="Estimated cost for 1 night "
                                       currency="NGN"
                                     />
@@ -464,14 +467,16 @@ const ShortLetPreviewComponent = ({
                                       costName="Refundable Caution fee"
                                       currency="NGN"
                                     />
-                                    <ListCard
-                                      amt={priceDetails.estimatedPrice}
-                                      costName="Total (1 Night)"
-                                      currency="NGN"
-                                    />
+
                                     <ListCard
                                       amt={priceDetails.taxFee}
                                       costName="Tax (7.5%)"
+                                      currency="NGN"
+                                    />
+                                    <Separator />
+                                    <ListCard
+                                      amt={priceDetails.totalPrice}
+                                      costName="Total"
                                       currency="NGN"
                                     />
                                   </div>
