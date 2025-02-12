@@ -70,11 +70,11 @@ const HeroSection = () => {
           <div className="absolute inset-0 bg-black opacity-60 z-20" />
 
           <div className="relative px-4 flex flex-col items-center justify-center w-full h-full z-30">
-            <h1 className="text-white  hidden md:flex  text-4xl lg:text-6xl font-semibold">
+            <h1 className="text-white   flex  text-4xl lg:text-6xl font-semibold">
               <GradualSpacing text={"Availability"} />{" "}
             </h1>
 
-            <AnimatedContainer className="text-white text-xl mt-4">
+            <AnimatedContainer className="text-white text-center text-xl mt-4">
               From a room for a night to an apartment for as long as you like
             </AnimatedContainer>
           </div>

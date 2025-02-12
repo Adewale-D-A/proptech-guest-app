@@ -173,7 +173,13 @@ const HomeNavBar = () => {
                 </div>
                 <div className="lg:hidden flex">
                   <Menu
-                    color={scrolled ? "black" : "white"}
+                    color={
+                      pathName === "/availability"
+                        ? "black"
+                        : scrolled
+                        ? "black"
+                        : "white"
+                    }
                     onClick={toggleSidebar}
                   />
                 </div>
