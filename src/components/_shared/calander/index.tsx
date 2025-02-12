@@ -49,22 +49,22 @@ function Calendar({
           buttonVariants({ variant: "ghost" }),
           "h-8 w-8 m-1 font-normal aria-selected:opacity-100 rounded-[5px] relative",
           "bg-[#E9E9E9]",
-          !removeBg && "after:bg-[#00BB40]",
-          "after:content-[''] after:absolute after:top-0 after:right-0 after:w-2 after:h-2 after:rounded-none"
+          !removeBg &&
+            "[&:not(.day-disabled)]:after:content-[''] [&:not(.day-disabled)]:after:absolute [&:not(.day-disabled)]:after:bottom-[-4.5px] [&:not(.day-disabled)]:after:right-1 [&:not(.day-disabled)]:after:w-2.5 [&:not(.day-disabled)]:after:h-2.5 [&:not(.day-disabled)]:after:bg-[url('/marker.png')] [&:not(.day-disabled)]:after:bg-contain [&:not(.day-disabled)]:after:bg-no-repeat",
+          "[&.day-disabled]:after:content-none"
         ),
 
         day_range_start: "day-range-start ",
         day_range_end: "day-range-end ",
         day_selected:
-          "border border-green bg-green text-white    focus:border-green focus:text-white",
+          "border border-green bg-green text-white    focus:border-green focus:text-white [&:not(.day-disabled)]:after:bg-none",
         day_today: "bg-accent text-accent-foreground",
         day_outside:
           "day-outside text-muted-foreground aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
         day_disabled: cn(
           "text-muted-foreground opacity-50 bg-[#E9E9E9] cursor-not-allowed rounded-[5px] z-30 relative",
-          "[&:after]:content-none"
+          "[&:after]:content-none [&:not(.day-disabled)]:after:bg-none"
         ),
-
         day_range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",

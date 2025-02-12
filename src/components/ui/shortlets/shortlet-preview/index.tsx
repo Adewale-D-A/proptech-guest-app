@@ -1,7 +1,12 @@
 /** @format */
 "use client";
 import React, { useEffect, useState } from "react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { Button } from "@/components/_shared/button";
 import { MdArrowBack } from "react-icons/md";
 import { IoArrowForward } from "react-icons/io5";
@@ -62,6 +67,7 @@ const ShortLetPreviewComponent = ({
   const router = useRouter();
   const dispatch = use99Dispatch();
   const searchParams = useSearchParams();
+  const pathName = usePathname();
   const params = useParams();
   const { toast } = useToast();
   const [priceDetails, setPriceDetails] = useState({
@@ -260,7 +266,7 @@ const ShortLetPreviewComponent = ({
   return (
     <div className="pt-24">
       <section className="max-w-screen-custom mx-auto px-4">
-        <BackButton navigation="/shortlets" />
+        <BackButton />
         <AnimatedContainer className="flex mt-6 gap-4">
           <div className="w-full relative">
             <img

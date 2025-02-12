@@ -1,15 +1,7 @@
 /** @format */
 
 import React from "react";
-import {
-  CustomerSection,
-  HeroSection,
-  NightFree,
-  OurPartner,
-  OurProduct,
-  PropertyNeeds,
-  Subscribe,
-} from "./component";
+import { HeroSection, NightFree, OurProduct, PropertyNeeds } from "./component";
 
 const HomePageComponent = () => {
   return (

@@ -60,10 +60,15 @@ interface ShortletDataResponse extends GeneralResponseStatus {
 
 interface ShortletData {
   bookings?: Booking;
-  shortlet: ShortletPage;
+  shortlet: ListedApartmentType;
+  data: ListedApartmentType;
 }
 
-interface ShortletPage {
+interface ListedApartmentAvaliableType {
+  data: ListedApartmentType;
+}
+
+interface ListedApartmentType {
   current_page: number;
   data: Shortlet[];
   first_page_url: string;

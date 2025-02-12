@@ -1,6 +1,14 @@
 /** @format */
 "use client";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/_shared/drop-down";
+import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
@@ -78,27 +86,28 @@ const NavSectionTabs = ({
             </NavigationMenuTrigger>
           )}
           <NavigationMenuContent className="rounded-[20px]">
-            {/* <div>hey</div> */}
+            <div>hey</div>
           </NavigationMenuContent>
         </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link href="/pricing" legacyBehavior passHref>
-            {isMainRoute ? (
-              <NavigationMenuLink
-                className={`${navigationMenuTriggerStyle()} bg-transparent font-normal  ${
-                  scrolled ? "text-black" : "text-white"
-                }`}
-              >
-                Additional Services
-              </NavigationMenuLink>
-            ) : (
-              <NavigationMenuLink
-                className={`${navigationMenuTriggerStyle()} bg-transparent font-normal  text-black`}
-              >
-                Additional Services
-              </NavigationMenuLink>
-            )}
-          </Link>
+        <NavigationMenuItem className="w-full rounded-none mx-auto">
+          {isMainRoute ? (
+            <NavigationMenuTrigger
+              className={` font-normal bg-transparent  text-white ${
+                scrolled ? "text-black" : "text-white"
+              }`}
+            >
+              Adventures
+            </NavigationMenuTrigger>
+          ) : (
+            <NavigationMenuTrigger
+              className={` font-normal bg-transparent  text-black `}
+            >
+              Adventures
+            </NavigationMenuTrigger>
+          )}
+          <NavigationMenuContent className="rounded-none bg-white w-full mx-auto">
+            <div className="w-[50px] mx-auto ">hey</div>
+          </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <Link
