@@ -8,7 +8,7 @@ const HomePageLayout = ({ children }: React.PropsWithChildren) => {
     <>
       <HomeNavBar />
       <main>{children}</main>
-      {/* <Footer /> */}
+      <Footer />
     </>
   );
 };

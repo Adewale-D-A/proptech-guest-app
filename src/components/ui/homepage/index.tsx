@@ -1,7 +1,15 @@
 /** @format */
 
 import React from "react";
-import { HeroSection, NightFree, OurProduct, PropertyNeeds } from "./component";
+import {
+  CustomerSection,
+  HeroSection,
+  NightFree,
+  OurPartner,
+  OurProduct,
+  PropertyNeeds,
+  Subscribe,
+} from "./component";
 
 const HomePageComponent = () => {
   return (
@@ -10,9 +18,9 @@ const HomePageComponent = () => {
       <OurProduct />
       <PropertyNeeds />
       <NightFree />
-      {/* <CustomerSection />
+      <CustomerSection />
       <OurPartner />
-      <Subscribe /> */}
+      <Subscribe />
     </>
   );
 };
