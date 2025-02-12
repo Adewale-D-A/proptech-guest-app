@@ -181,7 +181,9 @@ const HomeNavBar = () => {
             )}
           </div>
         </div>
-        {(pathName === "/shortlets" || pathName === "/landing") && (
+        {(pathName === "/shortlets" ||
+          pathName === "/landing" ||
+          "/availability") && (
           <AuthModal
             handleClose={handleClose}
             handleOpen={handleOpen}
