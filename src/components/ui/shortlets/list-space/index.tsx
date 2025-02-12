@@ -15,12 +15,10 @@ import { useVerifyPayment } from "@/redux/hooks/useVerifyPayment";
 import { useGetAvailableDateMutation } from "@/redux/services/shortlet";
 import { Calendar } from "@/components/_shared/calander";
 import ThunderLoader from "@/components/loader/thunder-loader";
-import useCheckAvaliability from "@/redux/hooks/check-avaliable-date";
 import { parseISO } from "date-fns";
 import SearchDash from "@/components/search-dash";
 import CardItem from "@/components/apt-items-card";
 import Image from "next/image";
-import { formatDateTime } from "@/_shared/constants";
 
 const ListSpace = ({
   setShowModal,
@@ -54,11 +52,6 @@ const ListSpace = ({
         : [...prevSelected, amenityId]
     );
   };
-  const { actions, state } = useCheckAvaliability({
-    blockedDates: availableDates?.data?.blocked_dates || [],
-    bookedDates: availableDates?.data?.booked_dates || [],
-  });
-  const formattedDate = to?.toISOString().split("T")[0];
   const handleSearch = () => {
     if (pathName === "/availability") {
       const formattedDateTo = to?.toISOString().split("T")[0];

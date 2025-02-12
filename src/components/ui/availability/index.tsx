@@ -1,6 +1,6 @@
 /** @format */
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import HeroSection from "./hero-section";
 import { ListSpace } from "../shortlets/component";
 import { useGetGuestListQuery } from "@/redux/services/shortlet";
