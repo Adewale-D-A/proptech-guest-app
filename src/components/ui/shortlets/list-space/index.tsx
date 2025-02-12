@@ -104,7 +104,7 @@ const ListSpace = ({
   useVerifyPayment();
 
   return (
-    <div className=" relative bottom-10 z-40">
+    <div className=" relative lgs:bottom-10 z-40">
       <div className="max-w-screen-custom mx-auto px-4">
         <SearchDash
           location={location}
@@ -122,7 +122,7 @@ const ListSpace = ({
           {isLoading ? (
             <div className="grid grid-cols-3 gap-4  mt-8">{skeletonRows}</div>
           ) : (
-            <div className="grid grid-cols-3 gap-4 mt-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
               {shortletData && shortletData.length <= 0 ? (
                 <>
                   <div>no data avaliable</div>
