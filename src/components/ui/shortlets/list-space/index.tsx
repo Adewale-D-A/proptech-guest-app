@@ -20,6 +20,7 @@ import { parseISO } from "date-fns";
 import SearchDash from "@/components/search-dash";
 import CardItem from "@/components/apt-items-card";
 import Image from "next/image";
+import { formatDateTime } from "@/_shared/constants";
 
 const ListSpace = ({
   setShowModal,
@@ -57,11 +58,23 @@ const ListSpace = ({
     blockedDates: availableDates?.data?.blocked_dates || [],
     bookedDates: availableDates?.data?.booked_dates || [],
   });
+  const formattedDate = to?.toISOString().split("T")[0];
   const handleSearch = () => {
-    setFilters({
-      location,
-      room_option_id: numOfRooms,
-    });
+    if (pathName === "/availability") {
+      const formattedDateTo = to?.toISOString().split("T")[0];
+      const formattedDateFrom = from?.toISOString().split("T")[0];
+      setFilters({
+        shortlet_name: location,
+        number_of_rooms: numOfRooms,
+        start_date: formattedDateFrom,
+        end_date: formattedDateTo,
+      });
+    } else {
+      setFilters({
+        location,
+        room_option_id: numOfRooms,
+      });
+    }
   };
 
   const skeletonRows = Array.from({ length: 5 }, (_, index) => (

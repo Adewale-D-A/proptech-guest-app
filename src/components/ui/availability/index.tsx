@@ -7,10 +7,12 @@ import { useGetGuestListQuery } from "@/redux/services/shortlet";
 
 const AvailabilityPageComponent = () => {
   const [filters, setFilters] = useState({
-    location: "",
+    shortlet_name: "",
     room_option_id: "",
+    start_date: "",
+    end_date: "",
   });
-  const { data, isLoading } = useGetGuestListQuery({});
+  const { data, isLoading } = useGetGuestListQuery(filters);
 
   const [showModal, setShowModal] = useState(false);
 
