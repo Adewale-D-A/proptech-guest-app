@@ -21,8 +21,8 @@ const Map = ({
   });
 
   const center = {
-    lat: lat, // Latitude for San Francisco
-    lng: lng, // Longitude for San Francisco
+    lat,
+    lng,
   };
 
   const mapContainerStyle = {
