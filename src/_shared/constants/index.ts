@@ -6,6 +6,8 @@ import { format, isYesterday, parseISO } from "date-fns";
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
 export const NEXT_PUBLIC_REDIRECT_URL = process.env
   .NEXT_PUBLIC_REDIRECT_URL as string;
+export const NEXT_PUBLIC_GOOGLE_MAP_APT_KEY = process.env
+  .NEXT_PUBLIC_GOOGLE_MAP_APT_KEY as string;
 export const buildQueryString = (params: any) =>
   Object.keys(params)
     .map(

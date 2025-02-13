@@ -1,12 +1,7 @@
 /** @format */
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  useParams,
-  usePathname,
-  useRouter,
-  useSearchParams,
-} from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/_shared/button";
 import { MdArrowBack } from "react-icons/md";
 import { IoArrowForward } from "react-icons/io5";
@@ -67,7 +62,6 @@ const ShortLetPreviewComponent = ({
   const router = useRouter();
   const dispatch = use99Dispatch();
   const searchParams = useSearchParams();
-  const pathName = usePathname();
   const params = useParams();
   const { toast } = useToast();
   const [priceDetails, setPriceDetails] = useState({
@@ -262,6 +256,9 @@ const ShortLetPreviewComponent = ({
     dispatch(clearEmail());
     handleOpen(false, type);
   };
+
+  console.log("apaya:::", apartmentDetails?.latitude);
+  console.log("apaya:::", apartmentDetails?.longitude);
 
   return (
     <div className="pt-24">

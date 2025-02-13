@@ -111,6 +111,8 @@ interface Shortlet {
   room_option: RoomOption;
   extra_option_items: ExtraOptionItem[];
   safeties: Safety[];
+  latitude?: string;
+  longitude?: string;
 }
 
 interface Amenity {

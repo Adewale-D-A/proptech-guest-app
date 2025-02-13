@@ -32,6 +32,7 @@ import { Card } from "@/components/_shared/card";
 import ThunderLoader from "@/components/loader/thunder-loader";
 import { Booking } from "@/types/type";
 import PaginationTable from "@/components/pagination";
+import GoogleMapComponent from "@/components/google-map";
 
 const BookingTable = ({
   headers,
@@ -109,6 +110,8 @@ const BookingTable = ({
 
     return () => clearInterval(interval);
   }, [images.length]);
+
+  console.log("singleBookingsData", singleBookingsData);
 
   return (
     <div>
@@ -346,8 +349,19 @@ const BookingTable = ({
                 </section>
               </Card>
 
-              <div className="bg-gray-200 w-1/2 flex justify-center items-center h-full sticky top-0">
-                <div>google map location</div>
+              <div className="w-1/2 flex justify-center items-center h-full sticky top-0">
+                {Number(singleBookingsData?.latitude) !== 0 &&
+                Number(singleBookingsData?.longitude) !== 0 ? (
+                  <GoogleMapComponent
+                    lat={Number(singleBookingsData?.latitude)}
+                    lng={Number(singleBookingsData?.longitude)}
+                    height={"100%"}
+                  />
+                ) : (
+                  <div>
+                    <p>No location found yet!!!</p>
+                  </div>
+                )}
               </div>
             </section>
           )}

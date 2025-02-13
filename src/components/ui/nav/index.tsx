@@ -151,7 +151,6 @@ const HomeNavBar = () => {
               </div>
             ) : (
               <>
-                {" "}
                 <div className="hidden lg:flex items-center gap-x-2">
                   <Button
                     variant={"outline"}
