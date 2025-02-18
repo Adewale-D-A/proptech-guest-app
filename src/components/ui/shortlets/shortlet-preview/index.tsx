@@ -43,7 +43,6 @@ import ThunderLoader from "@/components/loader/thunder-loader";
 import { clearEmail, selectEmail } from "@/redux/slices/emailSlice";
 import AuthModal from "../../auth/auth-modal";
 import { Modal } from "@/components/_shared/modal";
-import { Checkbox } from "@/components/_shared/check-box";
 import { Calendar } from "@/components/_shared/calander";
 import useCheckAvaliability from "@/redux/hooks/check-avaliable-date";
 import { Separator } from "@/components/_shared/separator";
