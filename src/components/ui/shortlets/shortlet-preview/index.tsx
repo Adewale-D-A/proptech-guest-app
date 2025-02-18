@@ -47,6 +47,8 @@ import { Checkbox } from "@/components/_shared/check-box";
 import { Calendar } from "@/components/_shared/calander";
 import useCheckAvaliability from "@/redux/hooks/check-avaliable-date";
 import { Separator } from "@/components/_shared/separator";
+import { parseISO } from "date-fns";
+import Image from "next/image";
 
 type FormValues = z.infer<typeof bookingSchema>;
 
@@ -257,9 +259,15 @@ const ShortLetPreviewComponent = ({
     handleOpen(false, type);
   };
 
-  console.log("apaya:::", apartmentDetails?.latitude);
-  console.log("apaya:::", apartmentDetails?.longitude);
+  const disabledDates = availableDates?.blocked_dates.concat(
+    availableDates?.booked_dates
+  );
+  const disabledDatesArray = disabledDates
+    ? disabledDates.map((date: any) => parseISO(date))
+    : [];
+  const yesterday = new Date();
 
+  console.log("disabledDatesArray", disabledDatesArray);
   return (
     <div className="pt-24">
       <section className="max-w-screen-custom mx-auto px-4">
@@ -556,40 +564,26 @@ const ShortLetPreviewComponent = ({
                 <X size={16} onClick={() => setShowDate(false)} />
               </section>
               <Calendar
+                disabled={[...disabledDatesArray, { before: yesterday }]}
+                className=" "
                 mode="single"
-                selected={
-                  state?.filteredDates?.length > 0
-                    ? state?.filteredDates[0]
-                    : undefined
-                }
-                onSelect={handleDateChange}
-                disabled={[
-                  (date) =>
-                    state?.filteredDates?.some(
-                      (d) =>
-                        d.toISOString().split("T")[0] ===
-                        date.toISOString().split("T")[0]
-                    ),
-                  { before: new Date() },
-                ]}
-                className="pt-10"
               />
-              <section className="flex justify-between items-center mt-6 px-5">
-                <section className="flex items-center gap-2">
-                  <Checkbox
-                    checked={state?.availableChecked}
-                    onCheckedChange={actions?.handleAvailableToggle}
-                  />
+              <section className="flex justify-between items-center mt-6 w-full">
+                <section className="flex w-full items-center gap-2">
+                  <div className="w-5 h-5 flex justify-end items-end bg-[#E9E9E9] rounded-[2px] px-1 py-1">
+                    <Image
+                      src={"/marker.png"}
+                      width={8}
+                      height={8}
+                      alt="marker"
+                    />
+                  </div>
                   <span className="text-xs text-[#606569] font-medium">
                     Available Dates
                   </span>
                 </section>
-                <section className="flex items-center gap-2">
-                  <Checkbox
-                    checked={state?.unavailableChecked}
-                    onCheckedChange={actions?.handleUnavailableToggle}
-                  />
-
+                <section className="flex justify-end items-center gap-2 w-full ">
+                  <div className="w-5 h-5 bg-[#E9E9E9] rounded-[2px]" />
                   <span className="text-xs text-[#606569] font-medium ">
                     Unavailable Dates
                   </span>
