@@ -22,8 +22,7 @@ import { Button } from "@/components/_shared/button";
 import { LoadingButton } from "@/components/_shared/loading-button";
 import { useSignInMutation } from "@/redux/services/auth/auth";
 import { use99Dispatch } from "@/redux/hooks/hooks";
-import { setUserDetails, setUserToken } from "@/redux/slices/authSlice";
-import Cookies from "js-cookie";
+import { setUserDetails } from "@/redux/slices/authSlice";
 import { errorHandler } from "@/_shared/constants";
 import { setToken } from "@/_shared";
 const SignInform = ({
@@ -52,14 +51,7 @@ const SignInform = ({
     try {
       const response = await signIn(values).unwrap();
       const token = response?.data?.access_token;
-      dispatch(setUserToken(response?.data?.access_token));
-      setToken(response?.data?.access_token);
-      const rememberMe = form.getValues("rememberMe");
-      if (rememberMe) {
-        setToken(response?.data?.access_token);
-      } else {
-        setToken(response?.data?.access_token);
-      }
+      setToken(token);
       dispatch(setUserDetails(response?.data?.user));
       toast({
         variant: "default",

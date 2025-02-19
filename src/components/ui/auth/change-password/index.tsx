@@ -20,8 +20,9 @@ import { useResetPasswordMutation } from "@/redux/services/auth/auth";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSearchParams } from "next/navigation";
-import { use99Dispatch } from "@/redux/hooks/hooks";
+import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
 import { clearEmail } from "@/redux/slices/emailSlice";
+import { selectUserToken, setClearToken } from "@/redux/slices/authSlice";
 
 const changePasswordSchema = z
   .object({
@@ -37,13 +38,14 @@ const changePasswordSchema = z
 
 const ChangePasswordForm = ({
   handleOpen,
-  token,
-}: {
+}: // token,
+{
   handleOpen: (open: boolean, modalType: string) => void;
-  token: string;
+  // token: string;
 }) => {
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
   const dispatch = use99Dispatch();
+  const token = use99Selector(selectUserToken);
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
   const [showPassword, setShowPassword] = useState(false);
@@ -66,6 +68,7 @@ const ChangePasswordForm = ({
         description: "Your password has been updated.",
       });
       dispatch(clearEmail());
+      dispatch(setClearToken());
       handleOpen(true, "successful");
     } catch (err) {
       const errorMessage =

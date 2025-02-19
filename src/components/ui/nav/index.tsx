@@ -11,17 +11,19 @@ import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
 import {
   logout,
   selectCurrentUser,
-  selectUserToken,
+  setUserDetails,
 } from "@/redux/slices/authSlice";
 import { setActiveTab } from "@/redux/slices/active_tab";
 import { MdOutlineDateRange } from "react-icons/md";
 import AuthModal from "../auth/auth-modal";
 import { motion } from "framer-motion";
 import Cookies from "js-cookie";
+import { useGetUsersQuery } from "@/redux/services/auth/auth";
+import { jwtDecode } from "jwt-decode";
+import { getToken } from "@/_shared";
 
 const HomeNavBar = () => {
   const currentUser = use99Selector(selectCurrentUser);
-  const userToken = use99Selector(selectUserToken);
   const router = useRouter();
   const dispatch = use99Dispatch();
   const searchParams = useSearchParams();
@@ -30,19 +32,42 @@ const HomeNavBar = () => {
   const [showModal, setShowModal] = useState(false);
   const [type, setType] = useState("");
   const email = use99Selector(selectEmail);
-  const [token, setToken] = useState("");
   const isMainRoute = pathName === "/shortlets" || pathName === "/landing";
+  const token = getToken();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
   const closeSidebar = () => setIsSidebarOpen(false);
+  const { data: userData } = useGetUsersQuery(undefined, {
+    skip: !token,
+  });
 
   useEffect(() => {
-    const tokenFromCookies = Cookies.get("access_token");
-    if (!currentUser || !userToken || !tokenFromCookies) {
+    if (token) {
+      try {
+        const { exp } = jwtDecode<{ exp: number }>(token);
+        const isTokenExpired = Date.now() >= exp * 1000;
+        if (isTokenExpired) {
+          dispatch(logout());
+          router.push("/landing");
+        } else {
+          if (userData) {
+            dispatch(setUserDetails(userData));
+          }
+        }
+      } catch (error) {
+        dispatch(logout());
+        router.push("/landing");
+      }
+    }
+  }, [token, dispatch, router, userData]);
+
+  useEffect(() => {
+    const token = getToken();
+    if (!currentUser || !token) {
       dispatch(logout());
       Cookies.remove("access_token");
     }
-  }, [currentUser, userToken, dispatch, router]);
+  }, [currentUser, token, dispatch, router]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -85,24 +110,6 @@ const HomeNavBar = () => {
     handleOpen(false, type);
   };
 
-  // const handleLogout = () => {
-  //   dispatch(logout());
-  //   router.push("/landing");
-  //   Cookies.remove("access_token");
-  // };
-
-  const handleGoToDashboard = () => {
-    router.push("/bookings");
-    dispatch(
-      setActiveTab({
-        id: "2",
-        title: "Bookings",
-        href: `/bookings`,
-        icon: <MdOutlineDateRange />,
-      })
-    );
-  };
-
   return (
     <>
       <div
@@ -130,7 +137,7 @@ const HomeNavBar = () => {
             <div className="lg:flex hidden">
               <NavSectionTabs scrolled={scrolled} isMainRoute={isMainRoute} />
             </div>
-            {currentUser && userToken ? (
+            {token ? (
               <div className="flex items-center gap-4">
                 {isMainRoute ? (
                   <p
@@ -145,7 +152,20 @@ const HomeNavBar = () => {
                     Hi {currentUser?.first_name}
                   </p>
                 )}
-                <Button className="text-xs h-8" onClick={handleGoToDashboard}>
+                <Button
+                  className="text-xs h-8"
+                  onClick={() => {
+                    router.push("/bookings");
+                    dispatch(
+                      setActiveTab({
+                        id: "2",
+                        title: "Bookings",
+                        href: `/bookings`,
+                        icon: <MdOutlineDateRange />,
+                      })
+                    );
+                  }}
+                >
                   Goto Dashboard
                 </Button>
               </div>
@@ -194,9 +214,9 @@ const HomeNavBar = () => {
             handleOpen={handleOpen}
             onClose={handleClose}
             setShowModal={setShowModal}
-            setToken={setToken}
+            // setToken={setToken}
             showModal={showModal}
-            token={token}
+            // token={token}
             type={type}
           />
         )}

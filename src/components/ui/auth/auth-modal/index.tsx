@@ -17,19 +17,18 @@ interface AuthModalProps {
   type: string;
   onClose: () => void;
   handleOpen: (open: boolean, modalType: string, params?: string) => void;
-  setToken: (val: string) => void;
-  token: string;
+  // setToken: (val: string) => void;
+  // token: string;
   handleClose: () => void;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AuthModal = ({
   handleOpen,
-  onClose,
   showModal,
   type,
-  setToken,
-  token,
+  // setToken,
+  // token,
   handleClose,
   setShowModal,
 }: AuthModalProps) => {
@@ -83,7 +82,7 @@ const AuthModal = ({
           />
         )}
         {type === "change-password" && (
-          <ChangePasswordForm token={token} handleOpen={handleOpen} />
+          <ChangePasswordForm handleOpen={handleOpen} />
         )}
         {type === "successful" && (
           <SuccessfulModal onClickLogin={() => handleOpen(true, "sign-in")} />
@@ -94,7 +93,6 @@ const AuthModal = ({
             onClickChangePassword={() => handleOpen(true, "change-password")}
             onClickLogin={() => handleOpen(true, "sign-in")}
             handleOpen={handleOpen}
-            setToken={setToken}
           />
         )}
       </Modal>

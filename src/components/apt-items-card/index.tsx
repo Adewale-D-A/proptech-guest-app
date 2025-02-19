@@ -101,12 +101,14 @@ const CardItem = ({
             </div>
             <section className="flex justify-between items-center mt-6 w-full">
               <section className="flex w-full items-center gap-2">
-                <div className="w-5 h-5 flex justify-end items-end bg-[#E9E9E9] rounded-[2px] px-1 py-1">
+                <div className="relative">
+                  <div className="w-5 h-5 flex justify-end  bg-[#E9E9E9] rounded-[2px] " />
                   <Image
                     src={"/marker.png"}
-                    width={8}
+                    width={10}
                     height={8}
                     alt="marker"
+                    className="top-0 right-0 absolute"
                   />
                 </div>
                 <span className="text-xs text-[#606569] font-medium">

@@ -50,7 +50,7 @@ function Calendar({
           "h-8 w-8 m-1 font-normal aria-selected:opacity-100 rounded-[5px] relative",
           "bg-[#E9E9E9]",
           !removeBg &&
-            "[&:not(.day-disabled)]:after:content-[''] [&:not(.day-disabled)]:after:absolute [&:not(.day-disabled)]:after:bottom-[-4.5px] [&:not(.day-disabled)]:after:right-1 [&:not(.day-disabled)]:after:w-2.5 [&:not(.day-disabled)]:after:h-2.5 [&:not(.day-disabled)]:after:bg-[url('/marker.png')] [&:not(.day-disabled)]:after:bg-contain [&:not(.day-disabled)]:after:bg-no-repeat",
+            "[&:not(.day-disabled)]:after:content-[''] [&:not(.day-disabled)]:after:absolute [&:not(.day-disabled)]:after:top-0 [&:not(.day-disabled)]:after:right-0 [&:not(.day-disabled)]:after:w-2.5 [&:not(.day-disabled)]:after:h-2.5 [&:not(.day-disabled)]:after:bg-[url('/marker.png')] [&:not(.day-disabled)]:after:bg-contain [&:not(.day-disabled)]:after:bg-no-repeat",
           "[&.day-disabled]:after:content-none"
         ),
 

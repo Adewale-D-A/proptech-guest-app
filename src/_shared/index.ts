@@ -31,3 +31,10 @@ export const setToken = (token: string) => {
     }
   }
 };
+
+export const getToken = (): string | null => {
+  if (typeof window !== "undefined") {
+    return Cookies.get("access_token") || null;
+  }
+  return null;
+};
