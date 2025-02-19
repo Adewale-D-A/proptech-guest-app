@@ -24,7 +24,6 @@ const UserDropDown = () => {
     router.push("/landing");
     Cookies.remove("access_token");
   };
-  console.log("currentUser?.profile_photo", currentUser?.profile_photo);
   return (
     <div>
       <DropdownMenu>

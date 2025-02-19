@@ -111,8 +111,6 @@ const BookingTable = ({
     return () => clearInterval(interval);
   }, [images.length]);
 
-  console.log("singleBookingsData", singleBookingsData);
-
   return (
     <div>
       {isLoading ? (

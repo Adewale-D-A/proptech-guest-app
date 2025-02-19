@@ -266,7 +266,6 @@ const ShortLetPreviewComponent = ({
     : [];
   const yesterday = new Date();
 
-  console.log("disabledDatesArray", disabledDatesArray);
   return (
     <div className="pt-24">
       <section className="max-w-screen-custom mx-auto px-4">

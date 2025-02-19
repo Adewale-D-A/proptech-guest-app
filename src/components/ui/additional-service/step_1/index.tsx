@@ -35,7 +35,6 @@ const FirstStepForm = ({
 
   // const shortletData = (shortlet && shortlet?.data?.bookings?.data) ?? [];
 
-  console.log("shortlet", shortlet);
   return (
     <div className="flex flex-col gap-y-2">
       <FormField
