@@ -224,7 +224,7 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
                         onDateChange={(date) =>
                           form.setValue(
                             "check_in_day",
-                            date ? date.toISOString().split("T")[0] : ""
+                            date ? format(date, "yyyy-MM-dd") : ""
                           )
                         }
                         onTimeChange={(time) =>

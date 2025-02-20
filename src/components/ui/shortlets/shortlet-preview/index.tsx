@@ -23,7 +23,7 @@ import AnimatedContainer from "@/components/_shared/framer/animate-div";
 import AnythingElse from "../anything-else";
 import BackButton from "@/components/back-btn";
 import { ImageType } from "@/types/type";
-import { formatCurrency } from "@/_shared";
+import { formatCurrency, getToken } from "@/_shared";
 import { DatePickerTime } from "@/components/date-picker-time";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/components/_shared/toast/use-toast";
@@ -40,14 +40,13 @@ import {
 import { LoadingButton } from "@/components/_shared/loading-button";
 import { errorHandler, payment_method, urlRoute } from "@/_shared/constants";
 import ThunderLoader from "@/components/loader/thunder-loader";
-import { clearEmail, selectEmail } from "@/redux/slices/emailSlice";
-import AuthModal from "../../auth/auth-modal";
+import { selectEmail } from "@/redux/slices/emailSlice";
 import { Modal } from "@/components/_shared/modal";
 import { Calendar } from "@/components/_shared/calander";
-import useCheckAvaliability from "@/redux/hooks/check-avaliable-date";
 import { Separator } from "@/components/_shared/separator";
-import { parseISO } from "date-fns";
+import { addDays, format, isBefore, parseISO } from "date-fns";
 import Image from "next/image";
+import { Input } from "@/components/_shared/input";
 
 type FormValues = z.infer<typeof bookingSchema>;
 
@@ -61,9 +60,9 @@ const ShortLetPreviewComponent = ({
   loadingAvailableDates: boolean;
 }) => {
   const router = useRouter();
-  const dispatch = use99Dispatch();
   const searchParams = useSearchParams();
   const params = useParams();
+  const token = getToken();
   const { toast } = useToast();
   const [priceDetails, setPriceDetails] = useState({
     totalPrice: null as number | null,
@@ -71,9 +70,6 @@ const ShortLetPreviewComponent = ({
     taxFee: null as number | null,
     baseCost: null as number | null,
   });
-  const [tokens, setTokens] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [type, setType] = useState("");
   const email = use99Selector(selectEmail);
   const [booking, { isLoading }] = useCreateBookingMutation();
   const [bookingPrice, { isLoading: priceLoading }] =
@@ -81,17 +77,9 @@ const ShortLetPreviewComponent = ({
   const currentUser = use99Selector(selectCurrentUser);
   const [currentIndex, setCurrentIndex] = useState(0);
   const imgLength = apartmentDetails && apartmentDetails?.images.length;
-  const [date, setDate] = React.useState<Date | undefined>(undefined);
   const [showDate, setShowDate] = useState(false);
-
   const [showError, setShowError] = useState(false);
-  const { actions, state } = useCheckAvaliability({
-    blockedDates: availableDates?.blocked_dates || [],
-    bookedDates: availableDates?.booked_dates || [],
-  });
-  const handleDateChange = (date: Date | undefined) => {
-    setDate(date);
-  };
+
   const handleNext = () => {
     if (apartmentDetails) {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % imgLength);
@@ -194,6 +182,7 @@ const ShortLetPreviewComponent = ({
     //   });
     //   return;
     // }
+    console.log("check::", checkInDay, checkOutDay, numberOfGuests);
     if (
       checkInDay &&
       checkInTime &&
@@ -240,8 +229,6 @@ const ShortLetPreviewComponent = ({
   }, [searchParams]);
 
   const handleOpen = (open: boolean, modalType: string, params?: string) => {
-    setShowModal(open);
-    setType(modalType);
     if (open) {
       router.push(`?auth=${modalType}${params ? `&email=${params}` : ""}`, {
         shallow: true,
@@ -253,11 +240,6 @@ const ShortLetPreviewComponent = ({
     }
   };
 
-  const handleClose = () => {
-    dispatch(clearEmail());
-    handleOpen(false, type);
-  };
-
   const disabledDates = availableDates?.blocked_dates.concat(
     availableDates?.booked_dates
   );
@@ -265,6 +247,29 @@ const ShortLetPreviewComponent = ({
     ? disabledDates.map((date: any) => parseISO(date))
     : [];
   const yesterday = new Date();
+  const [checkInDate, setCheckInDate] = useState<Date | undefined>(undefined);
+  const [minCheckoutDate, setMinCheckoutDate] = useState<Date | undefined>(
+    undefined
+  );
+
+  const handleCheckInChange = (date: Date | undefined) => {
+    setCheckInDate(date);
+    const formattedDate = date ? format(date, "yyyy-MM-dd") : "";
+    form.setValue("check_in_day", formattedDate);
+    form.setValue("check_out_day", "");
+    setMinCheckoutDate(date ? addDays(date, 1) : undefined);
+  };
+
+  const handleCheckOutChange = (date: Date | undefined) => {
+    if (date && checkInDate && isBefore(date, checkInDate)) {
+      form.setValue("check_out_day", "");
+    } else {
+      const formattedDate = date ? format(date, "yyyy-MM-dd") : "";
+      form.setValue("check_out_day", formattedDate);
+    }
+  };
+
+  console.log("array:::", availableDates);
 
   return (
     <div className="pt-24">
@@ -375,15 +380,7 @@ const ShortLetPreviewComponent = ({
                           <DatePickerTime
                             label="Check-in"
                             placeholder="DD/MM/YYYY"
-                            onDateChange={(date) =>
-                              form.setValue(
-                                "check_in_day",
-                                date ? date.toISOString().split("T")[0] : ""
-                              )
-                            }
-                            onTimeChange={(time) =>
-                              form.setValue("check_in_time", time ?? "")
-                            }
+                            onDateChange={handleCheckInChange}
                             error={
                               form.formState.errors.check_in_day?.message ||
                               form.formState.errors.check_in_time?.message
@@ -397,15 +394,11 @@ const ShortLetPreviewComponent = ({
                           <DatePickerTime
                             label="Check-out"
                             placeholder="DD/MM/YYYY"
-                            onDateChange={(date) =>
-                              form.setValue(
-                                "check_out_day",
-                                date ? date.toISOString().split("T")[0] : ""
-                              )
-                            }
+                            onDateChange={handleCheckOutChange}
                             onTimeChange={(time) =>
                               form.setValue("check_out_time", time ?? "")
                             }
+                            disabled={!checkInDate}
                             error={
                               form.formState.errors.check_out_day?.message ||
                               form.formState.errors.check_out_time?.message
@@ -413,6 +406,7 @@ const ShortLetPreviewComponent = ({
                             disabledDates={availableDates?.booked_dates.concat(
                               availableDates?.blocked_dates
                             )}
+                            minDate={minCheckoutDate}
                           />
                         </div>
                       </div>
@@ -494,16 +488,40 @@ const ShortLetPreviewComponent = ({
                             )}
                           </>
                         )}
-                        <div className="px-4 pb-4">
-                          <LoadingButton
-                            loading={isLoading}
-                            variant="outline"
-                            className="w-full"
-                          >
-                            Reserve Now
-                          </LoadingButton>
-                        </div>
                       </section>
+                      <section>
+                        <Label className="text-sm font-normal">
+                          Promo Code
+                        </Label>
+                        <section className="relative">
+                          <Input
+                            placeholder="Enter promo code"
+                            className="mt-2 rounded-full h-10"
+                          />
+                          <div className="absolute top-1 right-1">
+                            <Button
+                              type="button"
+                              className="bg-[#F4F6FF] h-8 text-black rounded-l-none "
+                            >
+                              Apply
+                            </Button>
+                          </div>
+                        </section>
+                      </section>
+                      <div className=" pb-4">
+                        {token ? (
+                          <LoadingButton loading={isLoading} className="w-full">
+                            Proceed to Payment
+                          </LoadingButton>
+                        ) : (
+                          <Button
+                            onClick={() => handleOpen(true, "sign-in")}
+                            className="w-full h-8 text-xs"
+                          >
+                            Sign in to continue
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </form>
                 </Form>
@@ -514,16 +532,7 @@ const ShortLetPreviewComponent = ({
         <ShareReview />
         <AnythingElse />
       </section>
-      <AuthModal
-        handleClose={handleClose}
-        handleOpen={handleOpen}
-        onClose={handleClose}
-        setShowModal={setShowModal}
-        // setToken={setTokens}
-        showModal={showModal}
-        // token={tokens}
-        type={type}
-      />
+
       <Modal
         setShowModal={setShowError}
         showModal={showError}

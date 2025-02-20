@@ -214,9 +214,7 @@ const HomeNavBar = () => {
             handleOpen={handleOpen}
             onClose={handleClose}
             setShowModal={setShowModal}
-            // setToken={setToken}
             showModal={showModal}
-            // token={token}
             type={type}
           />
         )}

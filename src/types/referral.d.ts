@@ -75,6 +75,9 @@ interface ReBookType {
   reBookStartDate: string | undefined;
   onClose: () => void;
   availableDates: any;
+  handleEndDateSelect: (date: Date | undefined) => void;
+  handleStartDateSelect: (date: Date | undefined) => void;
+  minCheckoutDate: Date | undefined;
 }
 
 interface OfferResponse {

@@ -15,7 +15,6 @@ const initialState: AuthType = {
   isAuthenticated: false,
 };
 const AUTH_KEY = "auth";
-// auth slice
 const authSlice = createSlice({
   name: AUTH_KEY,
   initialState,

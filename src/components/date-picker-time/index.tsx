@@ -16,7 +16,7 @@ type IProps = {
   className?: string;
   label?: string;
   onDateChange: (date: Date | undefined) => void;
-  onTimeChange: (time: string | null) => void;
+  onTimeChange?: (time: string | null) => void;
   error?: string;
   disabledDates?: string[];
   minDate?: Date;
@@ -46,11 +46,11 @@ export function DatePickerTime({
     onDateChange(date);
   };
 
-  const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = event.target.value;
-    setTime(newTime);
-    onTimeChange(newTime);
-  };
+  // const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const newTime = event.target.value;
+  //   setTime(newTime);
+  //   onTimeChange?.(newTime);
+  // };
 
   const formattedDate = date ? format(date, "yyyy-MM-dd") : placeholder;
 
@@ -90,7 +90,7 @@ export function DatePickerTime({
                 mode="single"
                 selected={date}
                 onSelect={handleDateChange}
-                disabled={[...disabledDatesArray, { before: today }]}
+                disabled={[...disabledDatesArray, { before: minDate || today }]}
               />
               {/* <section className="p-4">
                 <Input

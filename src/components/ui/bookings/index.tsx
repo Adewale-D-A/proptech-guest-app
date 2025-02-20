@@ -24,7 +24,7 @@ import Rating from "./rate";
 import BookingTable from "./booking-table";
 import { Booking, BookingData } from "@/types/type";
 import { BookingsInterface, BookingsResponse } from "@/types/book";
-import { format } from "date-fns";
+import { addDays, format, isBefore } from "date-fns";
 import { Button } from "@/components/_shared/button";
 import FilterDateComponent from "../make-request/filter-component";
 import {
@@ -94,15 +94,43 @@ const BookingsComponent = ({
   const handleNavigate = () => {
     router.push(`${pathName}/active-bookings`);
   };
+
   const handleDateSelect = (
     date: Date | undefined,
-    setter: (date: string | undefined) => void
+    setter: (date: string | undefined) => void,
+    minDate?: Date
   ) => {
     if (date) {
-      setter(format(date, "yyyy-MM-dd"));
+      if (minDate && isBefore(date, minDate)) {
+        setter(undefined);
+      } else {
+        setter(format(date, "yyyy-MM-dd"));
+      }
     } else {
       setter(undefined);
     }
+  };
+  const [minCheckoutDate, setMinCheckoutDate] = useState<Date | undefined>(
+    undefined
+  );
+
+  const handleStartDateSelect = (date: Date | undefined) => {
+    if (date) {
+      const formattedDate = format(date, "yyyy-MM-dd");
+      setReBookStartDate(formattedDate);
+      setMinCheckoutDate(addDays(date, 1));
+      setReBookEndDate(undefined);
+    } else {
+      setReBookStartDate(undefined);
+      setMinCheckoutDate(undefined);
+    }
+  };
+
+  const handleEndDateSelect = (date: Date | undefined) => {
+    if (date && minCheckoutDate && isBefore(date, minCheckoutDate)) {
+      return;
+    }
+    setReBookEndDate(date ? format(date, "yyyy-MM-dd") : undefined);
   };
 
   const handleApply = () => {
@@ -408,6 +436,9 @@ const BookingsComponent = ({
               setReBookStartDate={setReBookStartDate}
               onClose={() => setShow(false)}
               availableDates={availableDates?.data}
+              handleEndDateSelect={handleEndDateSelect}
+              handleStartDateSelect={handleStartDateSelect}
+              minCheckoutDate={minCheckoutDate}
             />
           )}
         </section>
