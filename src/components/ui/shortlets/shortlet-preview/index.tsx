@@ -1,7 +1,12 @@
 /** @format */
 "use client";
 import React, { useEffect, useState } from "react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { Button } from "@/components/_shared/button";
 import { MdArrowBack } from "react-icons/md";
 import { IoArrowForward } from "react-icons/io5";
@@ -59,6 +64,7 @@ const ShortLetPreviewComponent = ({
   availableDates: any;
   loadingAvailableDates: boolean;
 }) => {
+  const pathName = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
   const params = useParams();
@@ -182,7 +188,6 @@ const ShortLetPreviewComponent = ({
     //   });
     //   return;
     // }
-    console.log("check::", checkInDay, checkOutDay, numberOfGuests);
     if (
       checkInDay &&
       checkInTime &&
@@ -269,12 +274,18 @@ const ShortLetPreviewComponent = ({
     }
   };
 
-  console.log("array:::", availableDates);
-
   return (
     <div className="pt-24">
       <section className="max-w-screen-custom mx-auto px-4">
-        <BackButton />
+        <BackButton
+          navigation={
+            pathName.includes("/shortlets")
+              ? "/shortlets"
+              : pathName.includes("/availability")
+              ? "/availability"
+              : ""
+          }
+        />
         <AnimatedContainer className="flex mt-6 gap-4">
           <div className="w-full relative">
             <img

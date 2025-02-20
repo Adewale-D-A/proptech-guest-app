@@ -26,6 +26,21 @@ const SearchDash = ({
   setFrom,
   setTo,
 }: any) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const disablePastDates = (day: Date) => {
+    const selectedDay = new Date(day);
+    selectedDay.setHours(0, 0, 0, 0);
+    return selectedDay < today;
+  };
+
+  const disableToDates = (day: Date) => {
+    if (!from) return disablePastDates(day);
+    const selectedDay = new Date(day);
+    selectedDay.setHours(0, 0, 0, 0);
+    return selectedDay < new Date(from);
+  };
+
   return (
     <div className="bg-[#f5f6ff] p-4 lgs:p-0 mt-6 lgs:mt-0 lgs:w-5/6 mx-auto lgs:rounded-full flex items-center  lgs:h-20 shadow-sm">
       <div className="lgs:flex  justify-between h-full flex-1 items-center">
@@ -84,6 +99,7 @@ const SearchDash = ({
                 placeholder="dd/mm/yyyy"
                 rightIcon
                 showIcon={false}
+                disabledCalendar={disablePastDates}
               />
             </section>
             <section className="w-full">
@@ -96,6 +112,7 @@ const SearchDash = ({
                 removeBg={true}
                 rightIcon
                 showIcon={false}
+                disabledCalendar={disableToDates}
               />
             </section>
           </section>

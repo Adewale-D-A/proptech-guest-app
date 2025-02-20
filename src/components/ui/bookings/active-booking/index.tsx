@@ -67,7 +67,6 @@ const ActiveBookingComponent = ({
   const [selectedBookingId, setSelectedBookingId] = useState<number | null>(
     null
   );
-  const [due, setDue] = useState<Date | undefined>();
   const [extendDate, setExtendDate] = useState<Date | undefined>();
   const [visitorCode, setVisitorCode] = useState("");
   const [booking, { isLoading: bookingLoading }] = useCreateBookingMutation();
@@ -123,15 +122,14 @@ const ActiveBookingComponent = ({
   };
 
   const handleSubmit = async () => {
-    if (!due && !extendDate) {
+    if (!extendDate) {
       return;
     }
-    const formattedDueDate = due ? format(due, "yyyy-MM-dd") : "";
     const formattedExtendDate = extendDate
       ? format(extendDate, "yyyy-MM-dd")
       : "";
     const payload = {
-      check_in_day: formattedDueDate,
+      check_in_day: selectedApt?.check_out_date,
       check_in_time: selectedApt?.check_in_time ?? "",
       check_out_day: formattedExtendDate,
       check_out_time: selectedApt?.check_out_time ?? "",
@@ -223,15 +221,16 @@ const ActiveBookingComponent = ({
       <Modal
         showModal={showModal}
         setShowModal={setShowModal}
-        onClose={() => setShowModal(false)}
+        onClose={() => {
+          setShowModal(false);
+          setExtendDate(undefined);
+        }}
         className="relative"
       >
         {type === "extend" ? (
           <ExtendModal
             onClickExtend={handleExtend}
             onClose={() => setShowModal(false)}
-            due={due}
-            setDue={setDue}
             setExtendDate={setExtendDate}
             extend={extendDate}
           />

@@ -162,7 +162,7 @@ const PersonaInfo = () => {
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage className="text-xs" />
+                      <FormMessage className="text-xs text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -182,7 +182,7 @@ const PersonaInfo = () => {
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage className="text-xs" />
+                      <FormMessage className="text-xs text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -204,7 +204,7 @@ const PersonaInfo = () => {
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage className="text-xs" />
+                      <FormMessage className="text-xs text-red-500" />
                     </FormItem>
                   )}
                 />
@@ -242,7 +242,7 @@ const PersonaInfo = () => {
                       </Select>
                     )}
                   />
-                  <FormMessage className="text-xs" />
+                  <FormMessage className="text-xs text-red-500" />
                 </div>
                 <section className="w-full">
                   <DatePicker
