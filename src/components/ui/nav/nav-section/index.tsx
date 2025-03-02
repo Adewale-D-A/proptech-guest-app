@@ -3,11 +3,9 @@
 
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/_shared/navigation-menu";
 import Link from "next/link";
@@ -92,40 +90,6 @@ const NavSectionTabs = ({
             )}
           </Link>
         </NavigationMenuItem>
-        <div ref={dropdownRef} className="px-4">
-          <div
-            className="relative"
-            ref={dropdownRef}
-            onMouseEnter={() => handleMouseEnter("products")}
-            onMouseLeave={handleMouseLeave}
-          >
-            {isMainRoute ? (
-              <button
-                className={` text-sm font-normal bg-transparent text-black   ${
-                  scrolled ? "text-black" : "text-white"
-                }`}
-              >
-                Product
-              </button>
-            ) : (
-              <button
-                className={` text-sm font-normal bg-transparent text-black   `}
-              >
-                Product
-              </button>
-            )}
-            {openDropdown === "products" && (
-              <div className="absolute left-0 mt-2 w-32 bg-white border shadow-lg rounded-lg transition">
-                <Link
-                  href="/"
-                  className="block  text-center text-sm py-2 transition"
-                >
-                  coming... soon
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
 
         <div ref={dropdownRef} className="px-4">
           <div

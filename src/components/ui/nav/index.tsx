@@ -42,26 +42,22 @@ const HomeNavBar = () => {
   });
 
   useEffect(() => {
-    if (!token) {
-      dispatch(logout());
-      router.push("/landing");
-      return;
-    }
-    try {
-      const { exp } = jwtDecode<{ exp: number }>(token);
-      const isTokenExpired = Date.now() >= exp * 1000;
-
-      if (isTokenExpired) {
+    if (token) {
+      try {
+        const { exp } = jwtDecode<{ exp: number }>(token);
+        const isTokenExpired = Date.now() >= exp * 1000;
+        if (isTokenExpired) {
+          dispatch(logout());
+          router.push("/landing");
+        } else {
+          if (userData) {
+            dispatch(setUserDetails(userData));
+          }
+        }
+      } catch (error) {
         dispatch(logout());
         router.push("/landing");
-      } else {
-        if (userData) {
-          dispatch(setUserDetails(userData));
-        }
       }
-    } catch (error) {
-      dispatch(logout());
-      router.push("/landing");
     }
   }, [token, dispatch, router, userData]);
 
