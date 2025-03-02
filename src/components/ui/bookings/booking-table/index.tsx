@@ -307,16 +307,20 @@ const BookingTable = ({
                   <div>
                     <p className="text-sm font-medium">Check-in</p>
                     <span className="text-xs text-gray-400">
-                      {singleBookingsData?.created_at &&
-                        formatDate(singleBookingsData?.created_at)}
+                      {singleBookings?.data?.bookings?.check_in_date &&
+                        formatDate(
+                          singleBookings?.data?.bookings?.check_in_date
+                        )}
                     </span>
                   </div>
                   <Separator orientation="vertical" className="bg-gray-200" />
                   <div className="">
                     <p className="text-sm font-medium">Checkout </p>
                     <span className="text-xs text-gray-400">
-                      {singleBookingsData?.updated_at &&
-                        formatDate(singleBookingsData?.updated_at)}
+                      {singleBookings?.data?.bookings?.check_out_date &&
+                        formatDate(
+                          singleBookings?.data?.bookings?.check_out_date
+                        )}
                     </span>
                   </div>
                   <Separator orientation="vertical" className="bg-gray-200" />

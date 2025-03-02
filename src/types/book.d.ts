@@ -87,6 +87,10 @@ type BookingsResponse = {
     prev_page_url: string | null;
     to: number;
     total: number;
+    check_in_date: string;
+    check_out_date: string;
+    check_in_time: string;
+    check_out_time: string;
   };
 };
 
