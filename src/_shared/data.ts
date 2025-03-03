@@ -351,3 +351,12 @@ export const apartmentOptions: ApartmentOption[] = [
   { id: "cleaning", name: "Cleaning" },
   { id: "water_treatment_plant", name: "Water Treatment Plant" },
 ];
+
+export const navItems = [
+  { name: "Home", path: "/" },
+  {
+    name: "Adventures",
+    path: "/availability",
+    subNav: [{ name: "Availability", path: "/availability" }],
+  },
+];

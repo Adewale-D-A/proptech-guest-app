@@ -38,7 +38,7 @@ const AuthModal = ({
         showModal={showModal}
         onClose={handleClose}
         setShowModal={setShowModal}
-        className={`relative p-6 ${
+        className={`relative p-4 xs:p-6 ${
           type === "sign-in" ||
           type === "forgot-password" ||
           type === "otp" ||
@@ -46,7 +46,7 @@ const AuthModal = ({
           type === "change-password" ||
           type === "successful"
             ? "min-w-[400px]"
-            : "min-w-[550px]"
+            : "sm:min-w-[550px]"
         } ${
           type === "create" ||
           type === "change-password" ||
