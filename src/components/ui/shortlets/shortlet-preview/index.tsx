@@ -286,12 +286,12 @@ const ShortLetPreviewComponent = ({
               : ""
           }
         />
-        <AnimatedContainer className="flex mt-6 gap-4">
+        <AnimatedContainer className="flex md:flex-row flex-col mt-6 gap-4 w-full">
           <div className="w-full relative">
             <img
               src={apartmentDetails?.images[currentIndex].path || ""}
               alt={`Apartment Image ${currentIndex + 1}`}
-              className="w-full rounded-xl h-[600px] object-cover"
+              className="w-full rounded-xl h-[400px] sm:h-[600px] object-cover"
             />
             <div className="flex justify-between absolute top-0 items-center h-full left-0 right-0 px-6">
               <Button
@@ -311,14 +311,14 @@ const ShortLetPreviewComponent = ({
             </div>
           </div>
 
-          <div className="w-1/3 relative flex flex-col gap-2">
+          <div className="md:w-1/3 relative flex md:flex-col flex-row gap-2 whitespace-nowrap scroll-smooth snap-x snap-mandatory overflow-x-auto">
             {adjustedImagesToShow &&
               adjustedImagesToShow?.map((image: ImageType, index: number) => {
                 const isActive = currentIndex === adjustedStartIndex + index;
                 return (
                   <div
                     key={index}
-                    className={`w-full h-36 cursor-pointer relative rounded-md ${
+                    className={`w-40 md:w-full h-36 cursor-pointer relative rounded-md ${
                       isActive ? "bg-black bg-opacity-80" : ""
                     }`}
                     onClick={() => setCurrentIndex(adjustedStartIndex + index)}
@@ -339,15 +339,15 @@ const ShortLetPreviewComponent = ({
                 );
               })}
             {remainingCount > 0 && (
-              <div className="relative bottom-24 text-white text-4xl font-semibold flex justify-center p-2 rounded mt-2">
-                {remainingCount} +
+              <div className="md:relative absolute md:bottom-24 top-10 right-10 text-white md:text-4xl text-2xl font-semibold flex justify-center p-2 rounded mt-2">
+                {remainingCount}+
               </div>
             )}
           </div>
         </AnimatedContainer>
-        <div className="flex justify-between items-center">
+        <div className="flex mt-6 md:mt-0 justify-between items-center">
           <div>
-            <h1 className="text-2xl font-medium">
+            <h1 className="text-lg sm:text-2xl font-medium">
               {apartmentDetails?.name} - {apartmentDetails?.no_of_bedrooms}{" "}
               Bedroom
             </h1>
@@ -362,10 +362,9 @@ const ShortLetPreviewComponent = ({
             </Button>
           </div>
         </div>
-        <div className="flex gap-6 mt-5 relative h-full">
+        <div className="flex md:flex-row flex-col w-full gap-6 mt-5 relative h-full">
           <DetailsSection apartmentDetails={apartmentDetails} />
-
-          <AnimatedContainer className="w-1/2">
+          <AnimatedContainer className="w-full md:w-1/2">
             <Card className="shadow-sm border border-black/5">
               <div className="flex border-b p-4 justify-between items-center">
                 <div className="flex justify-center items-center bg-[#F2F8FF] w-36 h-9 rounded-md">
@@ -386,7 +385,7 @@ const ShortLetPreviewComponent = ({
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)}>
                     <div className="flex flex-col gap-3">
-                      <div className="flex justify-between items-center gap-4 w-full">
+                      <div className="flex xxs:flex-row flex-col justify-between items-center gap-4 w-full">
                         <div className="w-full">
                           <DatePickerTime
                             label="Check-in"

@@ -51,22 +51,34 @@ const CardItem = ({
           </div>
         </LoveSparkEffect>
       </div>
-      <div className="px-4">
-        <div className="flex justify-between items-center my-3">
+      <div className={` ${pathName === "/availability" ? "" : "px-4"} `}>
+        <div
+          className={`${
+            pathName === "/availability" ? "px-4" : ""
+          } flex justify-between items-center my-3`}
+        >
           <h3 className="font-medium">{apartment.name}</h3>
           <h3 className="text-primary font-medium">
             ₦{apartment.price.toLocaleString()}/
             <span className="text-xs font-light text-gray-100">Night</span>
           </h3>
         </div>
-        <div className="flex items-center gap-3">
+        <div
+          className={`${
+            pathName === "/availability" ? "px-4" : ""
+          } flex items-center gap-3`}
+        >
           <div className="text-gray-100 flex items-center gap-1">
             <MapPin size={12} />
             <p className="text-xs font-light text-gray-100">
               {apartment.location}
             </p>
           </div>
-          <div className="text-gray-100 flex items-center gap-1">
+          <div
+            className={`${
+              pathName === "/availability" ? "px-4" : ""
+            } text-gray-100 flex items-center gap-1`}
+          >
             <TbBed size={12} />
             <p className="text-xs font-light">
               {apartment.no_of_bedrooms} Bedrooms
@@ -96,10 +108,14 @@ const CardItem = ({
         </div>
         {pathName === "/availability" && (
           <section>
-            <div className="flex justify-center border rounded-md mt-4">
+            <div className="flex justify-center sm:border rounded-md mt-4">
               <Calendar disabled={disabledDate} className=" " mode="single" />
             </div>
-            <section className="flex justify-between items-center mt-6 w-full">
+            <section
+              className={`flex justify-between items-center mt-6 w-full ${
+                pathName === "/availability" ? "px-4" : ""
+              }`}
+            >
               <section className="flex w-full items-center gap-2">
                 <div className="relative">
                   <div className="w-5 h-5 flex justify-end  bg-[#E9E9E9] rounded-[2px] " />
@@ -124,7 +140,11 @@ const CardItem = ({
             </section>
           </section>
         )}
-        <div className="flex justify-between items-center mt-4">
+        <div
+          className={`flex sm:flex-row flex-col w-full justify-between sm:items-center mt-4 ${
+            pathName === "/availability" ? "px-4" : ""
+          }`}
+        >
           {pathName !== "/availability" ? (
             <div
               className="flex text-primary cursor-pointer items-center gap-2"
@@ -140,7 +160,7 @@ const CardItem = ({
             </h3>
           )}
           <Button
-            className="text-xs font-normal h-8 w-32"
+            className="text-xs font-normal h-8 w-full mt-4 sm:mt-0 sm:w-32"
             onClick={() => handleRoute(apartment.name, apartment.id)}
           >
             View Details

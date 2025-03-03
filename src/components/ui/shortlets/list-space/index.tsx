@@ -88,9 +88,9 @@ const ListSpace = ({
     }
   }, [shortlet?.id, getAvailableDate]);
 
-  const handleDateChange = (date: Date | undefined) => {
-    setDate(date);
-  };
+  // const handleDateChange = (date: Date | undefined) => {
+  //   setDate(date);
+  // };
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -122,7 +122,7 @@ const ListSpace = ({
           {isLoading ? (
             <div className="grid grid-cols-3 gap-4  mt-8">{skeletonRows}</div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+            <div className="grid w-full md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
               {shortletData && shortletData.length <= 0 ? (
                 <>
                   <div>no data avaliable</div>
@@ -131,7 +131,7 @@ const ListSpace = ({
                 <>
                   {shortletData &&
                     shortletData.map((apartment) => (
-                      <AnimatedContainer key={apartment.id}>
+                      <AnimatedContainer key={apartment.id} className="w-full">
                         <CardItem
                           apartment={apartment}
                           onCheckAvailability={handleClickSingleApt}

@@ -16,7 +16,7 @@ const DetailsSection = ({
   apartmentDetails: Shortlet;
 }) => {
   return (
-    <div className="flex flex-col pb-10  gap-6 w-1/2 ">
+    <div className="flex flex-col pb-10  gap-6 w-full md:w-1/2 ">
       <Card className=" h-fit shadow-sm border border-black/5">
         <ApartmentDetails apartmentDetails={apartmentDetails} />
       </Card>
