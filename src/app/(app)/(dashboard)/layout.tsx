@@ -8,11 +8,12 @@ import { logout, setUserDetails } from "@/redux/slices/authSlice";
 import { useRouter } from "next/navigation";
 
 import React, { useEffect, useState } from "react";
-import { useMediaQuery } from "react-responsive";
 import { jwtDecode } from "jwt-decode";
 import { getToken } from "@/_shared";
+import useWindowSize from "@/components/responsivness";
 const DashboardLayout = ({ children }: { children: any }) => {
-  const isTab = useMediaQuery({ query: "(max-width:768px)" });
+  const { width } = useWindowSize();
+  const isTab = width !== undefined && width <= 768;
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(!isTab);
   const dispatch = use99Dispatch();
@@ -48,7 +49,7 @@ const DashboardLayout = ({ children }: { children: any }) => {
   return (
     <div className="flex w-full bg-[#fcfcfc] h-screen">
       <div>
-        <SideBarScreen setIsOpen={setIsOpen} isOpen={isOpen} isTab={false} />
+        <SideBarScreen setIsOpen={setIsOpen} isOpen={isOpen} isTab={isTab} />
       </div>
 
       <div className={`${isOpen ? "ml-[15rem]" : "ml-[4rem]"} w-full`}>

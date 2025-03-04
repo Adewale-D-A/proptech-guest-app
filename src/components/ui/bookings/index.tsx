@@ -241,7 +241,7 @@ const BookingsComponent = ({
   return (
     <div className="mt-10">
       <h1 className="font-medium text-lg">Bookings Breakdown</h1>
-      <section className="flex mt-6 items-center gap-4 w-full">
+      <section className="lg:flex grid xs:grid-cols-1  grid-cols-2 mt-6 items-center gap-4 w-full">
         <ReusableCard
           icon={<CalendarIcon size={16} />}
           text="Active Bookings"
@@ -274,7 +274,7 @@ const BookingsComponent = ({
           isLoading={statsLoading}
         />
       </section>
-      <Card className="shadow-sm mt-6  p-4">
+      {/* <Card className="shadow-sm mt-6  p-4">
         <div className="flex items-center justify-between">
           <h1 className="font-medium">Booking History</h1>
           <SearchInput
@@ -334,7 +334,7 @@ const BookingsComponent = ({
           pageIndex={pageIndex}
           pageSize={pageSize}
         />
-      </Card>
+      </Card> */}
       <Modal
         showModal={show}
         setShowModal={setShow}

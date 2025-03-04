@@ -1,6 +1,6 @@
 /** @format */
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
@@ -21,6 +21,7 @@ import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
 import { RootState } from "@/redux/store";
 import { setActiveTab } from "@/redux/slices/active_tab";
 import { NavLink } from "@/types/type";
+import { useMediaQuery } from "react-responsive";
 
 type Props = {
   setIsOpen: (val: boolean) => void;
@@ -29,6 +30,7 @@ type Props = {
 };
 
 const SideBarScreen = ({ isOpen, isTab, setIsOpen }: Props) => {
+  const isMd = useMediaQuery({ minWidth: 768, maxWidth: 1023 });
   const dispatch = use99Dispatch();
   const activeTab = use99Selector((state: RootState) => state.tab.activeTab);
   const Sidebar_animation = isTab
@@ -67,6 +69,16 @@ const SideBarScreen = ({ isOpen, isTab, setIsOpen }: Props) => {
   const handleTabClick = (tab: NavLink) => {
     dispatch(setActiveTab(tab));
   };
+  useEffect(() => {
+    if (isTab || isMd) {
+      setIsOpen(false);
+    } else {
+      setIsOpen(true);
+    }
+  }, [isTab, isMd, setIsOpen]);
+
+  console.log("isOpen::", isOpen);
+  console.log("isTab::", isTab);
 
   return (
     <motion.div
@@ -164,7 +176,6 @@ const SideBarScreen = ({ isOpen, isTab, setIsOpen }: Props) => {
                   <TooltipProvider delayDuration={0}>
                     <Tooltip>
                       <TooltipTrigger>
-                        {" "}
                         <AiOutlineHome className="text-white" />
                       </TooltipTrigger>
                       <TooltipContent>
