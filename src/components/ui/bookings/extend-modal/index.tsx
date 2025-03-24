@@ -9,7 +9,6 @@ import { use99Selector } from "@/redux/hooks/hooks";
 import { RootState } from "@/redux/store";
 import { useGetAvailableDateMutation } from "@/redux/services/shortlet";
 import { parseISO } from "date-fns";
-
 import { LoadingButton } from "@/components/_shared/loading-button";
 import ListCard from "../../shortlets/list-card";
 

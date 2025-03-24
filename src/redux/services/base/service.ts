@@ -1,8 +1,8 @@
 /** @format */
 
-export enum Endpoints {
-  api = "https://apartment-99-3e274cb60143.herokuapp.com/api/v1/",
-}
+export const Endpoints = {
+  api: process.env.NEXT_PUBLIC_API_BASE_URL || "",
+};
 
 export enum Methods {
   get = "GET",
