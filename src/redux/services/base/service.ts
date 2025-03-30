@@ -1,7 +1,7 @@
 /** @format */
 
 export enum Endpoints {
-  api = "https://apartment-99-3e274cb60143.herokuapp.com/api/v1/",
+  api = "https://staging-bckofficeapi.the99apartments.com/api/v1/",
 }
 
 export enum Methods {
