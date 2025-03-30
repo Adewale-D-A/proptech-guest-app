@@ -208,7 +208,7 @@ const SignUpForm = ({
                 <FormField
                   control={form.control}
                   name="password_confirmation"
-                  render={({ field }) => (
+                  render={({ field, fieldState }) => (
                     <FormItem className="w-full">
                       <FormLabel className="text-xs font-light">
                         Confirm Password
@@ -239,7 +239,9 @@ const SignUpForm = ({
                           </div>
                         </div>
                       </FormControl>
-                      <FormMessage className="text-xs text-red-500 font-light" />
+                      <FormMessage className="text-xs text-red-500 font-light">
+                        {fieldState.error?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
