@@ -178,40 +178,44 @@ const PaginationTable = (props: PaginationTableProps) => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        padding: "8px 0",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <div style={{ display: "flex", gap: "4px" }}>{showButtons()}</div>
-
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <span className="text-sm">Showing result:</span>
-        <Select
-          onValueChange={(value: string) =>
-            setPageSize && setPageSize(Number(value))
-          }
+    <>
+      {totalItemsCount > 10 && (
+        <div
+          style={{
+            display: "flex",
+            padding: "8px 0",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
         >
-          <SelectTrigger className="text-xs w-16 text-black font-light border border-[#EDEFF3] h-10">
-            <SelectValue placeholder={`${pageSize}`} />
-          </SelectTrigger>
-          <SelectContent className="bg-white">
-            {[5, 10, 25, 50, 100].map((size) => (
-              <SelectItem
-                key={size}
-                value={size.toString()}
-                className="text-sm cursor-pointer"
-              >
-                {size}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-    </div>
+          <div style={{ display: "flex", gap: "4px" }}>{showButtons()}</div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <span className="text-sm">Showing result:</span>
+            <Select
+              onValueChange={(value: string) =>
+                setPageSize && setPageSize(Number(value))
+              }
+            >
+              <SelectTrigger className="text-xs w-16 text-black font-light border border-[#EDEFF3] h-10">
+                <SelectValue placeholder={`${pageSize}`} />
+              </SelectTrigger>
+              <SelectContent className="bg-white">
+                {[5, 10, 25, 50, 100].map((size) => (
+                  <SelectItem
+                    key={size}
+                    value={size.toString()}
+                    className="text-sm cursor-pointer"
+                  >
+                    {size}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

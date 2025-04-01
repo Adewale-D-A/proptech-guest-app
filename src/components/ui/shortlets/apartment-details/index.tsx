@@ -4,6 +4,7 @@ import React from "react";
 import { MapPin } from "lucide-react";
 import AnimatedContainer from "@/components/_shared/framer/animate-div";
 import { Shortlet } from "@/types/type";
+import GoogleMapComponent from "@/components/google-map";
 
 const ApartmentDetails = ({
   apartmentDetails,
@@ -32,7 +33,13 @@ const ApartmentDetails = ({
           <p className="text-[#707070] text-[13px] font-light mt-3 leading-relaxed">
             {apartmentDetails?.description}
           </p>
-          <div className="bg-gray-200 w-full h-80 rounded-md mt-7" />
+          {Number(apartmentDetails?.latitude) !== 0 &&
+            Number(apartmentDetails?.longitude) !== 0 && (
+              <GoogleMapComponent
+                lat={Number(apartmentDetails.latitude)}
+                lng={Number(apartmentDetails.longitude)}
+              />
+            )}
         </section>
       </section>
     </AnimatedContainer>

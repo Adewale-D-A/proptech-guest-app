@@ -5,7 +5,7 @@ import UserDropDown from "./user-dropdown";
 import NotificationDropDown from "./notification";
 import { use99Selector } from "@/redux/hooks/hooks";
 import { RootState } from "@/redux/store";
-import { ChevronLeft, ChevronRight, LayoutGrid } from "lucide-react";
+import { ChevronRight, LayoutGrid } from "lucide-react";
 
 const Navbar = ({ isOpen }: { isOpen: boolean }) => {
   const [bgColor, setBgColor] = useState<string>("");

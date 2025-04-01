@@ -1,7 +1,7 @@
 /** @format */
 "use client";
 import React, { useState } from "react";
-
+import { AxiosError } from "axios";
 import SearchInput from "@/components/search-input";
 import { Card } from "@/components/_shared/card";
 import {
@@ -30,6 +30,9 @@ import { RootState } from "@/redux/store";
 import { useCreateBookingMutation } from "@/redux/services/booking";
 import { LoadingButton } from "@/components/_shared/loading-button";
 import { useToast } from "@/components/_shared/toast/use-toast";
+import { useVerifyPayment } from "@/redux/hooks/useVerifyPayment";
+import { errorHandler, payment_method, urlRoute } from "@/_shared/constants";
+import { ErrorResponse } from "@/types/type";
 const ActiveBookingComponent = ({
   bookingData,
   isLoading,
@@ -38,6 +41,10 @@ const ActiveBookingComponent = ({
   setEndDate,
   endDate,
   startDate,
+  pageIndex,
+  pageSize,
+  setPageIndex,
+  setPageSize,
 }: {
   bookingData: BookingsResponse | null;
   isLoading: boolean;
@@ -46,6 +53,11 @@ const ActiveBookingComponent = ({
   setEndDate: (date: string | undefined) => void;
   endDate: string | undefined;
   startDate: string | undefined;
+  pageIndex: number;
+  pageSize: number;
+  setPageIndex: (index: number) => void;
+  totalPages?: number;
+  setPageSize?: (index: number) => void;
 }) => {
   const { toast } = useToast();
   const [showDate, setShowDate] = useState(false);
@@ -55,7 +67,6 @@ const ActiveBookingComponent = ({
   const [selectedBookingId, setSelectedBookingId] = useState<number | null>(
     null
   );
-  const [due, setDue] = useState<Date | undefined>();
   const [extendDate, setExtendDate] = useState<Date | undefined>();
   const [visitorCode, setVisitorCode] = useState("");
   const [booking, { isLoading: bookingLoading }] = useCreateBookingMutation();
@@ -111,38 +122,39 @@ const ActiveBookingComponent = ({
   };
 
   const handleSubmit = async () => {
-    if (!due && !extendDate) {
+    if (!extendDate) {
       return;
     }
-    const formattedDueDate = due ? format(due, "yyyy-MM-dd") : "";
     const formattedExtendDate = extendDate
       ? format(extendDate, "yyyy-MM-dd")
       : "";
     const payload = {
-      check_in_day: formattedDueDate,
+      check_in_day: selectedApt?.check_out_date,
       check_in_time: selectedApt?.check_in_time ?? "",
       check_out_day: formattedExtendDate,
       check_out_time: selectedApt?.check_out_time ?? "",
       number_of_guests: selectedApt?.number_of_guests ?? "",
       shortlet_id: selectedApt?.shortlet?.id,
-      payment_method: "paystack",
-      callback_url: "/bookings",
+      payment_method: payment_method.pay_stack,
+      callback_url: urlRoute.activeBookingUrl,
     };
     try {
-      await booking(payload).unwrap();
+      const res = await booking(payload).unwrap();
+      const paymentUrl = res.data.payment || "";
+      if (paymentUrl) {
+        window.location.href = paymentUrl;
+      }
       setExtendConfirm(false);
-    } catch (err) {
-      const errorMessage =
-        (err as any)?.data?.message ||
-        "Failed to extend booking. Please try again.";
       toast({
-        variant: "destructive",
-        title: "Error!",
-        description: errorMessage,
+        variant: "default",
+        title: res?.message,
+        description: "Apartment extend",
       });
+    } catch (err) {
+      errorHandler(err as any);
     }
   };
-
+  useVerifyPayment();
   return (
     <div>
       <BackButton className="mt-6 " />
@@ -200,20 +212,25 @@ const ActiveBookingComponent = ({
           bookingData={bookingData}
           isLoading={isLoading}
           handleActionSelect={handleActionSelect}
+          setPageIndex={setPageIndex}
+          setPageSize={setPageSize}
+          pageIndex={pageIndex}
+          pageSize={pageSize}
         />
       </Card>
       <Modal
         showModal={showModal}
         setShowModal={setShowModal}
-        onClose={() => setShowModal(false)}
+        onClose={() => {
+          setShowModal(false);
+          setExtendDate(undefined);
+        }}
         className="relative"
       >
         {type === "extend" ? (
           <ExtendModal
             onClickExtend={handleExtend}
             onClose={() => setShowModal(false)}
-            due={due}
-            setDue={setDue}
             setExtendDate={setExtendDate}
             extend={extendDate}
           />
@@ -289,7 +306,7 @@ const ActiveBookingComponent = ({
         showModal={showDate}
         setShowModal={setShowDate}
         onClose={() => setShowDate(false)}
-        className="max-w-xl py-10"
+        className="max-w-2xl py-10"
       >
         <FilterDateComponent
           endDate={endDate}

@@ -26,7 +26,6 @@ const VerifyAccount = () => {
   const { toast } = useToast();
   const [updateUserDoc, { isLoading }] = useUpdateUserDocsMutation();
   const [successModal, setSuccessModal] = useState(false);
-  const [preview, setPreview] = useState<string | null>(null);
   const [successPage, setSuccessPage] = useState(false);
   const [profileDoc, setProfileDoc] = useState<File | null>(null); // Store image file
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -39,9 +38,6 @@ const VerifyAccount = () => {
     }
   };
 
-  const handleEmptyImage = () => {
-    setPreview(null);
-  };
   const form = useForm({
     defaultValues: {
       identity_document: "",
@@ -57,14 +53,12 @@ const VerifyAccount = () => {
       });
       return;
     }
-    const payload = {
-      identity_document: profileDoc,
-    };
+
     const formData = new FormData();
     formData.append("identity_document", profileDoc);
-    console.log(payload);
+
     try {
-      await updateUserDoc(formData as any).unwrap();
+      const res = await updateUserDoc(formData as any).unwrap();
       setSuccessModal(true);
     } catch (err) {
       const error = err as ToastResponse;
@@ -77,7 +71,6 @@ const VerifyAccount = () => {
   };
 
   const handleClick = () => {
-    handleEmptyImage();
     setSuccessPage(true);
     setSuccessModal(false);
   };

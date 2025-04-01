@@ -86,8 +86,6 @@ const PendingRequestComponent = ({
     pendingRequest &&
     pendingRequest.data.filter((data) => data.payment_status === "pending");
 
-  console.log("pendingRequestData", pendingRequestData);
-
   return (
     <section>
       <BackButton className="my-6 " />
@@ -211,7 +209,7 @@ const PendingRequestComponent = ({
         showModal={showDate}
         setShowModal={setShowDate}
         onClose={() => setShowDate(false)}
-        className="max-w-xl py-10"
+        className="max-w-2xl py-10"
       >
         <FilterDateComponent
           endDate={endDate}

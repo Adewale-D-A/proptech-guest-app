@@ -29,7 +29,7 @@ const ReferralsComponent = () => {
               value="promo"
               className="data-[state=active]:shadow-none data-[state=active]:text-primary-1 pb-2 data-[state=active]:border-b data-[state=active]:border-b-primary-1 rounded-none data-[state=active]:rounded-none flex items-center gap-2"
             >
-              <BadgePercent size={18} /> Promo & Disconut
+              <BadgePercent size={18} /> Promo & Discount
             </TabsTrigger>
           </TabsList>
           <TabsContent value="referral" className="w-full mt-10">

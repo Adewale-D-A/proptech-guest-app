@@ -10,12 +10,21 @@ const email = z
   .string()
   .email("Email must be a valid email address")
   .min(1, "Email is required");
+const escalation_reason = z.string().min(1, "Escalation message is required");
+
 const password = z
   .string()
   .min(1, "Password field is required")
   .min(7, "Password must be at least 7 characters long");
 
-export const signInValidationSchema = z.object({ email, password });
+export const signInValidationSchema = z.object({
+  email,
+  password,
+  rememberMe: z.boolean(),
+});
+export const escalataSchema = z.object({
+  escalation_reason,
+});
 export const signUpValidationSchema = z
   .object({
     first_name,

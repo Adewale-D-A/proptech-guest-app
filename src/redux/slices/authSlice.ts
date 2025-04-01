@@ -15,7 +15,6 @@ const initialState: AuthType = {
   isAuthenticated: false,
 };
 const AUTH_KEY = "auth";
-// auth slice
 const authSlice = createSlice({
   name: AUTH_KEY,
   initialState,
@@ -30,6 +29,9 @@ const authSlice = createSlice({
       state.token = token;
       state.isAuthenticated = true;
     },
+    setClearToken: (state) => {
+      state.token = "";
+    },
     logout: (state) => {
       state.user = null;
       state.token = "";
@@ -39,7 +41,7 @@ const authSlice = createSlice({
 });
 
 const { actions, reducer } = authSlice;
-export const { setUserDetails, setUserToken, logout } = actions;
+export const { setUserDetails, setUserToken, logout, setClearToken } = actions;
 
 // selector to select user details from the store
 export const selectUserToken = (state: RootState) => state.auth.token;

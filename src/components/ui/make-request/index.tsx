@@ -26,7 +26,6 @@ import {
 
 import { Textarea } from "@/components/_shared/textarea";
 import { Label } from "@/components/_shared/label";
-import { DatePicker } from "@/components/date-picker";
 import SearchInput from "@/components/search-input";
 import {
   Tooltip,
@@ -38,23 +37,16 @@ import { usePathname, useRouter } from "next/navigation";
 import { Modal } from "@/components/_shared/modal";
 import Image from "next/image";
 import { Button } from "@/components/_shared/button";
-import {
-  CreateRequestBody,
-  MakeARequestResponseData,
-  UserRequestBreakdown,
-  UserRequestsResponse,
-} from "@/types/type";
+import { CreateRequestBody, MakeARequestResponseData } from "@/types/type";
 import RequestTable from "./request-table";
 import { use99Selector } from "@/redux/hooks/hooks";
 import { selectCurrentUser } from "@/redux/slices/authSlice";
-import { Booking } from "@/types/book";
 import { apartmentOptions } from "@/_shared/data";
 import { useCreateRequestMutation } from "@/redux/services/request";
-import { useToast } from "@/components/_shared/toast/use-toast";
-
 import { format } from "date-fns/format";
-
 import FilterDateComponent from "./filter-component";
+import { errorHandler } from "@/_shared/constants";
+import { useToast } from "@/components/_shared/toast/use-toast";
 
 const MakeRequestComponent = ({
   requestDataStats,
@@ -73,11 +65,12 @@ const MakeRequestComponent = ({
   setPageIndex,
   setPageSize,
 }: MakeARequestResponseData) => {
-  const { toast } = useToast();
   const [showDate, setShowDate] = useState(false);
   const currentUser = use99Selector(selectCurrentUser);
   const [createRequest, { isLoading: createLoading }] =
     useCreateRequestMutation();
+  const { toast } = useToast();
+
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const pathName = usePathname();
@@ -105,6 +98,13 @@ const MakeRequestComponent = ({
   };
 
   const onSubmit = async (data: any) => {
+    if (!data.shortlet_id || !data.subject || !data.description) {
+      return toast({
+        variant: "destructive",
+        title: `missing field`,
+        description: "some input field are missing",
+      });
+    }
     const requestBody: CreateRequestBody = {
       shortlet_id: Number(data.shortlet_id),
       subject: data.subject,
@@ -115,13 +115,7 @@ const MakeRequestComponent = ({
       onNewRequest();
       setShowModal(true);
     } catch (err) {
-      const errorMessage =
-        (err as any)?.data?.message || "Login failed. Please try again.";
-      toast({
-        variant: "destructive",
-        title: "Error login!",
-        description: errorMessage,
-      });
+      errorHandler(err as any);
     }
   };
 
@@ -248,14 +242,20 @@ const MakeRequestComponent = ({
                                 />
                               </SelectTrigger>
                               <SelectContent>
-                                {shortlet.map((item) => (
-                                  <SelectItem
-                                    key={item.shortlet.id}
-                                    value={String(item.shortlet.id)}
-                                  >
-                                    {item.shortlet.name}
-                                  </SelectItem>
-                                ))}
+                                {shortlet.length > 0 ? (
+                                  <>
+                                    {shortlet.map((item) => (
+                                      <SelectItem
+                                        key={item.shortlet.id}
+                                        value={String(item.shortlet.id)}
+                                      >
+                                        {item.shortlet.name}
+                                      </SelectItem>
+                                    ))}
+                                  </>
+                                ) : (
+                                  <p className="text-sm">No Apartment</p>
+                                )}
                               </SelectContent>
                             </Select>
                             <FormMessage className="text-xs text-red-500 font-light" />
@@ -414,7 +414,7 @@ const MakeRequestComponent = ({
         showModal={showDate}
         setShowModal={setShowDate}
         onClose={() => setShowDate(false)}
-        className="max-w-xl py-10"
+        className="max-w-2xl py-10"
       >
         <FilterDateComponent
           endDate={endDate}

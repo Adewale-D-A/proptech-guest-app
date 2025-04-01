@@ -12,7 +12,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/_shared/form";
-
 import { Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/_shared/input";
 import { useForm } from "react-hook-form";
@@ -20,15 +19,12 @@ import { signInValidationSchema } from "@/_shared/validate";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import { z } from "zod";
 import { Button } from "@/components/_shared/button";
-import { Checkbox } from "@/components/_shared/check-box";
 import { LoadingButton } from "@/components/_shared/loading-button";
-import {
-  useGetUsersQuery,
-  useSignInMutation,
-} from "@/redux/services/auth/auth";
+import { useSignInMutation } from "@/redux/services/auth/auth";
 import { use99Dispatch } from "@/redux/hooks/hooks";
-import { setUserDetails, setUserToken } from "@/redux/slices/authSlice";
-import Cookies from "js-cookie";
+import { setUserDetails } from "@/redux/slices/authSlice";
+import { errorHandler } from "@/_shared/constants";
+import { setToken } from "@/_shared";
 const SignInform = ({
   onClick,
   onClickForgetPassword,
@@ -47,14 +43,15 @@ const SignInform = ({
     defaultValues: {
       email: "",
       password: "",
+      rememberMe: false,
     },
   });
 
   const onSubmit = async (values: z.infer<typeof signInValidationSchema>) => {
     try {
       const response = await signIn(values).unwrap();
-      dispatch(setUserToken(response?.data?.access_token));
-      Cookies.set("access_token", response?.data?.access_token, { expires: 7 });
+      const token = response?.data?.access_token;
+      setToken(token);
       dispatch(setUserDetails(response?.data?.user));
       toast({
         variant: "default",
@@ -63,13 +60,7 @@ const SignInform = ({
       });
       handleClose();
     } catch (err) {
-      const errorMessage =
-        (err as any)?.data?.message || "Login failed. Please try again.";
-      toast({
-        variant: "destructive",
-        title: "Error login!",
-        description: errorMessage,
-      });
+      errorHandler(err as any);
     }
   };
 
@@ -140,11 +131,26 @@ const SignInform = ({
             </div>
             <div className="flex justify-between items-center mt-2">
               <div className="flex items-center gap-2">
-                <Checkbox
-                  id="terms"
-                  className="p-0 m-0 border shadow-none border-primary"
+                <FormField
+                  control={form.control}
+                  name="rememberMe"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl className="bg-transparent">
+                        <div className="flex items-center gap-2">
+                          <Input
+                            type="checkbox"
+                            id="rememberMe"
+                            className="p-0 m-0 w-4 h-4 border shadow-none border-primary"
+                            checked={field.value}
+                            onChange={(e) => field.onChange(e.target.checked)}
+                          />
+                          <p className="text-xs font-light">Remember me</p>
+                        </div>
+                      </FormControl>
+                    </FormItem>
+                  )}
                 />
-                <p className="text-xs font-light">Remember me</p>
               </div>
               <Button
                 variant={"text"}

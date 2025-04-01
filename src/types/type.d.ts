@@ -45,6 +45,7 @@ interface ChatInputProps {
   emojiIconRef: RefObject<HTMLDivElement>;
   handleMenuClicked: () => void;
   showMenu: boolean;
+  hardCodedValue: string;
 }
 
 interface ToastResponse {
@@ -59,10 +60,15 @@ interface ShortletDataResponse extends GeneralResponseStatus {
 
 interface ShortletData {
   bookings?: Booking;
-  shortlet: ShortletPage;
+  shortlet: ListedApartmentType;
+  data: ListedApartmentType;
 }
 
-interface ShortletPage {
+interface ListedApartmentAvaliableType {
+  data: ListedApartmentType;
+}
+
+interface ListedApartmentType {
   current_page: number;
   data: Shortlet[];
   first_page_url: string;
@@ -105,6 +111,8 @@ interface Shortlet {
   room_option: RoomOption;
   extra_option_items: ExtraOptionItem[];
   safeties: Safety[];
+  latitude?: string;
+  longitude?: string;
 }
 
 interface Amenity {
@@ -450,6 +458,7 @@ interface AdditionalServicesComponentProps extends Pagination {
   setEndDate: Dispatch<SetStateAction<string>>;
   endDate: string | undefined;
   startDate: string | undefined;
+  shortlet: Booking[];
 }
 
 interface MakeARequestResponseData extends Pagination {
@@ -464,4 +473,11 @@ interface MakeARequestResponseData extends Pagination {
   setEndDate: any;
   endDate: string | undefined;
   startDate: string | undefined;
+}
+interface ErrorResponse {
+  status: number;
+  data: {
+    message?: Record<string, string[]>;
+    error?: string;
+  };
 }

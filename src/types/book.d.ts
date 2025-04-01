@@ -87,6 +87,10 @@ type BookingsResponse = {
     prev_page_url: string | null;
     to: number;
     total: number;
+    check_in_date: string;
+    check_out_date: string;
+    check_in_time: string;
+    check_out_time: string;
   };
 };
 
@@ -102,3 +106,21 @@ export interface GetAvailableDateResponse extends GeneralResponseStatus {
     blocked_dates: string[];
   };
 }
+
+export type BookingsInterface = {
+  bookingData: BookingsResponse | null;
+  isLoading: boolean;
+  statsLoading: boolean;
+  statsData: BookingData | null;
+  setSearch: (value: string) => void;
+  setStartDate: (date: string | undefined) => void;
+  setEndDate: (date: string | undefined) => void;
+  endDate: string | undefined;
+  startDate: string | undefined;
+  pageIndex: number;
+  pageSize: number;
+  setPageIndex: (index: number) => void;
+  totalPages?: number;
+  setPageSize?: (index: number) => void;
+  banksData: Bank[];
+};

@@ -31,6 +31,8 @@ import { IoMdCheckboxOutline } from "react-icons/io";
 import { Card } from "@/components/_shared/card";
 import ThunderLoader from "@/components/loader/thunder-loader";
 import { Booking } from "@/types/type";
+import PaginationTable from "@/components/pagination";
+import GoogleMapComponent from "@/components/google-map";
 
 const BookingTable = ({
   headers,
@@ -38,16 +40,24 @@ const BookingTable = ({
   bookingData,
   isLoading,
   handleActionSelect,
+  pageIndex,
+  pageSize,
+  setPageIndex,
+  setPageSize,
 }: {
   headers: string[];
   handleClickModal?: (value: string, booking?: Booking) => void;
   bookingData: BookingsResponse | null;
   isLoading: boolean;
   handleActionSelect?: (val: string) => void;
+  pageIndex: number;
+  pageSize: number;
+  setPageIndex: (index: number) => void;
+  setPageSize?: (index: number) => void;
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const id = String(searchParams.get("id"));
+  const id = Number(searchParams.get("id"));
   const pathName = usePathname();
   const skeletonRows = Array.from({ length: 5 }, (_, index) => (
     <SkeletonTable key={index} />
@@ -60,7 +70,7 @@ const BookingTable = ({
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const handleOpenSingleBooking = (bookingId: any) => {
+  const handleOpenSingleBooking = (bookingId: number) => {
     if (bookingId) {
       router.push(`?id=${bookingId}`, {
         shallow: true,
@@ -68,6 +78,12 @@ const BookingTable = ({
       setIsOpen(true);
     }
     return;
+  };
+
+  const handleBookingChat = (bookingId: string | number) => {
+    if (bookingId) {
+      router.push(`/contact-us/chat-with-us?id=${bookingId} `);
+    }
   };
 
   const handleCloseDrawer = (open: boolean) => {
@@ -149,7 +165,7 @@ const BookingTable = ({
                     {formatCurrency(book.total_price, book.currency)}
                   </TableCell>
                   <TableCell className="font-medium text-xs">
-                    {formatDateTime(book.shortlet.created_at)}
+                    {formatDateTime(book.created_at)}
                   </TableCell>
                   <TableCell className="font-medium text-xs">
                     {book.number_of_days} Night
@@ -164,8 +180,14 @@ const BookingTable = ({
                         handleClickModalRebook={() =>
                           handleClickModal?.("rebook", book)
                         }
+                        handleClickModalCaution={() =>
+                          handleClickModal?.("caution", book)
+                        }
                         handleOpenSingleBooking={() =>
-                          handleOpenSingleBooking(book.shortlet.id)
+                          handleOpenSingleBooking(book.id)
+                        }
+                        handleBookingChat={() =>
+                          handleBookingChat(book?.shortlet?.id)
                         }
                       />
                     ) : (
@@ -181,6 +203,17 @@ const BookingTable = ({
           </TableBody>
         </Table>
       )}
+      <PaginationTable
+        pageSize={pageSize}
+        pageIndex={pageIndex}
+        handleOnChange={(index: number) => {
+          setPageIndex(index);
+        }}
+        setPageIndex={setPageIndex}
+        totalItemsCount={bookingData?.bookings?.total ?? 0}
+        setPageSize={setPageSize}
+        // pageSizeOptions={[10, 25, 50]}
+      />
       <Drawer open={isOpen} onOpenChange={handleCloseDrawer} direction="right">
         <DrawerContent className="bg-white p-4 h-screen w-screen rounded-none">
           {singleBookingLoading ? (
@@ -193,7 +226,7 @@ const BookingTable = ({
             <section className="flex gap-10 h-full">
               <Card className=" w-1/2 pb-8 p-4 shadow-sm h-full overflow-y-auto">
                 <section>
-                  {images?.length > 0 && (
+                  {images && images?.length > 0 && (
                     <div className="w-full relative">
                       <div
                         style={{
@@ -273,22 +306,26 @@ const BookingTable = ({
                   <div>
                     <p className="text-sm font-medium">Check-in</p>
                     <span className="text-xs text-gray-400">
-                      {singleBookingsData?.created_at &&
-                        formatDate(singleBookingsData?.created_at)}
+                      {singleBookings?.data?.bookings?.check_in_date &&
+                        formatDate(
+                          singleBookings?.data?.bookings?.check_in_date
+                        )}
                     </span>
                   </div>
                   <Separator orientation="vertical" className="bg-gray-200" />
                   <div className="">
                     <p className="text-sm font-medium">Checkout </p>
                     <span className="text-xs text-gray-400">
-                      {singleBookingsData?.updated_at &&
-                        formatDate(singleBookingsData?.updated_at)}
+                      {singleBookings?.data?.bookings?.check_out_date &&
+                        formatDate(
+                          singleBookings?.data?.bookings?.check_out_date
+                        )}
                     </span>
                   </div>
                   <Separator orientation="vertical" className="bg-gray-200" />
                   <div className="">
                     <p className="text-sm font-medium">Confirmation Code</p>
-                    <span className="text-xs text-gray-400">BKG1234XYZ</span>
+                    <span className="text-xs text-gray-400">nil</span>
                   </div>
                 </section>
                 <section className="my-4">
@@ -313,8 +350,19 @@ const BookingTable = ({
                 </section>
               </Card>
 
-              <div className="bg-gray-200 w-1/2 flex justify-center items-center h-full sticky top-0">
-                <div>google map location</div>
+              <div className="w-1/2 flex justify-center items-center h-full sticky top-0">
+                {Number(singleBookingsData?.latitude) !== 0 &&
+                Number(singleBookingsData?.longitude) !== 0 ? (
+                  <GoogleMapComponent
+                    lat={Number(singleBookingsData?.latitude)}
+                    lng={Number(singleBookingsData?.longitude)}
+                    height={"100%"}
+                  />
+                ) : (
+                  <div>
+                    <p>No location found yet!!!</p>
+                  </div>
+                )}
               </div>
             </section>
           )}

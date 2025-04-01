@@ -16,7 +16,7 @@ type IProps = {
   className?: string;
   label?: string;
   onDateChange: (date: Date | undefined) => void;
-  onTimeChange: (time: string | null) => void;
+  onTimeChange?: (time: string | null) => void;
   error?: string;
   disabledDates?: string[];
   minDate?: Date;
@@ -39,19 +39,18 @@ export function DatePickerTime({
   const [time, setTime] = React.useState<string>("");
 
   const disabledDatesArray = disabledDates.map((date) => parseISO(date));
-  const yesterday = new Date();
-
-  yesterday.setDate(yesterday.getDate() - 1);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const handleDateChange = (date: Date | undefined) => {
     setDate(date);
     onDateChange(date);
   };
 
-  const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = event.target.value;
-    setTime(newTime);
-    onTimeChange(newTime);
-  };
+  // const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const newTime = event.target.value;
+  //   setTime(newTime);
+  //   onTimeChange?.(newTime);
+  // };
 
   const formattedDate = date ? format(date, "yyyy-MM-dd") : placeholder;
 
@@ -91,16 +90,16 @@ export function DatePickerTime({
                 mode="single"
                 selected={date}
                 onSelect={handleDateChange}
-                disabled={[...disabledDatesArray, { before: yesterday }]}
+                disabled={[...disabledDatesArray, { before: minDate || today }]}
               />
-              <section className="p-4">
+              {/* <section className="p-4">
                 <Input
                   type="time"
                   value={time}
                   onChange={handleTimeChange}
                   className="border h-10"
                 />
-              </section>
+              </section> */}
             </div>
           </div>
         </PopoverContent>

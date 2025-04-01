@@ -1,5 +1,6 @@
 /** @format */
 "use client";
+import { errorHandler } from "@/_shared/constants";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import NotificationComponent from "@/components/ui/notification";
 import {
@@ -37,13 +38,7 @@ const NotificationContainer = () => {
       );
       await readNotification(id).unwrap();
     } catch (err) {
-      const errorMessage =
-        (err as any)?.data?.message || "Notification failed. Please try again.";
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: errorMessage,
-      });
+      errorHandler(err as any);
     }
   };
 

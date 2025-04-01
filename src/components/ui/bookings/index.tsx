@@ -23,14 +23,22 @@ import SuccessfulMessage from "./success-message";
 import Rating from "./rate";
 import BookingTable from "./booking-table";
 import { Booking, BookingData } from "@/types/type";
-import { BookingsResponse } from "@/types/book";
-import { format } from "date-fns";
+import { BookingsInterface, BookingsResponse } from "@/types/book";
+import { addDays, format, isBefore } from "date-fns";
 import { Button } from "@/components/_shared/button";
 import FilterDateComponent from "../make-request/filter-component";
-import { useCreateBookingMutation } from "@/redux/services/booking";
+import {
+  useCautionFeeBookingMutation,
+  useCreateBookingMutation,
+} from "@/redux/services/booking";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import RebookApartment from "./rebook-apartment";
 import { useGetAvailableDateMutation } from "@/redux/services/shortlet";
+import { useVerifyPayment } from "@/redux/hooks/useVerifyPayment";
+import { errorHandler, payment_method, urlRoute } from "@/_shared/constants";
+import { Form } from "@/components/_shared/form";
+import { useForm } from "react-hook-form";
+import { useVerifyBankMutation } from "@/redux/services/banks";
 
 const headers = [
   "S/N",
@@ -51,17 +59,12 @@ const BookingsComponent = ({
   setEndDate,
   endDate,
   startDate,
-}: {
-  bookingData: BookingsResponse | null;
-  isLoading: boolean;
-  statsLoading: boolean;
-  statsData: BookingData | null;
-  setSearch: (value: string) => void;
-  setStartDate: (date: string | undefined) => void;
-  setEndDate: (date: string | undefined) => void;
-  endDate: string | undefined;
-  startDate: string | undefined;
-}) => {
+  pageIndex,
+  pageSize,
+  setPageIndex,
+  setPageSize,
+  banksData,
+}: BookingsInterface) => {
   const router = useRouter();
   const { toast } = useToast();
   const [booking, { isLoading: reBookingLoading }] = useCreateBookingMutation();
@@ -71,11 +74,16 @@ const BookingsComponent = ({
   const [modalType, setModalType] = useState("");
   const [reBookStartDate, setReBookStartDate] = useState<string | undefined>();
   const [reBookEndDate, setReBookEndDate] = useState<string | undefined>();
+  const [selectedBank, setSelectedBank] = useState({ code: "", name: "" });
   const [bookingInfo, setBookingInfo] = useState<any>(null);
+  const [getAvailableDate, { data: availableDates }] =
+    useGetAvailableDateMutation();
   const [
-    getAvailableDate,
-    { data: availableDates, isLoading: loadingAvailableDates },
-  ] = useGetAvailableDateMutation();
+    verifyBank,
+    { data: bankDetails, isLoading: verifyBankLoading, error: verifyError },
+  ] = useVerifyBankMutation();
+  const [cautionFeeBooking, { isLoading: isCautionLoading }] =
+    useCautionFeeBookingMutation();
   const bookingId = bookingInfo && bookingInfo?.shortlet?.id;
   const handleClickModal = (type: string, booking?: Booking) => {
     setShow(true);
@@ -86,15 +94,43 @@ const BookingsComponent = ({
   const handleNavigate = () => {
     router.push(`${pathName}/active-bookings`);
   };
+
   const handleDateSelect = (
     date: Date | undefined,
-    setter: (date: string | undefined) => void
+    setter: (date: string | undefined) => void,
+    minDate?: Date
   ) => {
     if (date) {
-      setter(format(date, "yyyy-MM-dd"));
+      if (minDate && isBefore(date, minDate)) {
+        setter(undefined);
+      } else {
+        setter(format(date, "yyyy-MM-dd"));
+      }
     } else {
       setter(undefined);
     }
+  };
+  const [minCheckoutDate, setMinCheckoutDate] = useState<Date | undefined>(
+    undefined
+  );
+
+  const handleStartDateSelect = (date: Date | undefined) => {
+    if (date) {
+      const formattedDate = format(date, "yyyy-MM-dd");
+      setReBookStartDate(formattedDate);
+      setMinCheckoutDate(addDays(date, 1));
+      setReBookEndDate(undefined);
+    } else {
+      setReBookStartDate(undefined);
+      setMinCheckoutDate(undefined);
+    }
+  };
+
+  const handleEndDateSelect = (date: Date | undefined) => {
+    if (date && minCheckoutDate && isBefore(date, minCheckoutDate)) {
+      return;
+    }
+    setReBookEndDate(date ? format(date, "yyyy-MM-dd") : undefined);
   };
 
   const handleApply = () => {
@@ -117,15 +153,19 @@ const BookingsComponent = ({
       check_in_time: bookingInfo?.check_in_time,
       check_out_time: bookingInfo?.check_out_time,
       number_of_guests: Number(bookingInfo?.number_of_guests),
-      payment_method: "paystack",
-      callback_url: "/bookings",
+      payment_method: payment_method.pay_stack,
+      callback_url: urlRoute.reBookUrl,
     };
     try {
       const res = await booking(payload).unwrap();
+      const paymentUrl = res.data.payment || "";
+      if (paymentUrl) {
+        window.location.href = paymentUrl;
+      }
       toast({
         variant: "default",
         title: res?.message,
-        description: "Apartment booked",
+        description: "Apartment rebooked",
       });
       setShow(false);
     } catch (err) {
@@ -144,11 +184,64 @@ const BookingsComponent = ({
       getAvailableDate(bookingId);
     }
   }, [bookingId, getAvailableDate]);
+  useVerifyPayment();
+
+  const form = useForm({
+    defaultValues: {
+      booking_id: 0,
+      account_name: "",
+      account_number: "",
+      bank_name: "",
+    },
+  });
+
+  const onSubmit = async (values: any) => {
+    const payload = {
+      ...values,
+      booking_id: bookingInfo?.id,
+      bank_name: selectedBank?.name,
+    };
+    try {
+      await cautionFeeBooking(payload).unwrap();
+      handleClickModal("success");
+      form.reset();
+    } catch (err) {
+      errorHandler(err as any);
+    }
+  };
+
+  const accountNumber = form.watch("account_number");
+
+  useEffect(() => {
+    if (selectedBank && accountNumber.length === 10) {
+      verifyBank({
+        bank_code: selectedBank?.code,
+        account_number: accountNumber,
+      });
+    }
+  }, [selectedBank, accountNumber, verifyBank]);
+
+  useEffect(() => {
+    if (bankDetails?.data?.account_name) {
+      form.setValue("account_name", bankDetails.data.account_name);
+    }
+  }, [bankDetails, form]);
+  useEffect(() => {
+    if (accountNumber.length !== 10) {
+      form.setValue("account_name", "");
+    }
+  }, [accountNumber, form]);
+  useEffect(() => {
+    if (selectedBank) {
+      form.setValue("account_number", "");
+      form.setValue("account_name", "");
+    }
+  }, [selectedBank]);
 
   return (
     <div className="mt-10">
       <h1 className="font-medium text-lg">Bookings Breakdown</h1>
-      <section className="flex mt-6 items-center gap-4 w-full">
+      <section className="lg:flex grid xs:grid-cols-1  grid-cols-2 mt-6 items-center gap-4 w-full">
         <ReusableCard
           icon={<CalendarIcon size={16} />}
           text="Active Bookings"
@@ -181,7 +274,7 @@ const BookingsComponent = ({
           isLoading={statsLoading}
         />
       </section>
-      <Card className="shadow-sm mt-6  p-4">
+      {/* <Card className="shadow-sm mt-6  p-4">
         <div className="flex items-center justify-between">
           <h1 className="font-medium">Booking History</h1>
           <SearchInput
@@ -236,14 +329,18 @@ const BookingsComponent = ({
           handleClickModal={handleClickModal}
           bookingData={bookingData}
           isLoading={isLoading}
+          setPageIndex={setPageIndex}
+          setPageSize={setPageSize}
+          pageIndex={pageIndex}
+          pageSize={pageSize}
         />
-      </Card>
+      </Card> */}
       <Modal
         showModal={show}
         setShowModal={setShow}
         onClose={() => setShow(false)}
         className={`relative   rounded-none  ${
-          modalType === "rebook" ? "max-w-xl" : "max-w-md"
+          modalType === "rebook" ? "max-w-2xl" : "max-w-md"
         } `}
       >
         <section>
@@ -288,21 +385,32 @@ const BookingsComponent = ({
           ) : null}
 
           {modalType === "caution" && (
-            <CautionForm onSuccess={() => handleClickModal("success")} />
+            <section>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
+                  <CautionForm
+                    banksData={banksData}
+                    form={form}
+                    setSelectedBank={setSelectedBank}
+                    verifyBankLoading={verifyBankLoading}
+                    verifyError={verifyError}
+                    isCautionLoading={isCautionLoading}
+                  />
+                </form>
+              </Form>
+            </section>
           )}
           {modalType === "success" && (
             <SuccessfulMessage
               heading="  Thank You for Reaching Out"
-              text="   Your message has been received, and your request will be addressed
-          shortly, Kindly check your notifications for update on your request."
+              text="   Your message has been received, and your request will be addressed shortly, Kindly check your notifications for update on your request."
               onClose={() => setShow(false)}
             />
           )}
           {modalType === "rate-success" && (
             <SuccessfulMessage
               heading=" Thanks for the Review"
-              text="  Thank you for your valuable feedback! Your review means a lot to us and helps us improve to better 
-serve you."
+              text="  Thank you for your valuable feedback! Your review means a lot to us and helps us improve to better serve you."
               onClose={() => setShow(false)}
               src="/images/success.png"
             />
@@ -328,6 +436,9 @@ serve you."
               setReBookStartDate={setReBookStartDate}
               onClose={() => setShow(false)}
               availableDates={availableDates?.data}
+              handleEndDateSelect={handleEndDateSelect}
+              handleStartDateSelect={handleStartDateSelect}
+              minCheckoutDate={minCheckoutDate}
             />
           )}
         </section>
@@ -336,7 +447,7 @@ serve you."
         showModal={showDate}
         setShowModal={setShowDate}
         onClose={() => setShowDate(false)}
-        className="max-w-xl py-10"
+        className="max-w-2xl py-10"
       >
         <FilterDateComponent
           endDate={endDate}

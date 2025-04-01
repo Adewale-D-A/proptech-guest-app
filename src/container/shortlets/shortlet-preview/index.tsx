@@ -27,7 +27,7 @@ const ShortLetPreviewContainer = () => {
     }
   }, [numericId, getSingleGuestShortlet, getAvailableDate]);
 
-  if (loadingShortlet || loadingAvailableDates) return <p>Loading...</p>;
+  if (loadingShortlet) return <p>Loading...</p>;
 
   return (
     <div>
@@ -35,6 +35,7 @@ const ShortLetPreviewContainer = () => {
         <ShortLetPreviewComponent
           apartmentDetails={shortletData.data.shortlet}
           availableDates={availableDates?.data}
+          loadingAvailableDates={loadingAvailableDates}
         />
       ) : (
         <p>No shortlet data available</p>

@@ -20,19 +20,21 @@ const Footer = () => {
     <div className="bg-primary py-14">
       <div className="max-w-screen-custom mx-auto px-4">
         <div className="flex flex-col gap-8">
-          <div className="flex justify-between ">
-            <div>
-              <div>
+          <div className="flex md:flex-row items-center md:items-start flex-col justify-between ">
+            <div className="">
+              <div className="md:block flex justify-center flex-col items-center">
                 <Logo width={202} height={30} />
-                <p className="text-[13px] mt-2 text-white w-2/3">
+                <p className="text-[13px] mt-2 text-center md:text-start text-white md:w-2/3">
                   Designed to solved all property and rental problems.
                 </p>
               </div>
             </div>
             {footer.map((foot) => (
-              <div key={foot.title}>
-                <h1 className="text-white font-semibold">{foot.title}</h1>
-                <div className="flex flex-col font-light gap-1.5 mt-3">
+              <div key={foot.title} className="mt-6 md:mt-0">
+                <h1 className="text-white text-center md:text-start font-semibold">
+                  {foot.title}
+                </h1>
+                <div className="flex  flex-col items-center md:items-start font-light gap-1.5 mt-3">
                   {foot.section.map((ft) => (
                     <Link
                       href={ft.link}
@@ -47,7 +49,7 @@ const Footer = () => {
             ))}
           </div>
           <Separator className="bg-white" />
-          <div className="flex justify-between items-center">
+          <div className="flex md:flex-row flex-col-reverse gap-3 md:gap-0 justify-between items-center">
             <p className="text-[13px]  text-white">
               © {new Date().getFullYear()} The 99Apartments
             </p>

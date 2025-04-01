@@ -31,6 +31,7 @@ import { use99Selector } from "@/redux/hooks/hooks";
 import { useCreateAdditionalMutation } from "@/redux/services/request";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import { payment_method, urlRoute } from "@/_shared/constants";
+import { useVerifyPayment } from "@/redux/hooks/useVerifyPayment";
 
 const AdditionalServicesComponent = ({
   requestDataStats,
@@ -46,6 +47,7 @@ const AdditionalServicesComponent = ({
   pageSize,
   setPageIndex,
   setPageSize,
+  shortlet,
 }: AdditionalServicesComponentProps) => {
   const { toast } = useToast();
   const currentUser = use99Selector(selectCurrentUser);
@@ -85,8 +87,6 @@ const AdditionalServicesComponent = ({
       setVolume(volume + 5);
     }
   };
-
-  console.log("selectedDate", selectedDate);
 
   const onSubmit = async (values: any) => {
     const payload = {
@@ -150,6 +150,7 @@ const AdditionalServicesComponent = ({
     setEndDate(endDate);
     setShowDate(false);
   };
+  useVerifyPayment();
 
   return (
     <div className="mt-6">
@@ -214,7 +215,9 @@ const AdditionalServicesComponent = ({
                         ? "Review details of your order"
                         : "Provide your request details below"}
                     </h1>
-                    {step === 1 && <FirstStepForm form={form} />}
+                    {step === 1 && (
+                      <FirstStepForm shortlet={shortlet} form={form} />
+                    )}
                     {step === 2 && (
                       <SecondStepForm
                         form={form}
@@ -336,7 +339,7 @@ const AdditionalServicesComponent = ({
         showModal={showDate}
         setShowModal={setShowDate}
         onClose={() => setShowDate(false)}
-        className="max-w-xl py-10"
+        className="max-w-2xl py-10"
       >
         <FilterDateComponent
           endDate={endDate}

@@ -40,7 +40,7 @@ const HeroSection = () => {
   return (
     <div
       id="hero-section"
-      className="relative w-full h-[840px] overflow-hidden"
+      className="relative w-full h-[640px] overflow-hidden "
     >
       <div
         className={`absolute w-full h-full`}
@@ -53,12 +53,12 @@ const HeroSection = () => {
         {/* Black background overlay */}
         <div className="absolute inset-0 bg-black opacity-60 z-20" />
 
-        <div className="relative flex flex-col items-center justify-center w-full h-full z-30">
+        <div className="relative flex flex-col items-center justify-center w-full h-full z-30 px-4">
           <h1 className="text-white text-6xl font-semibold">
             <GradualSpacing text={"Shortlets"} />{" "}
           </h1>
           <AnimatedContainer>
-            <p className="text-white text-xl mt-4">
+            <p className="text-white text-center text-xl mt-4">
               From a room for a night to an apartment for as long as you like
             </p>
           </AnimatedContainer>

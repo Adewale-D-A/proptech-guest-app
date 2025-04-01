@@ -10,10 +10,12 @@ const config: Config = {
   ],
   theme: {
     screens: {
+      xxs: "380",
       xs: "576",
       sm: "640px",
       md: "768px",
       lg: "1024px",
+      lgs: "1065px",
       custom: "1160px",
       xl: "1280px",
       "2xl": "1536px",
@@ -50,6 +52,7 @@ const config: Config = {
         foreground: "hsl(var(--foreground))",
         lightBlue: "#5A76D9",
         yellow: "#FFDE4E",
+        green: "#00BB40",
         gray: {
           100: "#6D6D6D",
         },

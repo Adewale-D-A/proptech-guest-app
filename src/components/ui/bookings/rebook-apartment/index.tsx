@@ -9,13 +9,13 @@ import React from "react";
 const RebookApartment = ({
   handleRebook,
   reBookingLoading,
-  handleDateSelect,
   reBookEndDate,
   reBookStartDate,
-  setReBookStartDate,
-  setReBookEndDate,
   onClose,
   availableDates,
+  handleStartDateSelect,
+  handleEndDateSelect,
+  minCheckoutDate,
 }: ReBookType) => {
   const disabledDates = availableDates?.booked_dates.concat(
     availableDates?.blocked_dates
@@ -40,9 +40,7 @@ const RebookApartment = ({
             className=" "
             mode="single"
             selected={reBookStartDate ? new Date(reBookStartDate) : undefined}
-            onSelect={(date) =>
-              handleDateSelect(date, (date) => setReBookStartDate(date))
-            }
+            onSelect={handleStartDateSelect}
             disabled={[...disabledDatesArray, { before: yesterday }]}
           />
         </div>
@@ -55,10 +53,11 @@ const RebookApartment = ({
             className=" "
             mode="single"
             selected={reBookEndDate ? new Date(reBookEndDate) : undefined}
-            onSelect={(date) =>
-              handleDateSelect(date, (date) => setReBookEndDate(date))
-            }
-            disabled={[...disabledDatesArray, { before: yesterday }]}
+            onSelect={handleEndDateSelect}
+            disabled={[
+              ...disabledDatesArray,
+              { before: minCheckoutDate || yesterday },
+            ]}
           />
         </div>
       </div>

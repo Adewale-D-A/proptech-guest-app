@@ -19,6 +19,7 @@ import { useGetAvailableDateMutation } from "@/redux/services/shortlet";
 import { addDays, format } from "date-fns";
 import { useRescheduleBookingMutation } from "@/redux/services/booking";
 import { LoadingButton } from "@/components/_shared/loading-button";
+import { errorHandler } from "@/_shared/constants";
 
 type FormValues = z.infer<typeof bookingUpdateSchema>;
 const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
@@ -50,19 +51,15 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
   const onSubmit = async (values: FormValues) => {
     const check_out_day_format =
       checkOutDateFromStore && format(checkOutDateFromStore, "yyyy-MM-dd");
-    console.log("Submit triggered");
     const payload = {
       ...values,
       booking_id: selectedApt?.id,
       check_out_day: check_out_day_format,
       check_out_time: "12:00",
     };
-    console.log("Form Values:", payload);
-    try {
-      console.log("Form Values:", payload);
 
+    try {
       const response = await resheduleBooking(payload).unwrap();
-      // console.log("Reschedule Response:", response);
 
       toast({
         variant: "default",
@@ -71,13 +68,7 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
       });
       reset();
     } catch (err) {
-      const errorMessage =
-        (err as any)?.data?.message || "Submission failed. Please try again.";
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: errorMessage,
-      });
+      errorHandler(err as any);
     }
   };
 
@@ -143,7 +134,7 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
       );
 
       if (newCheckOutDay) {
-        setNewCheckout(newCheckOutDay);
+        setNewCheckout(addDays(newCheckOutDay, 1));
       }
     }
   }, [form.watch("check_in_day"), selectedApt?.number_of_days]);
@@ -232,7 +223,7 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
                         onDateChange={(date) =>
                           form.setValue(
                             "check_in_day",
-                            date ? date.toISOString().split("T")[0] : ""
+                            date ? format(date, "yyyy-MM-dd") : ""
                           )
                         }
                         onTimeChange={(time) =>

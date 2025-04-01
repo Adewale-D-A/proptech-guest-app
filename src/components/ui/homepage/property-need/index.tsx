@@ -30,8 +30,8 @@ const PropertyNeeds = () => {
   return (
     <AnimatedContainer className="mt-20">
       <div className="max-w-screen-custom mx-auto px-4">
-        <div className="flex md:flex-row flex-col  justify-between items-center">
-          <div className="md:w-1/2 w-full flex flex-col gap-2">
+        <div className="flex md:flex-row flex-col gap-4  justify-between items-center">
+          <div className="md:w-1/2 w-full flex sm:items-center md:items-start  flex-col gap-2">
             <div className="flex items-center gap-x-1">
               <div className="h-[1px] w-8 bg-primary" />
               <p className="text-sm font-medium text-primary">WHAT WE OFFER</p>
@@ -39,7 +39,7 @@ const PropertyNeeds = () => {
             <h1 className="font-semibold text-2xl">
               99 Solutions for all your Property Needs
             </h1>
-            <p className="text-[13px] w-full md:w-96 text-gray-100 font-light">
+            <p className="text-[13px] sm:text-center md:text-left w-full md:w-96 text-gray-100 font-light">
               We are a property technology company building an on demand real
               estate ecosystem that provides comfortable, affordable and
               convenient real estate services in urban cities in Nigeria.
@@ -66,7 +66,7 @@ const PropertyNeeds = () => {
               />
             </div>
           </div>
-          <div className="w-full md:w-1/2">
+          <div className="w-full md:block flex justify-center mt-6 md:w-1/2">
             <Image
               src={"/images/apartment-4.png"}
               width={600}

@@ -25,19 +25,20 @@ import {
 } from "@/redux/services/auth/auth";
 import { useSearchParams } from "next/navigation";
 import { ToastResponse } from "@/types/type";
+import { use99Dispatch } from "@/redux/hooks/hooks";
+import { setUserToken } from "@/redux/slices/authSlice";
 
 const ForgetPasswordOtp = ({
   onClickLogin,
   handleOpen,
-  setToken,
 }: {
   onClickChangePassword: () => void;
   onClickLogin: () => void;
   handleOpen: (open: boolean, modalType: string) => void;
-  setToken: (val: string) => void;
 }) => {
   const [verifyPasswordOtp, { isLoading }] = useVerifyForgetPasswordMutation();
   const [resendOtp, { isLoading: resendLoading }] = useForgotPasswordMutation();
+  const dispatch = use99Dispatch();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
   const { toast } = useToast();
@@ -50,12 +51,7 @@ const ForgetPasswordOtp = ({
     try {
       const verifyData = { ...values, email };
       const response = await verifyPasswordOtp(verifyData).unwrap();
-      console.log(
-        "response?.data?.token",
-        response?.data?.token,
-        response?.data
-      );
-      setToken(response?.data?.token);
+      dispatch(setUserToken(response?.data?.token));
       toast({
         variant: "default",
         title: response?.message || "Success!",
@@ -82,7 +78,7 @@ const ForgetPasswordOtp = ({
       });
     } catch (err) {
       const error = err as ToastResponse;
-      console.log("resend error:", err);
+
       toast({
         variant: "destructive",
         title: error?.data?.message || "Unable to resend OTP",

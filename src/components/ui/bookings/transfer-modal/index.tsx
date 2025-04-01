@@ -43,9 +43,8 @@ const TransferModal = ({ onClose }: { onClose: () => void }) => {
   });
 
   async function onSubmit(values: any) {
-    console.log(values);
     const { email, booking_id } = values;
-    console.log("vaklue:::", email, booking_id);
+
     try {
       await transferBooking({ email, booking_id }).unwrap();
       toast({

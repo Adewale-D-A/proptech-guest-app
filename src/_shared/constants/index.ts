@@ -1,8 +1,13 @@
 /** @format */
 
+import { toast } from "@/components/_shared/toast/use-toast";
 import countries from "../data/countries";
 import { format, isYesterday, parseISO } from "date-fns";
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL as string;
+export const NEXT_PUBLIC_REDIRECT_URL = process.env
+  .NEXT_PUBLIC_REDIRECT_URL as string;
+export const NEXT_PUBLIC_GOOGLE_MAP_APT_KEY = process.env
+  .NEXT_PUBLIC_GOOGLE_MAP_APT_KEY as string;
 export const buildQueryString = (params: any) =>
   Object.keys(params)
     .map(
@@ -26,6 +31,9 @@ export const formatCurrency = (
 };
 
 export const formatDateTime = (dateString: string) => {
+  if (!dateString || isNaN(new Date(dateString).getTime())) {
+    return "Invalid date";
+  }
   const date = new Date(dateString);
   return new Intl.DateTimeFormat("en-GB", {
     day: "2-digit",
@@ -64,10 +72,59 @@ export function formatDate(
   return new Intl.DateTimeFormat(locales, options).format(parsedDate);
 }
 
-export enum urlRoute {
-  additionalPayStackUrl = "/additional-services",
-}
+export const urlRoute = {
+  additionalPayStackUrl: `${NEXT_PUBLIC_REDIRECT_URL}/additional-services`,
+  reBookUrl: `${NEXT_PUBLIC_REDIRECT_URL}/bookings`,
+  shortletUrl: `${NEXT_PUBLIC_REDIRECT_URL}/shortlets`,
+  activeBookingUrl: `${NEXT_PUBLIC_REDIRECT_URL}/bookings/active-bookings`,
+} as const;
 
 export enum payment_method {
   pay_stack = "paystack",
 }
+
+// export default function errorHandler(data: {
+//   message: any;
+//   status: string;
+//   data: { message: any };
+// }) {
+//   const values =
+//     typeof data?.data?.message === "object"
+//       ? Object.values(data?.data?.message).join(", ")
+//       : data?.message || data?.status;
+//   return toast({
+//     variant: "destructive",
+//     title: "Error!",
+//     description: values || "Please try again later",
+//   });
+// }
+
+export const errorHandler = (error: any): void => {
+  if (error?.data?.data?.message) {
+    const messages = error.data.data.message;
+    const firstKey = Object.keys(messages)[0];
+    if (firstKey && messages[firstKey]?.length > 0) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: messages[firstKey][0],
+      });
+      return;
+    }
+  }
+
+  if (error?.data) {
+    toast({
+      variant: "destructive",
+      title: "Error",
+      description: error?.data?.message,
+    });
+    return;
+  }
+
+  toast({
+    variant: "destructive",
+    title: "Error",
+    description: "An unexpected error occurred. Please try again.",
+  });
+};

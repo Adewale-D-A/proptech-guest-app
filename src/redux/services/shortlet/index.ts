@@ -1,6 +1,9 @@
 /** @format */
 
-import { ShortletDataResponse } from "@/types/type";
+import {
+  ListedApartmentAvaliableType,
+  ShortletDataResponse,
+} from "@/types/type";
 import { injectEndpoints } from "../base/base";
 import { Endpoints, Methods } from "../base/service";
 import { buildQueryString } from "@/_shared/constants";
@@ -32,10 +35,23 @@ const shortletEndPoint = injectEndpoints({
         url: `${Endpoints.api}guest/calendar/${id}`,
       }),
     }),
+    getGuestList: builder.query<
+      ListedApartmentAvaliableType,
+      Record<string, any>
+    >({
+      query: (params) => {
+        const queryString = buildQueryString(params);
+        return {
+          method: Methods.get,
+          url: `${Endpoints.api}guest/calendar/all?${queryString}`,
+        };
+      },
+    }),
   }),
 });
 export const {
   useGetGuestShortletMutation,
   useGetSingleGuestShortletMutation,
   useGetAvailableDateMutation,
+  useGetGuestListQuery,
 } = shortletEndPoint;

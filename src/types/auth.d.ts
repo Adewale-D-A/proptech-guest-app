@@ -3,7 +3,13 @@
 interface GeneralResponse {
   error: boolean;
   message: string;
-  // data: AuthResponseData;
+}
+
+interface CreateBookingResponse extends GeneralResponse {
+  data: {
+    reference: string;
+    payment: string;
+  };
 }
 
 interface User {
@@ -30,6 +36,7 @@ interface User {
   pm_type: string | null;
   pm_last_four: string | null;
   trial_ends_at: string | null;
+  referral_code: string;
 }
 
 interface AuthResponseData extends GeneralResponse {
@@ -62,7 +69,6 @@ interface UpdateUserPayload {
   gender: string;
   phone: string;
   dob: string | null;
-  profile_photo: File | null;
 }
 interface UpdateUserDocPayload {
   identity_document: File | null;

@@ -31,6 +31,7 @@ const FilterDateComponent = ({
             onSelect={(date) =>
               handleDateSelect(date, (date) => setStartDate(date))
             }
+            removeBg={true}
           />
         </div>
         <div className="border rounded-br-md rounded-tr-md">
@@ -45,6 +46,7 @@ const FilterDateComponent = ({
             onSelect={(date) =>
               handleDateSelect(date, (date) => setEndDate(date))
             }
+            removeBg={true}
           />
         </div>
       </div>

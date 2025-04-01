@@ -1,6 +1,7 @@
 /** @format */
 "use client";
 import BookingsComponent from "@/components/ui/bookings";
+import { useGetBanksQuery } from "@/redux/services/banks";
 import {
   useGetBookingsQuery,
   useGetBookingStatsQuery,
@@ -8,17 +9,21 @@ import {
 import React, { useState } from "react";
 
 const BookingsContainer = () => {
-    const [search, setSearch] = useState("");
-    const [startDate, setStartDate] = useState<string | undefined>(undefined);
-    const [endDate, setEndDate] = useState<string | undefined>(undefined);
-
-  const { data, isLoading, error } = useGetBookingsQuery({
+  const [search, setSearch] = useState("");
+  const [startDate, setStartDate] = useState<string | undefined>(undefined);
+  const [endDate, setEndDate] = useState<string | undefined>(undefined);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const { data, isLoading } = useGetBookingsQuery({
     search,
     start_date: startDate,
     end_date: endDate,
+    page: pageIndex + 1,
+    limit: pageSize,
   });
   const { data: statsData, isLoading: statsLoading } =
     useGetBookingStatsQuery();
+  const { data: banksData } = useGetBanksQuery({});
 
   return (
     <BookingsComponent
@@ -29,8 +34,13 @@ const BookingsContainer = () => {
       setSearch={setSearch}
       setStartDate={setStartDate}
       setEndDate={setEndDate}
+      banksData={banksData?.data?.banks ?? []}
       endDate={endDate}
       startDate={startDate}
+      setPageIndex={setPageIndex}
+      setPageSize={setPageSize}
+      pageIndex={pageIndex}
+      pageSize={pageSize}
     />
   );
 };
