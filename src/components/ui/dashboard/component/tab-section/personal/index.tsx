@@ -74,7 +74,7 @@ const PersonaInfo = () => {
       toast({
         variant: "destructive",
         title: "Please upload a file.",
-        description: "An error occurred during verify identity",
+        description: "An error occurred during profile update",
       });
       return;
     }
@@ -103,7 +103,7 @@ const PersonaInfo = () => {
     }
   };
 
-  console.log("profileImage", profileImage);
+  // console.log("profileImage", profileImage);
 
   const handleSaveChangesClick = async () => {
     const isValid = await form.trigger();
