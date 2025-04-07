@@ -1,7 +1,7 @@
 /** @format */
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Camera } from "lucide-react";
 import { useForm } from "react-hook-form";
 import {
@@ -38,6 +38,7 @@ import { ToastResponse } from "@/types/type";
 import { toast } from "@/components/_shared/toast/use-toast";
 import { use99Selector } from "@/redux/hooks/hooks";
 import { selectUserToken } from "@/redux/slices/authSlice";
+import { selectCurrentUser } from "@/redux/slices/authSlice";
 
 const PersonaInfo = () => {
   const [updateUser, { isLoading }] = useUpdateUserMutation();
@@ -52,6 +53,8 @@ const PersonaInfo = () => {
     skip: !token,
   });
 
+  const userData = use99Selector(selectCurrentUser);
+
   const form = useForm<z.infer<typeof updateProfileSchema>>({
     resolver: zodResolver(updateProfileSchema),
     defaultValues: {
@@ -61,6 +64,25 @@ const PersonaInfo = () => {
       gender: "",
     },
   });
+
+  useEffect(() => {
+    if (userData) {
+      form.reset({
+        email: userData.email || "",
+        first_name: userData.first_name || "",
+        last_name: userData.last_name || "",
+        gender: userData.gender || "",
+      });
+      setPhone(userData.phone || "");
+      if (userData.dob) {
+        setDateOfBirth(new Date(userData.dob));
+      }
+      if (userData.profile_photo) {
+        setImagePreview(userData.profile_photo);
+      }
+    }
+  }, [userData, form]);
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
