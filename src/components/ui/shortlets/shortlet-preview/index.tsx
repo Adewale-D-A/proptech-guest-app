@@ -262,7 +262,7 @@ const ShortLetPreviewComponent = ({
     const formattedDate = date ? format(date, "yyyy-MM-dd") : "";
     form.setValue("check_in_day", formattedDate);
     form.setValue("check_out_day", "");
-    setMinCheckoutDate(date ? addDays(date, 1) : undefined);
+    setMinCheckoutDate(date ? addDays(date, 2) : undefined);
   };
 
   const handleCheckOutChange = (date: Date | undefined) => {
