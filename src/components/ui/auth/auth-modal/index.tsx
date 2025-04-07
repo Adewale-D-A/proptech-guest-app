@@ -32,6 +32,7 @@ const AuthModal = ({
   handleClose,
   setShowModal,
 }: AuthModalProps) => {
+  const [otpEmail, setOtpEmail] = React.useState<string | null>(null);
   return (
     <>
       <Modal
@@ -60,6 +61,10 @@ const AuthModal = ({
             onClick={() => handleOpen(true, "create")}
             onClickForgetPassword={() => handleOpen(true, "forgot-password")}
             handleClose={handleClose}
+            redirectToOtpModal={(email) => {
+              handleOpen(true, "otp");
+              setOtpEmail(email);
+            }}
           />
         )}
         {type === "forgot-password" && (
