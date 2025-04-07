@@ -51,7 +51,6 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
   const onSubmit = async (values: FormValues) => {
     const check_out_day_format =
       checkOutDateFromStore && format(checkOutDateFromStore, "yyyy-MM-dd");
-
     const payload = {
       ...values,
       booking_id: selectedApt?.id,

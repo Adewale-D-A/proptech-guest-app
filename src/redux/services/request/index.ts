@@ -26,20 +26,7 @@ const requestEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/additional-service/metrics`,
       }),
     }),
-    getRequest: builder.query<RequestResponseData, Record<string, any>>({
-      query: (params) => {
-        const searchParams = new URLSearchParams();
-        Object.keys(params).forEach((key) => {
-          if (params[key]) {
-            searchParams.append(key, params[key]);
-          }
-        });
-        return {
-          method: Methods.get,
-          url: `${Endpoints.api}user/request?${searchParams.toString()}`,
-        };
-      },
-    }),
+   
     createRequest: builder.mutation<any, CreateRequestBody>({
       query: (body) => ({
         body,
@@ -67,7 +54,29 @@ const requestEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/additional-service/get-fees`,
       }),
     }),
-    getAdditionalRequest: builder.query<
+  
+    escalate: builder.mutation<any, { request_id: number; body: any }>({
+      query: ({ request_id, body }) => ({
+        url: `${Endpoints.api}user/request/escalate/${request_id}`,
+        method: Methods.put,
+        body,
+      }),
+    }),
+    getRequest: builder.query<RequestResponseData, Record<string, any>>({
+      query: (params) => {
+        const searchParams = new URLSearchParams();
+        Object.keys(params).forEach((key) => {
+          if (params[key]) {
+            searchParams.append(key, params[key]);
+          }
+        });
+        return {
+          method: Methods.get,
+          url: `${Endpoints.api}user/request?${searchParams.toString()}`,
+        };
+      },
+    }),
+   getAdditionalRequest: builder.query<
       AdditionalRequestResponseData,
       Record<string, any>
     >({
@@ -85,13 +94,6 @@ const requestEndpoints = injectEndpoints({
           }user/additional-service?${searchParams.toString()}`,
         };
       },
-    }),
-    escalate: builder.mutation<any, { request_id: number; body: any }>({
-      query: ({ request_id, body }) => ({
-        url: `${Endpoints.api}user/request/escalate/${request_id}`,
-        method: Methods.put,
-        body,
-      }),
     }),
   }),
 });

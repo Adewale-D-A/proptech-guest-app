@@ -39,6 +39,8 @@ const SignUpForm = ({
   const [signUp, { isLoading }] = useSignUpMutation();
   const [phone, setPhone] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isTermsChecked, setIsTermsChecked] = useState(false);
+  const [termsError, setTermsError] = useState("");
   const form = useForm<z.infer<typeof signUpValidationSchema>>({
     resolver: zodResolver(signUpValidationSchema),
     defaultValues: {
@@ -50,6 +52,12 @@ const SignUpForm = ({
     },
   });
   const onSubmit = async (values: z.infer<typeof signUpValidationSchema>) => {
+    if (!isTermsChecked) {
+      setTermsError("You must agree to the terms and conditions.");
+      return;
+    }
+    setTermsError("");
+
     const userEmail = encodeURIComponent(values.email);
     dispatch(setEmail(userEmail));
     try {
@@ -60,8 +68,6 @@ const SignUpForm = ({
         title: response?.message || "Success!",
         description: "Welcome to 99Apartment 🚀",
       });
-      const userEmail = encodeURIComponent(values.email);
-      dispatch(setEmail(userEmail));
       handleOpen(true, "otp", userEmail);
     } catch (err) {
       const error = err as ToastResponse;
@@ -202,7 +208,7 @@ const SignUpForm = ({
                 <FormField
                   control={form.control}
                   name="password_confirmation"
-                  render={({ field }) => (
+                  render={({ field, fieldState }) => (
                     <FormItem className="w-full">
                       <FormLabel className="text-xs font-light">
                         Confirm Password
@@ -233,7 +239,9 @@ const SignUpForm = ({
                           </div>
                         </div>
                       </FormControl>
-                      <FormMessage className="text-xs text-red-500 font-light" />
+                      <FormMessage className="text-xs text-red-500 font-light">
+                        {fieldState.error?.message}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
@@ -242,7 +250,9 @@ const SignUpForm = ({
             <div className="flex mt-6 gap-2">
               <Checkbox
                 id="terms"
-                className="p-0 m-0 border shadow-none border-primary "
+                className="p-0 m-0 border shadow-none border-primary"
+                checked={isTermsChecked}
+                onCheckedChange={(checked) => setIsTermsChecked(!!checked)}
               />
               <p className="text-xs font-light">
                 By providing your email address you agree to our{" "}
@@ -250,6 +260,11 @@ const SignUpForm = ({
                 and <span className="text-primary">Terms of Service</span>{" "}
               </p>
             </div>
+            {termsError && (
+              <p className="text-xs text-red-500 font-light mt-1">
+                {termsError}
+              </p>
+            )}
             <LoadingButton loading={isLoading} className="w-full ">
               Create account
             </LoadingButton>

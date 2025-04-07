@@ -93,7 +93,6 @@ const AdditionalServicesComponent = ({
       ...values,
       request_date: selectedDate,
     };
-
     try {
       const response = await createAdditional(payload).unwrap();
       toast({

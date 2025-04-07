@@ -1,6 +1,6 @@
 /** @format */
 "use client";
-import React, { useState } from "react";
+import React, { SetStateAction, useState } from "react";
 import { TbMessageReply } from "react-icons/tb";
 import ReusableCard from "../reusable-card";
 import { Card } from "@/components/_shared/card";
