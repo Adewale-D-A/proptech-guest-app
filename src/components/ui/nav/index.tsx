@@ -23,6 +23,7 @@ import { getToken } from "@/_shared";
 import { navItems } from "@/_shared/data";
 import Image from "next/image";
 import useWindowSize from "@/components/responsivness";
+import Cookies from "js-cookie";
 
 const HomeNavBar = () => {
   const { width } = useWindowSize();

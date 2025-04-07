@@ -26,20 +26,7 @@ const requestEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/additional-service/metrics`,
       }),
     }),
-    getRequest: builder.query<RequestResponseData, Record<string, any>>({
-      query: (params) => {
-        const searchParams = new URLSearchParams();
-        Object.keys(params).forEach((key) => {
-          if (params[key]) {
-            searchParams.append(key, params[key]);
-          }
-        });
-        return {
-          method: Methods.get,
-          url: `${Endpoints.api}user/request?${searchParams.toString()}`,
-        };
-      },
-    }),
+   
     createRequest: builder.mutation<any, CreateRequestBody>({
       query: (body) => ({
         body,
@@ -67,25 +54,7 @@ const requestEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/additional-service/get-fees`,
       }),
     }),
-    getAdditionalRequest: builder.query<
-      AdditionalRequestResponseData,
-      Record<string, any>
-    >({
-      query: (params) => {
-        const searchParams = new URLSearchParams();
-        Object.keys(params).forEach((key) => {
-          if (params[key]) {
-            searchParams.append(key, params[key]);
-          }
-        });
-        return {
-          method: Methods.get,
-          url: `${
-            Endpoints.api
-          }user/additional-service?${searchParams.toString()}`,
-        };
-      },
-    }),
+  
     escalate: builder.mutation<any, { request_id: number; body: any }>({
       query: ({ request_id, body }) => ({
         url: `${Endpoints.api}user/request/escalate/${request_id}`,
@@ -107,34 +76,7 @@ const requestEndpoints = injectEndpoints({
         };
       },
     }),
-    createRequest: builder.mutation<any, CreateRequestBody>({
-      query: (body) => ({
-        body,
-        method: Methods.post,
-        url: `${Endpoints.api}user/request`,
-      }),
-    }),
-    createAdditional: builder.mutation<any, ServiceRequest>({
-      query: (body) => ({
-        body,
-        method: Methods.post,
-        url: `${Endpoints.api}user/additional-service`,
-      }),
-    }),
-    getServiceType: builder.query<ServiceTypesResponse, void>({
-      query: () => ({
-        method: Methods.get,
-        url: `${Endpoints.api}user/service-type`,
-      }),
-    }),
-    requestFee: builder.mutation<ServiceFeeResponse, any>({
-      query: (body) => ({
-        body,
-        method: Methods.post,
-        url: `${Endpoints.api}user/additional-service/get-fees`,
-      }),
-    }),
-    getAdditionalRequest: builder.query<
+   getAdditionalRequest: builder.query<
       AdditionalRequestResponseData,
       Record<string, any>
     >({
