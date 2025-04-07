@@ -55,6 +55,7 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
       ...values,
       booking_id: selectedApt?.id,
       check_out_day: check_out_day_format,
+
       check_out_time: "12:00",
     };
 
@@ -134,7 +135,7 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
       );
 
       if (newCheckOutDay) {
-        setNewCheckout(addDays(newCheckOutDay, 1));
+        setNewCheckout(addDays(newCheckOutDay, 0));
       }
     }
   }, [form.watch("check_in_day"), selectedApt?.number_of_days]);
@@ -220,12 +221,16 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
                       {" "}
                       <DatePickerTime
                         placeholder="YYYY-MM-DD"
-                        onDateChange={(date) =>
+                        onDateChange={(date) => {
                           form.setValue(
                             "check_in_day",
                             date ? format(date, "yyyy-MM-dd") : ""
-                          )
-                        }
+                          );
+
+                          if (date) {
+                            form.setValue("check_in_time", "14:10");
+                          }
+                        }}
                         onTimeChange={(time) =>
                           form.setValue("check_in_time", time ?? "")
                         }

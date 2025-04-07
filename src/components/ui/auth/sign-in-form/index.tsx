@@ -25,17 +25,21 @@ import { use99Dispatch } from "@/redux/hooks/hooks";
 import { setUserDetails } from "@/redux/slices/authSlice";
 import { errorHandler } from "@/_shared/constants";
 import { setToken } from "@/_shared";
+import { useResendOtpMutation } from "@/redux/services/auth/auth";
 const SignInform = ({
   onClick,
   onClickForgetPassword,
   handleClose,
+  redirectToOtpModal,
 }: {
   onClick: () => void;
   onClickForgetPassword: () => void;
   handleClose: () => void;
+  redirectToOtpModal: (email: string) => void;
 }) => {
   const dispatch = use99Dispatch();
   const [signIn, { isLoading }] = useSignInMutation();
+  const [resendOtp] = useResendOtpMutation();
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
   const form = useForm<z.infer<typeof signInValidationSchema>>({
@@ -59,8 +63,32 @@ const SignInform = ({
         description: "Welcome to 99Apartment 🚀",
       });
       handleClose();
-    } catch (err) {
-      errorHandler(err as any);
+    } catch (err: any) {
+      console.error("Error during sign-in:", err);
+
+      // Check if the error is due to an unverified email
+      if (
+        err?.data?.error === true &&
+        err?.data?.message === "email not verified"
+      ) {
+        await resendOtp({ email: values.email }).unwrap();
+
+        redirectToOtpModal(values.email);
+
+        toast({
+          variant: "default",
+          title: "Email Not Verified",
+          description: "A new OTP has been sent to your email.",
+        });
+        return;
+      }
+
+      // Handle other errors
+      toast({
+        variant: "destructive",
+        title: "Sign-in Failed",
+        description: err?.data?.message || "An error occurred during sign-in.",
+      });
     }
   };
 
