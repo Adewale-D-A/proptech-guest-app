@@ -202,7 +202,6 @@ const RequestTable = ({
           <div className="text-center ">no request data </div>
         )}
       </Table>
-
       <PaginationTable
         pageSize={pageSize}
         pageIndex={pageIndex}

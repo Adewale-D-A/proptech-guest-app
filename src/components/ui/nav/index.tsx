@@ -23,6 +23,7 @@ import { getToken } from "@/_shared";
 import { navItems } from "@/_shared/data";
 import Image from "next/image";
 import useWindowSize from "@/components/responsivness";
+import Cookies from "js-cookie";
 
 const HomeNavBar = () => {
   const { width } = useWindowSize();
@@ -111,6 +112,24 @@ const HomeNavBar = () => {
     if (name === "Adventures") {
       setOpenMenu(!openMenu);
     }
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    router.push("/landing");
+    Cookies.remove("access_token");
+  };
+
+  const handleGoToDashboard = () => {
+    router.push("/bookings");
+    dispatch(
+      setActiveTab({
+        id: "2",
+        title: "Bookings",
+        href: `/bookings`,
+        icon: <MdOutlineDateRange />,
+      })
+    );
   };
 
   return (

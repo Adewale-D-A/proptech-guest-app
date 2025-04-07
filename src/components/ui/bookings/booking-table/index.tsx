@@ -110,7 +110,6 @@ const BookingTable = ({
 
     return () => clearInterval(interval);
   }, [images.length]);
-
   return (
     <div>
       {isLoading ? (
