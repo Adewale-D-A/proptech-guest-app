@@ -92,10 +92,11 @@ const ShortLetPreviewComponent = ({
     }
   };
   const handlePrev = () => {
-    if (apartmentDetails && apartmentDetails.length > 0) {
+    if (apartmentDetails?.images && apartmentDetails.images.length > 0) {
       setCurrentIndex(
         (prevIndex) =>
-          (prevIndex - 1 + apartmentDetails.length) % apartmentDetails.length
+          (prevIndex - 1 + apartmentDetails.images.length) %
+          apartmentDetails.images.length
       );
     }
   };
