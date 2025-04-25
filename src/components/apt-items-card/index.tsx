@@ -87,13 +87,13 @@ const CardItem = ({
             </p>
           </div>
         </div>
-        <div className="flex justify-between bg-[#F4F6FF] p-4 mt-4">
+        <div className="flex gap-4 bg-[#F4F6FF] p-4 mt-4">
           {apartment.amenities?.slice(0, 10).map((am, index) => (
             <section key={index}>
-              <div className="flex flex-col items-center gap-y-1">
-                <div className="w-4 h-4 flex items-center justify-center">
+              <div className="">
+                <div className="w-4 h-4 flex items-center gap-4">
                   <RenderIcon
-                    value={am.name.toLowerCase()}
+                    value={am.image ? am.image.toLowerCase() : ""}
                     className="text-gray-600"
                   />
                 </div>

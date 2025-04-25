@@ -11,13 +11,8 @@ import {
   Heater,
   Dumbbell,
   LucideIcon,
+  LockKeyhole,
 } from "lucide-react";
-
-export interface iconPack {
-  label: string;
-  icon: LucideIcon;
-  value: string;
-}
 
 export const iconList = [
   {
@@ -74,5 +69,10 @@ export const iconList = [
     label: "Dumbbell",
     icon: Dumbbell,
     value: "dumbbell",
+  },
+  {
+    label: "Smart Lock",
+    icon: LockKeyhole,
+    value: "key",
   },
 ];
