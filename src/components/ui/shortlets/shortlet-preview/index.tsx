@@ -163,7 +163,7 @@ const ShortLetPreviewComponent = ({
       toast({
         variant: "default",
         title: res?.message,
-        description: "Apartment booked",
+        description: "Apartment reserved",
       });
       reset();
     } catch (err) {
