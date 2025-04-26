@@ -51,7 +51,14 @@ const SignUpForm = ({
       last_name: "",
     },
   });
-  const onSubmit = async (values: z.infer<typeof signUpValidationSchema>) => {
+  const onSubmit = async (
+    values: z.infer<typeof signUpValidationSchema>,
+    e?: React.BaseSyntheticEvent
+  ) => {
+    if (e) {
+      e.preventDefault();
+    }
+
     if (!isTermsChecked) {
       setTermsError("You must agree to the terms and conditions.");
       return;
@@ -93,7 +100,13 @@ const SignUpForm = ({
           account first
         </p>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="mt-6">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              form.handleSubmit(onSubmit)(e);
+            }}
+            className="mt-6"
+          >
             <div className="flex flex-col gap-2 w-full">
               <div className="flex  lg:flex-row flex-col w-full gap-4 ">
                 <FormField
@@ -107,7 +120,7 @@ const SignUpForm = ({
                       <FormControl className="bg-transparent w-full">
                         <Input
                           className="bg-white   outline-none text-sm   w-full"
-                          placeholder="Stephen"
+                          placeholder="Enter your first name"
                           {...field}
                         />
                       </FormControl>
@@ -126,7 +139,7 @@ const SignUpForm = ({
                       <FormControl className="bg-transparent w-full">
                         <Input
                           className="bg-white  outline-none text-sm  w-full"
-                          placeholder="Adebayo"
+                          placeholder="Enter your last name"
                           {...field}
                         />
                       </FormControl>

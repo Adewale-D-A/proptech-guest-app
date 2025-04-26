@@ -90,7 +90,26 @@ const NavSectionTabs = ({
             )}
           </Link>
         </NavigationMenuItem>
-
+        <NavigationMenuItem>
+          <Link href="/availability" legacyBehavior passHref>
+            {isMainRoute ? (
+              <NavigationMenuLink
+                className={`${navigationMenuTriggerStyle()} bg-none font-normal  ${
+                  scrolled ? "text-black" : "text-white"
+                }`}
+              >
+                Availability
+              </NavigationMenuLink>
+            ) : (
+              <NavigationMenuLink
+                className={`${navigationMenuTriggerStyle()} bg-none font-normal  text-black`}
+              >
+                Availability
+              </NavigationMenuLink>
+            )}
+          </Link>
+        </NavigationMenuItem>
+        {/* 
         <div ref={dropdownRef} className="px-4">
           <div
             className="relative"
@@ -124,7 +143,7 @@ const NavSectionTabs = ({
               </div>
             )}
           </div>
-        </div>
+        </div> */}
 
         <NavigationMenuItem>
           <Link
