@@ -50,7 +50,8 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
   const { reset } = form;
   const onSubmit = async (values: FormValues) => {
     const check_out_day_format =
-      checkOutDateFromStore && format(checkOutDateFromStore, "yyyy-MM-dd");
+      newCheckout && format(newCheckout, "yyyy-MM-dd");
+
     const payload = {
       ...values,
       booking_id: selectedApt?.id,
@@ -135,7 +136,7 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
       );
 
       if (newCheckOutDay) {
-        setNewCheckout(addDays(newCheckOutDay, 1));
+        setNewCheckout(addDays(newCheckOutDay, 0));
       }
     }
   }, [form.watch("check_in_day"), selectedApt?.number_of_days]);
