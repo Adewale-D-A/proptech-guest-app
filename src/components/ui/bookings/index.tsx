@@ -21,7 +21,7 @@ import { Modal } from "@/components/_shared/modal";
 import CautionForm from "./caution-form";
 import SuccessfulMessage from "./success-message";
 import Rating from "./rate";
-import BookingTable from "./booking-table";
+import BookingTable from "./successfulBooking-table";
 import { Booking, BookingData } from "@/types/type";
 import { BookingsInterface, BookingsResponse } from "@/types/book";
 import { addDays, format, isBefore } from "date-fns";
@@ -274,7 +274,7 @@ const BookingsComponent = ({
           isLoading={statsLoading}
         />
       </section>
-      {/* <Card className="shadow-sm mt-6  p-4">
+      <Card className="shadow-sm mt-6  p-4">
         <div className="flex items-center justify-between">
           <h1 className="font-medium">Booking History</h1>
           <SearchInput
@@ -334,7 +334,7 @@ const BookingsComponent = ({
           pageIndex={pageIndex}
           pageSize={pageSize}
         />
-      </Card> */}
+      </Card>
       <Modal
         showModal={show}
         setShowModal={setShow}
