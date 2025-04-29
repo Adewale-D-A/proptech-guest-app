@@ -12,6 +12,7 @@ import { RiBarcodeFill } from "react-icons/ri";
 import { Button } from "@/components/_shared/button";
 import { usePathname } from "next/navigation";
 import { Calendar } from "../_shared/calander";
+import RenderIcon from "../ui/render-icon";
 
 interface CardItemProps {
   apartment: Shortlet;
@@ -30,6 +31,7 @@ const CardItem = ({
   return (
     <Card key={apartment.id} className="relative shadow-sm pb-4">
       <img
+        onClick={() => handleRoute(apartment.name, apartment.id)}
         width={0}
         height={0}
         src={apartment.images[0].path}
@@ -85,23 +87,16 @@ const CardItem = ({
             </p>
           </div>
         </div>
-        <div className="flex justify-between bg-[#F4F6FF] p-4 mt-4">
-          {apartment.amenities?.map((am, index) => (
+        <div className="flex gap-4 bg-[#F4F6FF] p-4 mt-4">
+          {apartment.amenities?.slice(0, 10).map((am, index) => (
             <section key={index}>
-              <div className="flex flex-col items-center gap-y-1">
-                {am?.image ? (
-                  <Image
-                    src={am.image as string}
-                    width={16}
-                    height={16}
-                    alt={am.name || "Amenity"}
+              <div className="">
+                <div className="w-4 h-4 flex items-center gap-4">
+                  <RenderIcon
+                    value={am.image ? am.image.toLowerCase() : ""}
+                    className="text-gray-600"
                   />
-                ) : (
-                  <RiBarcodeFill size={16} />
-                )}
-                <p className="text-xs font-light">
-                  {am?.name || "Unnamed Amenity"}
-                </p>
+                </div>
               </div>
             </section>
           ))}
