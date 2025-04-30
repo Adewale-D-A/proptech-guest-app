@@ -27,12 +27,18 @@ const AuthModal = ({
   handleOpen,
   showModal,
   type,
-  // setToken,
-  // token,
   handleClose,
   setShowModal,
 }: AuthModalProps) => {
   const [otpEmail, setOtpEmail] = React.useState<string | null>(null);
+
+  // Add this handler to prevent Enter key from triggering unwanted actions
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
+
   return (
     <>
       <Modal
@@ -55,6 +61,7 @@ const AuthModal = ({
             ? "h-fit"
             : "h-[450px]"
         } bg-white`}
+        onKeyDown={handleKeyDown}
       >
         {type === "sign-in" && (
           <SignInform
