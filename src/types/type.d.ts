@@ -265,7 +265,7 @@ interface Booking {
   channel: string;
   payment_expires_at: string;
   created_at: string;
-
+confirmation_code?: string;
   transferred_from?: string;
   transferred_to?: string;
   visitor_code?: string;
