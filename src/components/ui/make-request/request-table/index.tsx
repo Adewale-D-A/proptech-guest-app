@@ -114,7 +114,7 @@ const RequestTable = ({
           <>
             <StatusBadge
               desc={String(desc)}
-              status={singleData?.booking?.payment_status ?? ""}
+              status={singleData?.payment_status ?? ""}
             />
           </>
         ) : (
@@ -162,28 +162,31 @@ const RequestTable = ({
                         <>
                           <div
                             className={`h-8  flex justify-center items-center w-20 rounded-full text-xs ${
-                              req?.booking?.payment_status === "pending"
-                                ? "border"
-                                : req?.booking?.payment_status === "success"
+                              req?.payment_status === "pending"
+                                ? "border text-[#FFB800]"
+                                : req?.payment_status === "success"
                                 ? "text-[#00C814] bg-[#F0FDEF]"
                                 : "bg-[#E9E9E9]"
                             } `}
                           >
                             <span
                               className={`${
-                                req.status === "pending"
-                                  ? ""
-                                  : req.status === "completed"
+                                req.payment_status === "pending"
+                                  ? "text-[#FFB800]"
+                                  : req.payment_status === "success"
                                   ? "text-[#00C814]"
                                   : ""
                               }`}
                             >
-                              {req?.booking?.payment_status}
+                              {req?.payment_status}
                             </span>
                           </div>
                         </>
                       ) : (
-                        <StatusBadge desc={req?.status} status={req?.status} />
+                        <StatusBadge
+                          desc={req?.payment_status}
+                          status={req?.payment_status}
+                        />
                       )}
                     </TableCell>
                     <TableCell>
@@ -259,10 +262,10 @@ const RequestTable = ({
                   desc={singleData.description}
                 />
               )}
-              {singleData?.booking?.payment_status && (
+              {singleData?.payment_status && (
                 <ReusableCard
                   title="Status of request"
-                  desc={singleData.booking.payment_status}
+                  desc={singleData.payment_status}
                 />
               )}
               <Button className="mt-6" onClick={() => setEscalateModal(true)}>

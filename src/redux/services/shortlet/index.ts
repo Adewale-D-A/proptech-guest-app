@@ -9,14 +9,27 @@ import { Endpoints, Methods } from "../base/service";
 import { buildQueryString } from "@/_shared/constants";
 import { GetAvailableDateResponse } from "@/types/book";
 
+// First, define an interface for the params
+interface ShortletParams extends Record<string, any> {
+  page?: number;
+  per_page?: number;
+  // other possible filter params
+  location?: string;
+  room_option_id?: string;
+}
+
 const shortletEndPoint = injectEndpoints({
   endpoints: (builder) => ({
     getGuestShortlet: builder.mutation<
       ShortletDataResponse,
-      Record<string, any>
+      ShortletParams
     >({
       query: (params) => {
-        const queryString = buildQueryString(params);
+        const queryString = buildQueryString({
+          ...params,
+          page: params.page || 1,
+          per_page: params.per_page || 20
+        });
         return {
           method: Methods.post,
           url: `${Endpoints.api}guest/shortlet/get-all?${queryString}`,

@@ -56,6 +56,11 @@ interface ToastResponse {
 
 interface ShortletDataResponse extends GeneralResponseStatus {
   data: ShortletData;
+  current_page: number;
+  last_page: number;
+  total: number;
+  per_page: number;
+
 }
 
 interface ShortletData {
@@ -265,7 +270,7 @@ interface Booking {
   channel: string;
   payment_expires_at: string;
   created_at: string;
-
+confirmation_code?: string;
   transferred_from?: string;
   transferred_to?: string;
   visitor_code?: string;
