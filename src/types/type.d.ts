@@ -56,6 +56,11 @@ interface ToastResponse {
 
 interface ShortletDataResponse extends GeneralResponseStatus {
   data: ShortletData;
+  current_page: number;
+  last_page: number;
+  total: number;
+  per_page: number;
+
 }
 
 interface ShortletData {
