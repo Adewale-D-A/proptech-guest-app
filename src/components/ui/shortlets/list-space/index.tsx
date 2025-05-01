@@ -12,13 +12,32 @@ import { usePathname, useRouter } from "next/navigation";
 import { Checkbox } from "@/components/_shared/check-box";
 import CardSkeleton from "@/components/card-skeleton";
 import { useVerifyPayment } from "@/redux/hooks/useVerifyPayment";
-import { useGetAvailableDateMutation } from "@/redux/services/shortlet";
+import {
+  useGetAvailableDateMutation,
+  useGetGuestShortletMutation,
+} from "@/redux/services/shortlet";
 import { Calendar } from "@/components/_shared/calander";
 import ThunderLoader from "@/components/loader/thunder-loader";
 import { parseISO } from "date-fns";
 import SearchDash from "@/components/search-dash";
 import CardItem from "@/components/apt-items-card";
 import Image from "next/image";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/_shared/pagination";
+
+interface PaginationMeta {
+  current_page: number;
+  last_page: number;
+  total: number;
+  per_page: number;
+}
 
 const ListSpace = ({
   setShowModal,
@@ -44,6 +63,36 @@ const ListSpace = ({
     getAvailableDate,
     { data: availableDates, isLoading: loadingAvailableDates },
   ] = useGetAvailableDateMutation();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [paginationMeta, setPaginationMeta] = useState<PaginationMeta | null>(
+    null
+  );
+
+  const [getShortlets] = useGetGuestShortletMutation();
+
+  const fetchData = async (page: number) => {
+    try {
+      const response = await getShortlets({
+        page,
+        per_page: 20,
+      }).unwrap();
+
+      setPaginationMeta({
+        current_page: response.current_page,
+        last_page: response.last_page,
+        total: response.total,
+        per_page: response.per_page,
+      });
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
+  };
+
+  // Add effect to handle page changes
+  useEffect(() => {
+    fetchData(currentPage);
+  }, [currentPage]);
 
   const handleAmenityChange = (amenityId: string) => {
     setSelectedAmenities((prevSelected) =>
@@ -147,6 +196,108 @@ const ListSpace = ({
               )}
             </div>
           )}
+          <div>
+            {/* ...existing shortlet grid... */}
+
+            {/* Add pagination controls */}
+            {paginationMeta && (
+              <div className="mt-8">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        onClick={() => {
+                          if (currentPage !== 1) {
+                            setCurrentPage((prev) => prev - 1);
+                            setFilters((prev: Record<string, any>) => ({
+                              ...prev,
+                              page: currentPage - 1,
+                            }));
+                          }
+                        }}
+                        className={
+                          currentPage === 1
+                            ? "cursor-not-allowed opacity-50"
+                            : ""
+                        }
+                      />
+                    </PaginationItem>
+
+                    {/* Show first page */}
+                    <PaginationItem>
+                      <PaginationLink
+                        isActive={currentPage === 1}
+                        onClick={() => {
+                          setCurrentPage(1);
+                          setFilters((prev: Record<string, any>) => ({
+                            ...prev,
+                            page: 1,
+                          }));
+                        }}
+                      >
+                        1
+                      </PaginationLink>
+                    </PaginationItem>
+
+                    {/* Show ellipsis if there are many pages */}
+                    {currentPage > 3 && <PaginationEllipsis />}
+
+                    {/* Show current page if not first or last */}
+                    {currentPage !== 1 &&
+                      currentPage !== paginationMeta.last_page && (
+                        <PaginationItem>
+                          <PaginationLink isActive>
+                            {currentPage}
+                          </PaginationLink>
+                        </PaginationItem>
+                      )}
+
+                    {/* Show ellipsis before last page */}
+                    {currentPage < paginationMeta.last_page - 2 && (
+                      <PaginationEllipsis />
+                    )}
+
+                    {/* Show last page */}
+                    {paginationMeta.last_page !== 1 && (
+                      <PaginationItem>
+                        <PaginationLink
+                          isActive={currentPage === paginationMeta.last_page}
+                          onClick={() => {
+                            setCurrentPage(paginationMeta.last_page);
+                            setFilters((prev: Record<string, any>) => ({
+                              ...prev,
+                              page: paginationMeta.last_page,
+                            }));
+                          }}
+                        >
+                          {paginationMeta.last_page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    )}
+
+                    <PaginationItem>
+                      <PaginationNext
+                        onClick={() => {
+                          if (currentPage !== paginationMeta.last_page) {
+                            setCurrentPage((prev) => prev + 1);
+                            setFilters((prev: Record<string, any>) => ({
+                              ...prev,
+                              page: currentPage + 1,
+                            }));
+                          }
+                        }}
+                        className={
+                          currentPage === paginationMeta.last_page
+                            ? "cursor-not-allowed opacity-50"
+                            : ""
+                        }
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <Modal

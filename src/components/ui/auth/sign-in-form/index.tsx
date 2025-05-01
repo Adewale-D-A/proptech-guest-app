@@ -51,13 +51,7 @@ const SignInform = ({
     },
   });
 
-  const onSubmit = async (
-    values: z.infer<typeof signInValidationSchema>,
-    e?: React.BaseSyntheticEvent
-  ) => {
-    if (e) {
-      e.preventDefault();
-    }
+  const onSubmit = async (values: z.infer<typeof signInValidationSchema>) => {
     try {
       const response = await signIn(values).unwrap();
       const token = response?.data?.access_token;
@@ -109,13 +103,7 @@ const SignInform = ({
           To continue using your account, please enter your sign-in details.
         </p>
         <Form {...form}>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              form.handleSubmit(onSubmit)(e);
-            }}
-            className="mt-6"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="mt-6">
             <div className="flex flex-col gap-2">
               <FormField
                 control={form.control}
@@ -200,7 +188,7 @@ const SignInform = ({
                 Forgot Password?
               </Button>
             </div>
-            <LoadingButton className="w-full" loading={isLoading}>
+            <LoadingButton className="w-full" loading={isLoading} type="submit">
               Sign in
             </LoadingButton>
             <p className="text-xs text-center font-light">

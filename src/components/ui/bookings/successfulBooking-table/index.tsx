@@ -225,147 +225,167 @@ const BookingTable = ({
               </div>
             </>
           ) : (
-            <section className="flex gap-10 h-full">
-              <Card className=" w-1/2 pb-8 p-4 shadow-sm h-full overflow-y-auto">
-                <section>
-                  {images && images?.length > 0 && (
-                    <div className="w-full relative">
-                      <div
-                        style={{
-                          width: "100%",
-                          height: "600px",
-                          position: "relative",
-                        }}
-                      >
-                        <Image
-                          layout="fill"
-                          src={images[currentIndex]?.path || ""}
-                          alt={`Apartment Image ${currentIndex + 1}`}
-                          className="w-full rounded-xl h-[600px] object-cover"
-                          unoptimized
-                        />
-                      </div>
+            <section className="flex flex-col gap-4 h-full">
+              <div className="flex items-center">
+                <Button
+                  onClick={() => handleCloseDrawer(false)}
+                  variant="ghost"
+                  className="flex items-center gap-2 text-gray-600"
+                >
+                  <MdArrowBack size={20} />
+                  <span>Back</span>
+                </Button>
+              </div>
+              <section className="flex gap-10 h-full">
+                <Card className="w-1/2 pb-8 p-4 shadow-sm h-full overflow-y-auto">
+                  <section>
+                    {images && images?.length > 0 && (
+                      <div className="w-full relative">
+                        <div
+                          style={{
+                            width: "100%",
+                            height: "600px",
+                            position: "relative",
+                          }}
+                        >
+                          <Image
+                            layout="fill"
+                            src={images[currentIndex]?.path || ""}
+                            alt={`Apartment Image ${currentIndex + 1}`}
+                            className="w-full rounded-xl h-[600px] object-cover"
+                            unoptimized
+                          />
+                        </div>
 
-                      <div className="flex justify-between absolute top-0 items-center h-full left-0 right-0 px-6">
-                        <Button
-                          onClick={handlePrevImage}
-                          disabled={images?.length === 0}
-                          className="bg-white shadow-md w-12 h-12 rounded-full px-4"
-                        >
-                          <MdArrowBack size={30} color="black" />
-                        </Button>
-                        <Button
-                          onClick={handleNextImage}
-                          disabled={images?.length === 0}
-                          className="bg-white shadow-md w-12 h-12 rounded-full px-4"
-                        >
-                          <IoArrowForward size={30} color="black" />
-                        </Button>
+                        <div className="flex justify-between absolute top-0 items-center h-full left-0 right-0 px-6">
+                          <Button
+                            onClick={handlePrevImage}
+                            disabled={images?.length === 0}
+                            className="bg-white shadow-md w-12 h-12 rounded-full px-4"
+                          >
+                            <MdArrowBack size={30} color="black" />
+                          </Button>
+                          <Button
+                            onClick={handleNextImage}
+                            disabled={images?.length === 0}
+                            className="bg-white shadow-md w-12 h-12 rounded-full px-4"
+                          >
+                            <IoArrowForward size={30} color="black" />
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </section>
+                  <section className="flex pt-4 justify-between items-center">
+                    <h1 className="text-2xl font-medium">
+                      {singleBookingsData?.name}{" "}
+                      {singleBookingsData?.no_of_bathrooms} Bedroom
+                    </h1>
+                    <div>
+                      <h1 className="text-primary text-font-medium">
+                        {formatCurrency(
+                          singleBookingsData?.price,
+                          singleBookingsData?.currency
+                        )}
+                        /<span className="text-xs">Total cost</span>{" "}
+                      </h1>
+                    </div>
+                  </section>
+                  <section className="py-3">
+                    <div className="flex items-center gap-3">
+                      <div className="text-gray-100 flex items-center gap-1">
+                        <MapPin size={12} />
+                        <p className="text-xs font-light text-gray-100">
+                          {singleBookingsData?.location}
+                        </p>
+                      </div>
+                      <div className="text-gray-100 flex items-center gap-1">
+                        <TbBed size={12} />
+                        <p className="text-xs font-light">
+                          {singleBookingsData?.no_of_bedrooms} Bedrooms
+                        </p>
                       </div>
                     </div>
-                  )}
-                </section>
-                <section className="flex pt-4 justify-between items-center">
-                  <h1 className="text-2xl font-medium">
-                    {singleBookingsData?.name}{" "}
-                    {singleBookingsData?.no_of_bathrooms} Bedroom
-                  </h1>
-                  <div>
-                    <h1 className="text-primary text-font-medium">
-                      {formatCurrency(
-                        singleBookingsData?.price,
-                        singleBookingsData?.currency
-                      )}
-                      /<span className="text-xs">Total cost</span>{" "}
-                    </h1>
-                  </div>
-                </section>
-                <section className="py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="text-gray-100 flex items-center gap-1">
-                      <MapPin size={12} />
-                      <p className="text-xs font-light text-gray-100">
-                        {singleBookingsData?.location}
-                      </p>
-                    </div>
-                    <div className="text-gray-100 flex items-center gap-1">
-                      <TbBed size={12} />
-                      <p className="text-xs font-light">
-                        {singleBookingsData?.no_of_bedrooms} Bedrooms
-                      </p>
-                    </div>
-                  </div>
-                </section>
-                <section>
-                  <Button
+                  </section>
+                  <section>
+                    {/* <Button
                     variant={"outline"}
                     className="border-primary font-normal  text-sm rounded-md text-primary flex items-center gap-x-3"
                   >
                     Print document <FileDown className="" size={16} />
-                  </Button>
-                </section>
-                <section className="bg-[#f5f6ff] px-4 rounded-md mt-4 h-[70px] flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium">Check-in</p>
-                    <span className="text-xs text-gray-400">
-                      {singleBookings?.data?.bookings?.check_in_date &&
-                        formatDate(
-                          singleBookings?.data?.bookings?.check_in_date
+                  </Button> */}
+                  </section>
+                  <section className="bg-[#f5f6ff] px-4 rounded-md mt-4 h-[70px] flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium">Check-in</p>
+                      <span className="text-xs text-gray-400">
+                        {singleBookings?.data?.bookings?.check_in_date && (
+                          <>
+                            {singleBookings?.data?.bookings?.check_in_date} at{" "}
+                            {singleBookings?.data?.bookings?.check_in_time}
+                          </>
                         )}
-                    </span>
-                  </div>
-                  <Separator orientation="vertical" className="bg-gray-200" />
-                  <div className="">
-                    <p className="text-sm font-medium">Checkout </p>
-                    <span className="text-xs text-gray-400">
-                      {singleBookings?.data?.bookings?.check_out_date &&
-                        formatDate(
-                          singleBookings?.data?.bookings?.check_out_date
+                      </span>
+                    </div>
+                    <Separator orientation="vertical" className="bg-gray-200" />
+                    <div className="">
+                      <p className="text-sm font-medium">Checkout </p>
+                      <span className="text-xs text-gray-400">
+                        {singleBookings?.data?.bookings?.check_out_date && (
+                          <>
+                            {singleBookings?.data?.bookings?.check_out_date} at{" "}
+                            {singleBookings?.data?.bookings?.check_out_time}
+                          </>
                         )}
-                    </span>
-                  </div>
-                  <Separator orientation="vertical" className="bg-gray-200" />
-                  <div className="">
-                    <p className="text-sm font-medium">Confirmation Code</p>
-                    <span className="text-xs text-gray-400">nil</span>
-                  </div>
-                </section>
-                <section className="my-4">
-                  <h1 className="text-lg font-medium">Cancellation Policies</h1>
-                  <p className="text-sm text-[#6D6D6D]">
-                    {singleBookingsData?.cancellation_policy}
-                  </p>
-                </section>
-                <section>
-                  <div className="">
-                    <h1 className="font-medium">House Rules</h1>
-                  </div>
-                  <ul className="list-disc  mt-2  list-inside space-y-3">
-                    {singleBookingsData &&
-                      singleBookingsData.rules.map((rule, index) => (
-                        <li key={index} className="flex items-center text-sm">
-                          <IoMdCheckboxOutline size={16} className=" mr-2" />
-                          {rule.name}
-                        </li>
-                      ))}
-                  </ul>
-                </section>
-              </Card>
+                      </span>
+                    </div>
+                    <Separator orientation="vertical" className="bg-gray-200" />
+                    <div className="">
+                      <p className="text-sm font-medium">Confirmation Code</p>
+                      <span className="text-xs text-gray-400">
+                        {singleBookings?.data?.bookings?.confirmation_code}
+                      </span>
+                    </div>
+                  </section>
+                  <section className="my-4">
+                    <h1 className="text-lg font-medium">
+                      Cancellation Policies
+                    </h1>
+                    <p className="text-sm text-[#6D6D6D]">
+                      {singleBookingsData?.cancellation_policy}
+                    </p>
+                  </section>
+                  <section>
+                    <div className="">
+                      <h1 className="font-medium">House Rules</h1>
+                    </div>
+                    <ul className="list-disc  mt-2  list-inside space-y-3">
+                      {singleBookingsData &&
+                        singleBookingsData.rules.map((rule, index) => (
+                          <li key={index} className="flex items-center text-sm">
+                            <IoMdCheckboxOutline size={16} className=" mr-2" />
+                            {rule.name}
+                          </li>
+                        ))}
+                    </ul>
+                  </section>
+                </Card>
 
-              <div className="w-1/2 flex justify-center items-center h-full sticky top-0">
-                {Number(singleBookingsData?.latitude) !== 0 &&
-                Number(singleBookingsData?.longitude) !== 0 ? (
-                  <GoogleMapComponent
-                    lat={Number(singleBookingsData?.latitude)}
-                    lng={Number(singleBookingsData?.longitude)}
-                    height={"100%"}
-                  />
-                ) : (
-                  <div>
-                    <p>No location found yet!!!</p>
-                  </div>
-                )}
-              </div>
+                <div className="w-1/2 flex justify-center items-center h-full sticky top-0">
+                  {Number(singleBookingsData?.latitude) !== 0 &&
+                  Number(singleBookingsData?.longitude) !== 0 ? (
+                    <GoogleMapComponent
+                      lat={Number(singleBookingsData?.latitude)}
+                      lng={Number(singleBookingsData?.longitude)}
+                      height={"100%"}
+                    />
+                  ) : (
+                    <div>
+                      <p>No location found yet!!!</p>
+                    </div>
+                  )}
+                </div>
+              </section>
             </section>
           )}
         </DrawerContent>
