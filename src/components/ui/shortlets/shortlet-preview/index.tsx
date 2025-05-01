@@ -55,6 +55,15 @@ import { Input } from "@/components/_shared/input";
 
 type FormValues = z.infer<typeof bookingSchema>;
 
+const calculateNights = (checkInDate: string, checkOutDate: string) => {
+  if (!checkInDate || !checkOutDate) return 1;
+  const start = new Date(checkInDate);
+  const end = new Date(checkOutDate);
+  const diffTime = Math.abs(end.getTime() - start.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays;
+};
+
 const ShortLetPreviewComponent = ({
   apartmentDetails,
   availableDates,
@@ -473,7 +482,17 @@ const ShortLetPreviewComponent = ({
                                   <div className=" py-3 flex flex-col gap-3">
                                     <ListCard
                                       amt={priceDetails.baseCost}
-                                      costName="Estimated cost for 1 night "
+                                      costName={`Estimated cost for ${calculateNights(
+                                        form.watch("check_in_day"),
+                                        form.watch("check_out_day")
+                                      )} ${
+                                        calculateNights(
+                                          form.watch("check_in_day"),
+                                          form.watch("check_out_day")
+                                        ) === 1
+                                          ? "night"
+                                          : "nights"
+                                      }`}
                                       currency="NGN"
                                     />
                                     <ListCard
