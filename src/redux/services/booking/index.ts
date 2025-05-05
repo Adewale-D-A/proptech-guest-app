@@ -94,6 +94,12 @@ const bookingEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/booking/verify-booking-payment?reference=${reference}`,
       }),
     }),
+     verifyAdditionalServicesPayment: builder.query<GeneralResponse, string>({
+      query: (reference) => ({
+        method: Methods.get,
+        url: `${Endpoints.api}user/additional-service/verify-payment?reference=${reference}`,
+      }),
+    }),
     cautionFeeBooking: builder.mutation<any, any>({
       query: (body) => ({
         body,
@@ -115,6 +121,7 @@ export const {
   useCreateRatingMutation,
   useTransferBookingMutation,
   useVerifyPaymentQuery,
+  useVerifyAdditionalServicesPaymentQuery,
   useCautionFeeBookingMutation,
   useGetUserActiveBookingsQuery,
 } = bookingEndpoints;
