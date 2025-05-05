@@ -201,7 +201,7 @@ const ListSpace = ({
 
             {/* Add pagination controls */}
             {paginationMeta && (
-              <div className="mt-8">
+              <div className="mt-8 cursor-pointer">
                 <Pagination>
                   <PaginationContent>
                     <PaginationItem>
