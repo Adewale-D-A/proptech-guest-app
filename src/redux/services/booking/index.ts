@@ -25,6 +25,12 @@ const bookingEndpoints = injectEndpoints({
         url: `${Endpoints.api}guest/shortlet/get-fees`,
       }),
     }),
+    getRoomOptions: builder.query<any, void>({
+      query: () => ({
+        method: Methods.get,
+        url: `${Endpoints.api}guest/room-option`,
+      }),
+    }),
     getBookings: builder.query<BookingsResponseData, Record<string, any>>({
       query: (params) => {
         const searchParams = new URLSearchParams();
@@ -94,6 +100,12 @@ const bookingEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/booking/verify-booking-payment?reference=${reference}`,
       }),
     }),
+     verifyAdditionalServicesPayment: builder.query<GeneralResponse, string>({
+      query: (reference) => ({
+        method: Methods.get,
+        url: `${Endpoints.api}user/additional-service/verify-payment?reference=${reference}`,
+      }),
+    }),
     cautionFeeBooking: builder.mutation<any, any>({
       query: (body) => ({
         body,
@@ -109,12 +121,14 @@ export const {
   useGetBookingPriceMutation,
   useGetBookingsQuery,
   useGetBookingStatsQuery,
+  useGetRoomOptionsQuery,
   useGenerateCodeMutation,
   useRescheduleBookingMutation,
   useGetSingleBookingsQuery,
   useCreateRatingMutation,
   useTransferBookingMutation,
   useVerifyPaymentQuery,
+  useVerifyAdditionalServicesPaymentQuery,
   useCautionFeeBookingMutation,
   useGetUserActiveBookingsQuery,
 } = bookingEndpoints;
