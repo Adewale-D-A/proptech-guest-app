@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import React from "react";
 import { Input } from "../_shared/input";
 import { DatePicker } from "../date-picker";
+import { useGetRoomOptionsQuery } from "@/redux/services/booking";
 import {
   Select,
   SelectContent,
@@ -14,6 +15,13 @@ import {
 import { Separator } from "../_shared/separator";
 import { Button } from "../_shared/button";
 import { Label } from "../_shared/label";
+
+interface RoomOption {
+  id: number;
+  name: string;
+  description: string | null;
+  slug: string;
+}
 
 const SearchDash = ({
   location,
@@ -40,6 +48,25 @@ const SearchDash = ({
     selectedDay.setHours(0, 0, 0, 0);
     return selectedDay < new Date(from);
   };
+
+  const { data, error, isLoading } = useGetRoomOptionsQuery();
+  const [roomOptions, setRoomOptions] = React.useState<RoomOption[]>([]);
+
+  React.useEffect(() => {
+    if (data?.data?.roomOption?.data) {
+      setRoomOptions(data.data.roomOption.data);
+    }
+  }, [data]);
+
+  // Show loading state or fallback
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    console.error("Error fetching room options:", error);
+    // Continue with fallback room options
+  }
 
   return (
     <div className="bg-[#f5f6ff] p-4 lgs:p-0 mt-6 lgs:mt-0 lgs:w-5/6 mx-auto lgs:rounded-full flex items-center  lgs:h-20 shadow-sm">
@@ -71,13 +98,13 @@ const SearchDash = ({
               </SelectTrigger>
 
               <SelectContent className="border-none">
-                {[1, 2, 3, 4, 5].map((room) => (
+                {roomOptions.map((room) => (
                   <SelectItem
-                    key={room}
-                    value={room.toString()}
+                    key={room.id}
+                    value={room.id.toString()}
                     className="border-none"
                   >
-                    {room} Room{room > 1 ? "s" : ""}
+                    {room.description || room.name}
                   </SelectItem>
                 ))}
               </SelectContent>

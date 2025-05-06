@@ -31,7 +31,7 @@ import { use99Selector } from "@/redux/hooks/hooks";
 import { useCreateAdditionalMutation } from "@/redux/services/request";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import { payment_method, urlRoute } from "@/_shared/constants";
-import { useVerifyPayment } from "@/redux/hooks/useVerifyPayment";
+import { useVerifyPayment } from "@/redux/hooks/useVerifyAdditionalServicePayment";
 
 const AdditionalServicesComponent = ({
   requestDataStats,
