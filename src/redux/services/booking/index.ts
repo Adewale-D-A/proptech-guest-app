@@ -25,6 +25,12 @@ const bookingEndpoints = injectEndpoints({
         url: `${Endpoints.api}guest/shortlet/get-fees`,
       }),
     }),
+    getRoomOptions: builder.query<any, void>({
+      query: () => ({
+        method: Methods.get,
+        url: `${Endpoints.api}guest/room-option`,
+      }),
+    }),
     getBookings: builder.query<BookingsResponseData, Record<string, any>>({
       query: (params) => {
         const searchParams = new URLSearchParams();
@@ -115,6 +121,7 @@ export const {
   useGetBookingPriceMutation,
   useGetBookingsQuery,
   useGetBookingStatsQuery,
+  useGetRoomOptionsQuery,
   useGenerateCodeMutation,
   useRescheduleBookingMutation,
   useGetSingleBookingsQuery,
