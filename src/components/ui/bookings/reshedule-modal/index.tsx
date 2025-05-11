@@ -74,11 +74,11 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
     }
   };
 
-  useEffect(() => {
-    if (shortlet_id) {
-      getAvailableDate(shortlet_id);
-    }
-  }, [shortlet_id, getAvailableDate]);
+  // useEffect(() => {
+  //   if (shortlet_id) {
+  //     getAvailableDate(shortlet_id);
+  //   }
+  // }, [shortlet_id, getAvailableDate]);
 
   // useEffect(() => {
   //   const checkInDay = form.watch("check_in_day");

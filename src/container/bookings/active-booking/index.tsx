@@ -1,7 +1,9 @@
 /** @format */
 "use client";
 import ActiveBookingComponent from "@/components/ui/bookings/active-booking";
-import { useGetBookingsQuery } from "@/redux/services/booking";
+import { use99Selector } from "@/redux/hooks/hooks";
+import { useGetUserActiveBookingsQuery } from "@/redux/services/booking";
+import { selectCurrentUser } from "@/redux/slices/authSlice";
 import React, { useState } from "react";
 
 const ActiveBookingContainer = () => {
@@ -10,13 +12,10 @@ const ActiveBookingContainer = () => {
   const [endDate, setEndDate] = useState<string | undefined>(undefined);
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const { data, isLoading } = useGetBookingsQuery({
-    search,
-    start_date: startDate,
-    end_date: endDate,
-    page: pageIndex + 1,
-    limit: pageSize,
-  });
+  const currentUser = use99Selector(selectCurrentUser);
+  const { data, isLoading } = useGetUserActiveBookingsQuery(
+    currentUser?.id as number
+  );
 
   return (
     <ActiveBookingComponent
