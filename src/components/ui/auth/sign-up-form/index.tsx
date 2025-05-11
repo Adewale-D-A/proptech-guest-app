@@ -67,6 +67,7 @@ const SignUpForm = ({
 
     const userEmail = encodeURIComponent(values.email);
     dispatch(setEmail(userEmail));
+
     try {
       const signUpData = { ...values, phone };
       const response = await signUp(signUpData).unwrap();
@@ -76,11 +77,51 @@ const SignUpForm = ({
         description: "Welcome to 99Apartment 🚀",
       });
       handleOpen(true, "otp", userEmail);
-    } catch (err) {
-      const error = err as ToastResponse;
+    } catch (err: any) {
+      const errorData = err?.data?.data;
+
+      // Handle field-specific validation errors
+      if (errorData?.message) {
+        const fieldErrors = errorData.message;
+
+        // Check for email errors
+        if (fieldErrors.email) {
+          toast({
+            variant: "destructive",
+            title: "Email Error",
+            description: fieldErrors.email[0],
+          });
+          return;
+        }
+
+        // Check for phone errors
+        if (fieldErrors.phone) {
+          toast({
+            variant: "destructive",
+            title: "Phone Number Error",
+            description: fieldErrors.phone[0],
+          });
+          return;
+        }
+
+        // Handle any other field errors
+        const firstErrorField = Object.keys(fieldErrors)[0];
+        if (firstErrorField) {
+          toast({
+            variant: "destructive",
+            title: `${
+              firstErrorField.charAt(0).toUpperCase() + firstErrorField.slice(1)
+            } Error`,
+            description: fieldErrors[firstErrorField][0],
+          });
+          return;
+        }
+      }
+
+      // Fallback error message
       toast({
         variant: "destructive",
-        title: error?.data?.message || "Sign Up Failed",
+        title: "Sign Up Failed",
         description: "An error occurred during sign-up.",
       });
     }

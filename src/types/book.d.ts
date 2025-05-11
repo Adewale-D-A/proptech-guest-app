@@ -70,7 +70,8 @@ type Booking = {
   total_price_NGN: number;
   updated_at: string;
   notes: null | string;
-   confirmation_code: string;
+  confirmation_code: string;
+ 
 };
 
 type BookingsResponse = {
@@ -94,6 +95,13 @@ type BookingsResponse = {
     check_out_time: string;
     confirmation_code: string;
   };
+};
+
+type ActiveBookingsResponse = {
+  error: boolean;
+  message: string;
+  bookings: Booking[]
+   
 };
 
 type BookingsResponseData = {
