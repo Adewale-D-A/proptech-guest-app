@@ -21,8 +21,12 @@ import { Button } from "@/components/_shared/button";
 import RescheduleModal from "../reshedule-modal";
 import GenerateVisitor from "../generate-visitor";
 import VisitorsCode from "../generate-visitor/copy-code";
-import BookingTable from "../booking-table";
-import { Booking, BookingsResponse } from "@/types/book";
+import BookingTable from "../active-booking-table";
+import {
+  ActiveBookingsResponse,
+  Booking,
+  BookingsResponse,
+} from "@/types/book";
 import { format } from "date-fns";
 import FilterDateComponent from "../../make-request/filter-component";
 import { use99Selector } from "@/redux/hooks/hooks";
@@ -46,7 +50,7 @@ const ActiveBookingComponent = ({
   setPageIndex,
   setPageSize,
 }: {
-  bookingData: BookingsResponse | null;
+  bookingData: ActiveBookingsResponse | null;
   isLoading: boolean;
   setSearch: (value: string) => void;
   setStartDate: (date: string | undefined) => void;
