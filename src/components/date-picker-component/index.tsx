@@ -3,21 +3,22 @@
 "use client";
 
 import * as React from "react";
-import { endOfToday, format, isAfter } from "date-fns";
-
-import Image from "next/image";
-import { ChevronDown } from "lucide-react";
+import { endOfToday, format, isAfter, isBefore } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import { Button } from "../_shared/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../_shared/popover";
 import { cn } from "@/_shared/cn";
 import { Calendar } from "../_shared/calander";
-import { Calendar as CalendarIcon } from "lucide-react";
+
 type IProps = {
   showIcon?: boolean;
   placeholder?: string;
   className?: string;
   setDate: (date: string | undefined) => void;
+  minDate?: Date;
+  maxDate?: Date;
+  disabledDates?: (date: Date) => boolean;
 };
 
 export function DatePickerComponent({
@@ -25,6 +26,9 @@ export function DatePickerComponent({
   placeholder,
   className,
   setDate,
+  minDate,
+  maxDate,
+  disabledDates,
 }: IProps) {
   const [selectedDate, setSelectedDate] = useState<Date>();
 
@@ -34,7 +38,14 @@ export function DatePickerComponent({
   };
 
   const isDateDisabled = (date: Date) => {
-    return isAfter(date, endOfToday());
+    // Check if date is within allowed range
+    if (minDate && isBefore(date, minDate)) return true;
+    if (maxDate && isAfter(date, maxDate)) return true;
+
+    // Check custom disabled dates function
+    if (disabledDates && disabledDates(date)) return true;
+
+    return false;
   };
 
   return (
@@ -43,33 +54,34 @@ export function DatePickerComponent({
         <Button
           variant={"outline"}
           className={cn(
-            `w-40 h-11 rounded-md border p-2  border-[#EDEFF3] justify-start text-left font-normal",
-            !date && "text-muted-foreground ${className}`
+            "w-40 h-11 rounded-md border p-2 border-[#EDEFF3] justify-start text-left font-normal",
+            !selectedDate && "text-muted-foreground",
+            className
           )}
         >
           <div className="flex justify-between w-full">
             <div className="flex w-full items-center">
               {showIcon && <CalendarIcon size={16} />}
               {selectedDate ? (
-                <span className=" px-4 ">
+                <span className="px-4">
                   {format(selectedDate, "yyyy-MM-dd")}
                 </span>
               ) : (
-                <span className=" text-xs text-[#77838D] font-light ">
-                  {placeholder}
+                <span className="text-xs text-[#77838D] font-light">
+                  {/* {placeholder} */}
                 </span>
               )}
             </div>
-            {/* <ChevronDown color="#1F1F1F" /> */}
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto bg-white  p-0">
+      <PopoverContent className="w-auto bg-white p-0">
         <Calendar
-          className=" "
           mode="single"
           selected={selectedDate}
           onSelect={handleDateChange}
+          disabled={isDateDisabled}
+          initialFocus
         />
       </PopoverContent>
     </Popover>

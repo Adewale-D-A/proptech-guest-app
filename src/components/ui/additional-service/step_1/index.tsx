@@ -25,9 +25,11 @@ import React from "react";
 const FirstStepForm = ({
   form,
   shortlet,
+  onBookingSelect,
 }: {
   form: any;
   shortlet: Booking[];
+  onBookingSelect: (id: string) => void;
 }) => {
   const { data } = useGetServiceTypeQuery();
   const serviceData = data && data?.data && data?.data?.serviceTypes?.data;
@@ -63,7 +65,12 @@ const FirstStepForm = ({
           name="shortlet_id"
           render={({ field }) => (
             <FormItem>
-              <Select onValueChange={field.onChange}>
+              <Select
+                onValueChange={(value) => {
+                  field.onChange(value);
+                  onBookingSelect(value);
+                }}
+              >
                 <SelectTrigger className="h-10 w-full border-black/10 shadow-none mt-2">
                   <SelectValue
                     placeholder="Select apartment"

@@ -268,8 +268,17 @@ const RequestTable = ({
                   desc={singleData.payment_status}
                 />
               )}
-              <Button className="mt-6" onClick={() => setEscalateModal(true)}>
-                Escalate
+              <Button
+                className="mt-6"
+                onClick={() => setEscalateModal(true)}
+                disabled={singleData?.is_escalated === 1}
+                variant={
+                  singleData?.is_escalated === 1 ? "secondary" : "default"
+                }
+              >
+                {singleData?.is_escalated === 1
+                  ? "Already Escalated"
+                  : "Escalate"}
               </Button>
             </section>
           )}
