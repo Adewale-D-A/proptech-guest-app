@@ -37,26 +37,23 @@ export function DatePickerTime({
 }: IProps) {
   const [date, setDate] = React.useState<Date | undefined>(undefined);
   const [time, setTime] = React.useState<string>("");
+  const [open, setOpen] = React.useState(false); // Add this state
 
   const disabledDatesArray = disabledDates.map((date) => parseISO(date));
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+
   const handleDateChange = (date: Date | undefined) => {
     setDate(date);
     onDateChange(date);
+    setOpen(false); // Close the popover after date selection
   };
-
-  // const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const newTime = event.target.value;
-  //   setTime(newTime);
-  //   onTimeChange?.(newTime);
-  // };
 
   const formattedDate = date ? format(date, "yyyy-MM-dd") : placeholder;
 
   return (
     <div>
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <Label className="text-xs font-normal">{label}</Label>
         <PopoverTrigger asChild>
           <Button
