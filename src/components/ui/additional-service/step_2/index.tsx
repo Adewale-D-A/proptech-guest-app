@@ -17,6 +17,7 @@ import {
 } from "@/components/_shared/select";
 import { Textarea } from "@/components/_shared/textarea";
 import { DatePickerComponent } from "@/components/date-picker-component";
+import { Booking } from "@/types/type";
 
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
@@ -24,15 +25,41 @@ import { UseFormReturn } from "react-hook-form";
 interface SecondStepFormProps {
   form: UseFormReturn<any>;
   setSelectedDate: React.Dispatch<React.SetStateAction<string | undefined>>;
+  shortlet: Booking[];
+  selectedBookingId?: string;
 }
+
 const quantity = Array.from({ length: 10 }, (_, i) => ({
   key: i + 1,
   value: i + 1,
 }));
-const SecondStepForm = ({ form, setSelectedDate }: SecondStepFormProps) => {
+
+const SecondStepForm = ({
+  form,
+  setSelectedDate,
+  shortlet,
+  selectedBookingId,
+}: SecondStepFormProps) => {
+  const selectedBooking = shortlet.find(
+    (booking) => String(booking.shortlet.id) === selectedBookingId
+  );
+
   const handleDateChange = (date: string | undefined) => {
     setSelectedDate(date || "");
   };
+
+  const checkInDate = selectedBooking?.check_in_date
+    ? new Date(selectedBooking.check_in_date)
+    : undefined;
+  const checkOutDate = selectedBooking?.check_out_date
+    ? new Date(selectedBooking.check_out_date)
+    : undefined;
+
+  console.log("Selected Booking ID:", selectedBookingId);
+  console.log("Selected Booking:", selectedBooking);
+  console.log("Check-in date:", checkInDate);
+  console.log("Check-out date:", checkOutDate);
+
   return (
     <div>
       <section className="flex gap-4 items-center w-full">
@@ -42,11 +69,18 @@ const SecondStepForm = ({ form, setSelectedDate }: SecondStepFormProps) => {
             className="w-full mt-0 h-9"
             setDate={handleDateChange}
             showIcon={true}
+            minDate={checkInDate}
+            maxDate={checkOutDate}
+            disabledDates={(date) => {
+              if (!checkInDate || !checkOutDate) return false;
+              return date < checkInDate || date > checkOutDate;
+            }}
+            placeholder="Select date"
           />
         </div>
       </section>
       <section className="w-full mt-2">
-        <Label className="text-xs  font-normal">Apartment</Label>
+        <Label className="text-xs  font-normal">Quantity</Label>
         <FormField
           control={form.control}
           name="quantity"
@@ -55,7 +89,7 @@ const SecondStepForm = ({ form, setSelectedDate }: SecondStepFormProps) => {
               <Select onValueChange={field.onChange}>
                 <SelectTrigger className="h-10 w-full border-black/10 shadow-none mt-2">
                   <SelectValue
-                    placeholder="Select apartment"
+                    placeholder="Select quantity"
                     className="text-xs"
                   />
                 </SelectTrigger>
