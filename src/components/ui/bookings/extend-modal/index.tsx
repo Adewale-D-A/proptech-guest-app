@@ -12,6 +12,8 @@ import { parseISO } from "date-fns";
 import { LoadingButton } from "@/components/_shared/loading-button";
 import ListCard from "../../shortlets/list-card";
 
+const DEFAULT_IMAGE = "/images/placeholder.jpg"; // Replace with your fallback image path
+
 const ExtendModal = ({
   onClose,
   onClickExtend,
@@ -66,9 +68,13 @@ const ExtendModal = ({
         <section className="p-4">
           <div className="flex gap-4 items-center">
             <img
-              src={selectedApt?.shortlet?.images[0]?.path}
-              alt=""
-              className="w-[60px] h-[60px] rounded"
+              src={selectedApt?.shortlet?.images?.[0]?.path || DEFAULT_IMAGE}
+              alt={selectedApt?.shortlet?.name || "Apartment"}
+              className="w-[60px] h-[60px] rounded object-cover"
+              onError={(e) => {
+                e.currentTarget.src = DEFAULT_IMAGE;
+                e.currentTarget.onerror = null;
+              }}
             />
             <div className="flex flex-col gap-1">
               <p className="font-medium">{selectedApt?.shortlet.name} </p>
