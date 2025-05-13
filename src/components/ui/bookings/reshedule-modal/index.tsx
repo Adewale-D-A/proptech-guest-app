@@ -196,7 +196,10 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
             </div>
           </div>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              onClick={(e) => e.stopPropagation()}
+            >
               <section className="flex flex-col gap-2  mt-4">
                 <section>
                   <p className="text-xs mb-1">Current date</p>
@@ -230,17 +233,31 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
                       <DatePickerTime
                         placeholder="YYYY-MM-DD"
                         onDateChange={(date) => {
-                          form.setValue(
-                            "check_in_day",
-                            date ? format(date, "yyyy-MM-dd") : ""
-                          );
-
                           if (date) {
-                            form.setValue("check_in_time", "14:10");
+                            // Prevent the event from propagating to avoid form submission
+                            event?.preventDefault?.();
+                            event?.stopPropagation?.();
+
+                            // Update form values without submitting
+                            form.setValue(
+                              "check_in_day",
+                              format(date, "yyyy-MM-dd"),
+                              {
+                                shouldValidate: true,
+                                shouldDirty: true,
+                              }
+                            );
+                            form.setValue("check_in_time", "14:10", {
+                              shouldValidate: true,
+                              shouldDirty: true,
+                            });
                           }
                         }}
                         onTimeChange={(time) =>
-                          form.setValue("check_in_time", time ?? "")
+                          form.setValue("check_in_time", time ?? "", {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                          })
                         }
                         error={
                           form.formState.errors.check_in_day?.message ||
