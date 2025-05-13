@@ -272,7 +272,6 @@ const AdditionalServicesComponent = ({
                   {step === 3 && (
                     <LoadingButton
                       type={"submit"}
-                      onClick={handleNext}
                       className="w-full ml-2 text-xs h-9"
                     >
                       Make Payment
