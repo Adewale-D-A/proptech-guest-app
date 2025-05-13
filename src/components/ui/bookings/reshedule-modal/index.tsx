@@ -21,6 +21,9 @@ import { useRescheduleBookingMutation } from "@/redux/services/booking";
 import { LoadingButton } from "@/components/_shared/loading-button";
 import { errorHandler } from "@/_shared/constants";
 
+// Add a default/fallback image constant at the top of the file
+const DEFAULT_IMAGE = "/images/placeholder.jpg"; // Replace with your fallback image path
+
 type FormValues = z.infer<typeof bookingUpdateSchema>;
 const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
   const [getAvailableDate, { data: availableDates }] =
@@ -160,9 +163,13 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
         <section className="p-4">
           <div className="flex gap-4 items-center">
             <img
-              src={faker.image.avatar()}
-              alt=""
-              className="w-[60px] h-[60px] rounded"
+              src={selectedApt?.shortlet?.images?.[0]?.path || DEFAULT_IMAGE}
+              alt={selectedApt?.shortlet?.name || "Apartment"}
+              className="w-[60px] h-[60px] rounded object-cover"
+              onError={(e) => {
+                e.currentTarget.src = DEFAULT_IMAGE;
+                e.currentTarget.onerror = null; // Prevents infinite loop if fallback also fails
+              }}
             />
             <div className="flex flex-col gap-1">
               <p className="font-medium">{selectedApt?.shortlet.name}</p>
