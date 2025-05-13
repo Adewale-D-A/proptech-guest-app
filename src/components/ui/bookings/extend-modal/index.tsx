@@ -66,7 +66,7 @@ const ExtendModal = ({
         <section className="p-4">
           <div className="flex gap-4 items-center">
             <img
-              src={faker.image.avatar()}
+              src={selectedApt?.shortlet?.images[0]?.path}
               alt=""
               className="w-[60px] h-[60px] rounded"
             />
