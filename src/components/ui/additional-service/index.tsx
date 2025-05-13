@@ -58,6 +58,7 @@ const AdditionalServicesComponent = ({
   const router = useRouter();
   const pathName = usePathname();
   const [selectedDate, setSelectedDate] = useState<string | undefined>();
+  const [selectedBookingId, setSelectedBookingId] = useState<string>();
 
   const form = useForm({
     defaultValues: {
@@ -77,6 +78,10 @@ const AdditionalServicesComponent = ({
       setStep(step - 1);
       setVolume(volume - 5);
     }
+  };
+
+  const handleBookingSelect = (value: string) => {
+    setSelectedBookingId(value);
   };
 
   const handleNext = () => {
@@ -216,12 +221,18 @@ const AdditionalServicesComponent = ({
                         : "Provide your request details below"}
                     </h1>
                     {step === 1 && (
-                      <FirstStepForm shortlet={shortlet} form={form} />
+                      <FirstStepForm
+                        shortlet={shortlet}
+                        form={form}
+                        onBookingSelect={handleBookingSelect}
+                      />
                     )}
                     {step === 2 && (
                       <SecondStepForm
                         form={form}
+                        shortlet={shortlet}
                         setSelectedDate={setSelectedDate}
+                        selectedBookingId={selectedBookingId}
                       />
                     )}
                     {step === 3 && (
