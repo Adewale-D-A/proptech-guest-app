@@ -89,7 +89,9 @@ const BookingTable = ({
   const handleCloseDrawer = (open: boolean) => {
     setIsOpen(open);
     if (!open) {
+      // Remove the id parameter when closing the drawer
       router.replace(pathName, { shallow: true } as any);
+      console.log("Drawer closed, URL cleared");
     }
   };
 
@@ -110,6 +112,14 @@ const BookingTable = ({
 
     return () => clearInterval(interval);
   }, [images.length]);
+
+  useEffect(() => {
+    if (id) {
+      console.log("URL has ID parameter:", id);
+      setIsOpen(true);
+    }
+  }, [id]);
+
   return (
     <div>
       {isLoading ? (
