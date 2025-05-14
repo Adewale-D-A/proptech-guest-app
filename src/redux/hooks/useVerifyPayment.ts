@@ -59,9 +59,7 @@ export const useVerifyPayment = (): UseVerifyPaymentResult => {
     hasVerificationData: !!verificationData,
     //@ts-ignore
     verificationData: verificationData?.data?.booking?.id,
-     //@ts-ignore
-    data: verificationData?.booking,
-    verificationId: verificationData?.id,
+  
     currentUrl: window.location.href
   });
 
@@ -69,9 +67,9 @@ export const useVerifyPayment = (): UseVerifyPaymentResult => {
      verificationData?.data?.booking?.id) {
      
      console.log(//@ts-ignore
-       'Navigating to bookings with ID:', verificationData?.booking?.id);
+       'Navigating to bookings with ID:', verificationData?.data?.booking?.id);
      router.push(//@ts-ignore
-       `/bookings?id=${verificationData?.booking.id}`);
+       `/bookings?id=${verificationData?.data?.booking.id}`);
   }
 }, [verificationData, router]);
 
