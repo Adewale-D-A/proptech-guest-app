@@ -1,6 +1,7 @@
 /** @format */
 
 import {
+  Booking,
   BookingStats,
   ShortletDataResponse,
   VisitorResponse,
@@ -94,7 +95,7 @@ const bookingEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/booking/transfer`,
       }),
     }),
-    verifyPayment: builder.query<GeneralResponse, string>({
+    verifyPayment: builder.query<Booking, string>({
       query: (reference) => ({
         method: Methods.get,
         url: `${Endpoints.api}user/booking/verify-booking-payment?reference=${reference}`,
