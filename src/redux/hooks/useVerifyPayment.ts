@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useVerifyPaymentQuery } from "../services/booking";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import { errorHandler } from "@/_shared/constants";
+import { useRouter } from "next/navigation";
 
 interface UseVerifyPaymentResult {
   verificationData: any;
@@ -13,6 +14,7 @@ interface UseVerifyPaymentResult {
 
 export const useVerifyPayment = (): UseVerifyPaymentResult => {
   const { toast } = useToast();
+  const router = useRouter();
   const [trxrefParam, setTrxrefParam] = useState<string | null>(null);
   const {
     data: verificationData,
@@ -43,12 +45,21 @@ export const useVerifyPayment = (): UseVerifyPaymentResult => {
       newUrl.searchParams.delete("trxref");
       newUrl.searchParams.delete("reference");
       window.history.replaceState(null, "", newUrl.toString());
+
+       
     }
 
     if (isError) {
       errorHandler(isError as any);
     }
   }, [verificationData, isError, error]);
+
+  useEffect(() => {
+    if (verificationData?.id) {
+      // Navigate to bookings page with ID parameter to trigger drawer
+      router.push(`/bookings?id=${verificationData.id}`);
+    }
+  }, [verificationData, router]);
 
   return { verificationData, isError, error };
 };
