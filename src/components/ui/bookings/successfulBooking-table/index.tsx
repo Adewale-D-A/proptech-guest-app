@@ -320,7 +320,7 @@ const BookingTable = ({
                   <section>
                     {/* <Button
                     variant={"outline"}
-                    className="border-primary font-normal  text-sm rounded-md text-primary flex items-center gap-x-3"
+                    className="border-primaryfont-normal  text-sm rounded-md text-primary flex items-center gap-x-3"
                   >
                     Print document <FileDown className="" size={16} />
                   </Button> */}
