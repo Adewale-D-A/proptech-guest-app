@@ -54,12 +54,18 @@ export const useVerifyPayment = (): UseVerifyPaymentResult => {
     }
   }, [verificationData, isError, error]);
 
-  useEffect(() => {
-    if (verificationData?.id) {
-      // Navigate to bookings page with ID parameter to trigger drawer
-      router.push(`/bookings?id=${verificationData.id}`);
-    }
-  }, [verificationData, router]);
+ useEffect(() => {
+  console.log('Navigation Effect:', {
+    hasVerificationData: !!verificationData,
+    verificationId: verificationData?.id,
+    currentUrl: window.location.href
+  });
+
+  if (verificationData?.id) {
+    console.log('Navigating to bookings with ID:', verificationData.id);
+    router.push(`/bookings?id=${verificationData.id}`);
+  }
+}, [verificationData, router]);
 
   return { verificationData, isError, error };
 };
