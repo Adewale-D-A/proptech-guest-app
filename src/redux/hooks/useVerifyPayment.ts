@@ -59,6 +59,8 @@ export const useVerifyPayment = (): UseVerifyPaymentResult => {
     hasVerificationData: !!verificationData,
     //@ts-ignore
     verificationData: verificationData?.data?.booking?.id,
+     //@ts-ignore
+    data: verificationData?.booking,
     verificationId: verificationData?.id,
     currentUrl: window.location.href
   });
