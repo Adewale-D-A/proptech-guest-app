@@ -57,13 +57,19 @@ export const useVerifyPayment = (): UseVerifyPaymentResult => {
  useEffect(() => {
   console.log('Navigation Effect:', {
     hasVerificationData: !!verificationData,
+    //@ts-ignore
+    verificationData: verificationData?.data?.booking?.id,
     verificationId: verificationData?.id,
     currentUrl: window.location.href
   });
 
-  if (verificationData?.id) {
-    console.log('Navigating to bookings with ID:', verificationData.id);
-    router.push(`/bookings?id=${verificationData.id}`);
+   if (//@ts-ignore
+     verificationData?.data?.booking?.id) {
+     
+     console.log(//@ts-ignore
+       'Navigating to bookings with ID:', verificationData?.booking?.id);
+     router.push(//@ts-ignore
+       `/bookings?id=${verificationData?.booking.id}`);
   }
 }, [verificationData, router]);
 
