@@ -159,6 +159,7 @@ const ListSpace = ({
           location={location}
           setLocation={setLocation}
           setNumOfRooms={setNumOfRooms}
+          numOfRooms={numOfRooms}
           from={from}
           to={to}
           setDate={setDate}

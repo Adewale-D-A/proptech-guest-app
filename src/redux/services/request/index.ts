@@ -62,6 +62,13 @@ const requestEndpoints = injectEndpoints({
         body,
       }),
     }),
+    escalateAdditionalServices: builder.mutation<any, { additional_service_id: number; body: any }>({
+      query: ({ additional_service_id, body }) => ({
+        url: `${Endpoints.api}user/additional-service/escalate/${additional_service_id}`,
+        method: Methods.put,
+        body,
+      }),
+    }),
     getRequest: builder.query<RequestResponseData, Record<string, any>>({
       query: (params) => {
         const searchParams = new URLSearchParams();
@@ -108,4 +115,5 @@ export const {
   useRequestFeeMutation,
   useGetAdditionalRequestQuery,
   useEscalateMutation,
+  useEscalateAdditionalServicesMutation,
 } = requestEndpoints;

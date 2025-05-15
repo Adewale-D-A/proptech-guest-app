@@ -31,6 +31,7 @@ import { useToast } from "@/components/_shared/toast/use-toast";
 import PaginationTable from "@/components/pagination";
 import StatusBadge from "@/components/status-badge";
 import { useEscalateMutation } from "@/redux/services/request";
+import { useEscalateAdditionalServicesMutation } from "@/redux/services/request";
 import { UserRequest, UserRequestsResponse } from "@/types/type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
@@ -59,6 +60,8 @@ const RequestTable = ({
   const { toast } = useToast();
 
   const [escalate, { isLoading }] = useEscalateMutation();
+  const [escalateAdditional, { isLoading: loading }] =
+    useEscalateAdditionalServicesMutation();
   const pathName = usePathname();
   const [showModal, setShowModal] = useState(false);
   const [singleData, setSingleData] = useState<UserRequest>();
@@ -89,9 +92,28 @@ const RequestTable = ({
       }).unwrap();
       toast({
         variant: "default",
-        title: response?.message || "otp sent!",
-        description:
-          "Please check your email for instructions to reset your password.",
+        title: response?.message || "",
+        description: "Escalation request sent successfully",
+      });
+      handleClose(); // Close modal after success
+    } catch (error) {
+      errorHandler(error as any);
+    }
+  };
+
+  const onSubmitAdditionalService = async (
+    values: z.infer<typeof escalataSchema>
+  ) => {
+    if (!singleData?.request_id) return; // Changed from additional_service_id to id
+    try {
+      const response = await escalateAdditional({
+        additional_service_id: singleData.id, // Using singleData.id directly
+        body: values.escalation_reason,
+      }).unwrap();
+      toast({
+        variant: "default",
+        title: response?.message || "",
+        description: "Escalation request sent successfully",
       });
       handleClose(); // Close modal after success
     } catch (error) {
@@ -114,7 +136,7 @@ const RequestTable = ({
           <>
             <StatusBadge
               desc={String(desc)}
-              status={singleData?.payment_status ?? ""}
+              status={singleData?.status ?? ""}
             />
           </>
         ) : (
@@ -183,10 +205,7 @@ const RequestTable = ({
                           </div>
                         </>
                       ) : (
-                        <StatusBadge
-                          desc={req?.payment_status}
-                          status={req?.payment_status}
-                        />
+                        <StatusBadge desc={req?.status} status={req?.status} />
                       )}
                     </TableCell>
                     <TableCell>
@@ -286,7 +305,14 @@ const RequestTable = ({
           {escalateModal && (
             <div className="p-4">
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="">
+                <form
+                  onSubmit={form.handleSubmit(
+                    pathName === "/additional-services"
+                      ? onSubmitAdditionalService
+                      : onSubmit
+                  )}
+                  className=""
+                >
                   <FormField
                     control={form.control}
                     name="escalation_reason"
@@ -298,16 +324,29 @@ const RequestTable = ({
                         <FormControl className="bg-transparent">
                           <Textarea
                             className="bg-white resize-none font-light w-full"
-                            placeholder="Tell us why you wish to escalate"
+                            placeholder={
+                              singleData?.is_escalated === 1
+                                ? "This request has already been escalated"
+                                : "Tell us why you wish to escalate"
+                            }
                             {...field}
+                            disabled={singleData?.is_escalated === 1}
                           />
                         </FormControl>
                         <FormMessage className="text-xs text-red-500 font-light" />
                       </FormItem>
                     )}
                   />
-                  <LoadingButton className="w-full" loading={isLoading}>
-                    Escalate
+                  <LoadingButton
+                    className="w-full"
+                    loading={
+                      pathName === "/additional-services" ? loading : isLoading
+                    }
+                    disabled={singleData?.is_escalated === 1}
+                  >
+                    {singleData?.is_escalated === 1
+                      ? "Already Escalated"
+                      : "Escalate"}
                   </LoadingButton>
                 </form>
               </Form>

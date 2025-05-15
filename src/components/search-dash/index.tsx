@@ -27,6 +27,7 @@ const SearchDash = ({
   location,
   setLocation,
   setNumOfRooms,
+  numOfRooms,
   from,
   to,
   setDate,
@@ -89,27 +90,43 @@ const SearchDash = ({
             className=" bg-black/10  h-20 lgs:flex hidden"
           />
           <div className="w-full flex flex-col justify-center">
-            <Select onValueChange={(value) => setNumOfRooms(value)}>
-              <SelectTrigger className="border-none shadow-none text-gray-100">
-                <SelectValue
-                  placeholder="Choose number of rooms"
-                  className="text-gray-100"
-                />
-              </SelectTrigger>
+            <div className="flex items-center">
+              <Select
+                onValueChange={(value) => {
+                  setNumOfRooms(value);
+                }}
+                value={numOfRooms}
+              >
+                <SelectTrigger className="border-none shadow-none text-gray-100">
+                  <SelectValue
+                    placeholder="Choose number of rooms"
+                    className="text-gray-100"
+                  />
+                </SelectTrigger>
 
-              <SelectContent className="border-none">
-                {roomOptions.map((room) => (
-                  <SelectItem
-                    key={room.id}
-                    value={room.id.toString()}
-                    className="border-none"
-                  >
-                    {room.description || room.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-              <Label className="text-xs mt-2">Select Number of Rooms</Label>
-            </Select>
+                <SelectContent className="border-none">
+                  {roomOptions.map((room) => (
+                    <SelectItem
+                      key={room.id}
+                      value={room.description || room.name}
+                      className="border-none"
+                    >
+                      {room.description || room.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {numOfRooms && (
+                <button
+                  onClick={() => setNumOfRooms("")}
+                  className="ml-2 text-xs text-gray-500 hover:text-gray-700"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+            <Label className="text-xs mt-2">Select Number of Rooms</Label>
           </div>
           <Separator
             orientation="vertical"

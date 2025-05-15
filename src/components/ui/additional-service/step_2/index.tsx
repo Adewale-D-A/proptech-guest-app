@@ -55,6 +55,13 @@ const SecondStepForm = ({
     ? new Date(selectedBooking.check_out_date)
     : undefined;
 
+  const maxSelectableDate = checkOutDate ? new Date(checkOutDate) : undefined;
+
+  // Subtract one day from checkout date if it exists
+  if (maxSelectableDate) {
+    maxSelectableDate.setDate(maxSelectableDate.getDate() - 1);
+  }
+
   console.log("Selected Booking ID:", selectedBookingId);
   console.log("Selected Booking:", selectedBooking);
   console.log("Check-in date:", checkInDate);
@@ -70,10 +77,13 @@ const SecondStepForm = ({
             setDate={handleDateChange}
             showIcon={true}
             minDate={checkInDate}
-            maxDate={checkOutDate}
+            maxDate={maxSelectableDate}
             disabledDates={(date) => {
               if (!checkInDate || !checkOutDate) return false;
-              return date < checkInDate || date > checkOutDate;
+              return (
+                date < checkInDate ||
+                (maxSelectableDate !== undefined && date > maxSelectableDate)
+              );
             }}
             placeholder="Select date"
           />
