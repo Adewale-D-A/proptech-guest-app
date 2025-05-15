@@ -26,6 +26,7 @@ import { setUserDetails } from "@/redux/slices/authSlice";
 import { errorHandler } from "@/_shared/constants";
 import { setToken } from "@/_shared";
 import { useResendOtpMutation } from "@/redux/services/auth/auth";
+import { useRouter } from "next/navigation";
 const SignInform = ({
   onClick,
   onClickForgetPassword,
@@ -42,6 +43,7 @@ const SignInform = ({
   const [resendOtp] = useResendOtpMutation();
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
   const form = useForm<z.infer<typeof signInValidationSchema>>({
     resolver: zodResolver(signInValidationSchema),
     defaultValues: {
@@ -57,12 +59,30 @@ const SignInform = ({
       const token = response?.data?.access_token;
       setToken(token);
       dispatch(setUserDetails(response?.data?.user));
-      toast({
-        variant: "default",
-        title: response?.message,
-        description: "Welcome to 99Apartment 🚀",
-      });
-      handleClose();
+
+      const identityVerified = response?.data?.user?.identity_verified;
+
+      console.log("Verified:", identityVerified);
+
+      // Route to dashboard if identity_verified is false
+      if (identityVerified === false) {
+        toast({
+          variant: "default",
+          title: "Welcome to 99Apartment 🚀",
+          description: "Kindly verify your identity to continue.",
+        });
+
+        handleClose();
+
+        router.push("/dashboard");
+      } else {
+        toast({
+          variant: "default",
+          title: response?.message,
+          description: "Welcome to 99Apartment 🚀",
+        });
+        handleClose();
+      }
     } catch (err: any) {
       console.error("Error during sign-in:", err);
 
