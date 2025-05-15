@@ -89,9 +89,8 @@ const RequestTable = ({
       }).unwrap();
       toast({
         variant: "default",
-        title: response?.message || "otp sent!",
-        description:
-          "Please check your email for instructions to reset your password.",
+        title: response?.message || "",
+        description: "Escalation request sent successfully",
       });
       handleClose(); // Close modal after success
     } catch (error) {
@@ -114,7 +113,7 @@ const RequestTable = ({
           <>
             <StatusBadge
               desc={String(desc)}
-              status={singleData?.payment_status ?? ""}
+              status={singleData?.status ?? ""}
             />
           </>
         ) : (
@@ -183,10 +182,7 @@ const RequestTable = ({
                           </div>
                         </>
                       ) : (
-                        <StatusBadge
-                          desc={req?.payment_status}
-                          status={req?.payment_status}
-                        />
+                        <StatusBadge desc={req?.status} status={req?.status} />
                       )}
                     </TableCell>
                     <TableCell>
@@ -298,16 +294,27 @@ const RequestTable = ({
                         <FormControl className="bg-transparent">
                           <Textarea
                             className="bg-white resize-none font-light w-full"
-                            placeholder="Tell us why you wish to escalate"
+                            placeholder={
+                              singleData?.is_escalated === 1
+                                ? "This request has already been escalated"
+                                : "Tell us why you wish to escalate"
+                            }
                             {...field}
+                            disabled={singleData?.is_escalated === 1}
                           />
                         </FormControl>
                         <FormMessage className="text-xs text-red-500 font-light" />
                       </FormItem>
                     )}
                   />
-                  <LoadingButton className="w-full" loading={isLoading}>
-                    Escalate
+                  <LoadingButton
+                    className="w-full"
+                    loading={isLoading}
+                    disabled={singleData?.is_escalated === 1}
+                  >
+                    {singleData?.is_escalated === 1
+                      ? "Already Escalated"
+                      : "Escalate"}
                   </LoadingButton>
                 </form>
               </Form>
