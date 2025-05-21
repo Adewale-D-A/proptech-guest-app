@@ -11,6 +11,7 @@ import { useGetAvailableDateMutation } from "@/redux/services/shortlet";
 import { parseISO } from "date-fns";
 import { LoadingButton } from "@/components/_shared/loading-button";
 import ListCard from "../../shortlets/list-card";
+import { useRouter } from "next/navigation";
 
 const DEFAULT_IMAGE = "/images/placeholder.jpg"; // Replace with your fallback image path
 
@@ -25,6 +26,7 @@ const ExtendModal = ({
   setExtendDate: Dispatch<SetStateAction<Date | undefined>>;
   extend: Date | undefined;
 }) => {
+  const router = useRouter();
   const selectedApt = use99Selector(
     (state: RootState) => state.apt.selectedApt
   );
@@ -51,6 +53,18 @@ const ExtendModal = ({
   const minExtendDate = originalCheckoutDate ? originalCheckoutDate : yesterday;
 
   console.log("selectedApt", selectedApt);
+
+  // Function to navigate to similar apartments
+  const viewSimilarApartments = () => {
+    if (selectedApt?.shortlet) {
+      const roomType = selectedApt.shortlet.no_of_bedrooms + "%20bed";
+      // Navigate to shortlets with the same room type
+      router.push(`/shortlets?room_option_id=${roomType}`);
+    } else {
+      // Fallback if no apartment details
+      router.push("/shortlets");
+    }
+  };
 
   return (
     <div>
@@ -127,6 +141,7 @@ const ExtendModal = ({
             <Button
               className="text-primary-1 cursor-pointer underline text-xs font-normal p-0 justify-start items-start"
               variant={"text"}
+              onClick={viewSimilarApartments}
             >
               View similar apartments Available
             </Button>
