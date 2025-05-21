@@ -106,10 +106,8 @@ const ListSpace = ({
       const formattedDateTo = to?.toISOString().split("T")[0];
       const formattedDateFrom = from?.toISOString().split("T")[0];
       setFilters({
-        shortlet_name: location,
-        number_of_rooms: numOfRooms,
-        start_date: formattedDateFrom,
-        end_date: formattedDateTo,
+        location: location,
+        room_option_id: numOfRooms,
       });
     } else {
       setFilters({
