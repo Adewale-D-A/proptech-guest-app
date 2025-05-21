@@ -251,7 +251,6 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
                         placeholder="YYYY-MM-DD"
                         onDateChange={(date) => {
                           if (date) {
-                            // Update form values without submitting
                             form.setValue(
                               "check_in_day",
                               format(date, "yyyy-MM-dd"),
