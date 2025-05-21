@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import HeroSection from "./hero-section";
 import { ListSpace } from "../shortlets/component";
-import { useGetGuestListQuery } from "@/redux/services/shortlet";
+import { useGetGuestListMutation } from "@/redux/services/shortlet";
 
 const AvailabilityPageComponent = () => {
   const [filters, setFilters] = useState({
@@ -12,7 +12,11 @@ const AvailabilityPageComponent = () => {
     start_date: "",
     end_date: "",
   });
-  const { data, isLoading } = useGetGuestListQuery(filters);
+  const [getGuestList, { data, isLoading }] = useGetGuestListMutation();
+
+  React.useEffect(() => {
+    getGuestList(filters);
+  }, [filters, getGuestList]);
 
   const [showModal, setShowModal] = useState(false);
 

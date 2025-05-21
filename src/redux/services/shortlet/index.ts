@@ -48,14 +48,18 @@ const shortletEndPoint = injectEndpoints({
         url: `${Endpoints.api}guest/calendar/${id}`,
       }),
     }),
-    getGuestList: builder.query<
+    getGuestList: builder.mutation<
       ListedApartmentAvaliableType,
-      Record<string, any>
+      ShortletParams
     >({
       query: (params) => {
-        const queryString = buildQueryString(params);
+        const queryString = buildQueryString({
+          ...params,
+          page: params.page || 1,
+          per_page: params.per_page || 20
+        });
         return {
-          method: Methods.get,
+          method: Methods.get, 
           url: `${Endpoints.api}guest/calendar/all?${queryString}`,
         };
       },
@@ -66,5 +70,5 @@ export const {
   useGetGuestShortletMutation,
   useGetSingleGuestShortletMutation,
   useGetAvailableDateMutation,
-  useGetGuestListQuery,
+  useGetGuestListMutation, 
 } = shortletEndPoint;

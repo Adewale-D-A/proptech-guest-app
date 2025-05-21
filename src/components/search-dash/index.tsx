@@ -108,10 +108,10 @@ const SearchDash = ({
                   {roomOptions.map((room) => (
                     <SelectItem
                       key={room.id}
-                      value={room.description || room.name}
+                      value={room.name}
                       className="border-none"
                     >
-                      {room.description || room.name}
+                      {room.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
