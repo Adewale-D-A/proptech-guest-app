@@ -145,25 +145,25 @@ const NavSectionTabs = ({
                   All Apartments
                 </Link>
                 <Link
-                  href="/shortlets?room_option_id=self&20con"
+                  href="/shortlets?room_option_id=5"
                   className="block text-sm py-2 transition"
                 >
                   Studio
                 </Link>
                 <Link
-                  href="/shortlets?room_option_id=1%20bed"
+                  href="/shortlets?room_option_id=1"
                   className="block text-sm py-2 transition"
                 >
                   1 Bedroom
                 </Link>
                 <Link
-                  href="/shortlets?room_option_id=2%20bed"
+                  href="/shortlets?room_option_id=3"
                   className="block text-sm py-2 transition"
                 >
                   2 Bedroom
                 </Link>
                 <Link
-                  href="/shortlets?room_option_id=3%20bed"
+                  href="/shortlets?room_option_id=2"
                   className="block text-sm py-2 transition"
                 >
                   3 Bedroom

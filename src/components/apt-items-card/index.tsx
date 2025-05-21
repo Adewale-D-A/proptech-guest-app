@@ -82,9 +82,7 @@ const CardItem = ({
             } text-gray-100 flex items-center gap-1`}
           >
             <TbBed size={12} />
-            <p className="text-xs font-light">
-              {apartment.no_of_bedrooms} Bedrooms
-            </p>
+            <p className="text-xs font-light">{apartment.room_option?.name}</p>
           </div>
         </div>
         <div className="flex gap-4 bg-[#F4F6FF] p-4 mt-4">
