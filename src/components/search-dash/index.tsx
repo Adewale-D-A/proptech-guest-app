@@ -108,7 +108,8 @@ const SearchDash = ({
                   {roomOptions.map((room) => (
                     <SelectItem
                       key={room.id}
-                      value={room.name}
+                      //@ts-ignore
+                      value={room.id}
                       className="border-none"
                     >
                       {room.name}
