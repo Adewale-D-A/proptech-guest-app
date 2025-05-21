@@ -14,21 +14,38 @@ import { LoadingButton } from "@/components/_shared/loading-button";
 import { Modal } from "@/components/_shared/modal";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import FileDetails from "@/components/format-file-size";
-import { useUpdateUserDocsMutation } from "@/redux/services/auth/auth";
+import {
+  useUpdateUserDocsMutation,
+  useGetUsersQuery,
+} from "@/redux/services/auth/auth";
+
 import { ToastResponse } from "@/types/type";
 import { Upload } from "lucide-react";
 import Image from "next/image";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 const VerifyAccount = () => {
   const { toast } = useToast();
   const [updateUserDoc, { isLoading }] = useUpdateUserDocsMutation();
+  const { data: userData, isLoading: userDataLoading } = useGetUsersQuery();
   const [successModal, setSuccessModal] = useState(false);
   const [successPage, setSuccessPage] = useState(false);
   const [profileDoc, setProfileDoc] = useState<File | null>(null); // Store image file
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  // Check user verification status when data is loaded
+  useEffect(() => {
+    if (userData && !userDataLoading) {
+      if (
+        userData.identity_verification_status === "submitted" &&
+        userData.identity_verified === true
+      ) {
+        setSuccessPage(true);
+      }
+    }
+  }, [userData, userDataLoading]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -74,6 +91,15 @@ const VerifyAccount = () => {
     setSuccessPage(true);
     setSuccessModal(false);
   };
+
+  // Show loading state while checking user data
+  if (userDataLoading) {
+    return (
+      <div className="px-4 pb-10 h-full flex justify-center items-center">
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <div className="px-4 pb-10 h-full">
