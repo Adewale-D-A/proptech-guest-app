@@ -90,7 +90,7 @@ const NavSectionTabs = ({
             )}
           </Link>
         </NavigationMenuItem>
-        <NavigationMenuItem>
+        {/* <NavigationMenuItem>
           <Link href="/availability" legacyBehavior passHref>
             {isMainRoute ? (
               <NavigationMenuLink
@@ -108,42 +108,70 @@ const NavSectionTabs = ({
               </NavigationMenuLink>
             )}
           </Link>
-        </NavigationMenuItem>
-        {/* 
+        </NavigationMenuItem> */}
+
         <div ref={dropdownRef} className="px-4">
           <div
             className="relative"
             ref={dropdownRef}
-            onMouseEnter={() => handleMouseEnter("adventures")}
+            onMouseEnter={() => handleMouseEnter("availability")}
             onMouseLeave={handleMouseLeave}
           >
             {isMainRoute ? (
-              <button
-                className={` text-sm font-normal bg-transparent text-black   ${
-                  scrolled ? "text-black" : "text-white"
-                }`}
-              >
-                Adventures
-              </button>
-            ) : (
-              <button
-                className={` text-sm font-normal bg-transparent text-black   `}
-              >
-                Adventures
-              </button>
-            )}
-            {openDropdown === "adventures" && (
-              <div className="absolute left-0 mt-2 w-32 bg-white border shadow-lg rounded-lg transition">
-                <Link
-                  href="/availability"
-                  className="block  text-center text-sm py-2 transition"
+              <Link href="/availability">
+                <button
+                  className={`text-sm font-normal bg-transparent text-black cursor-pointer ${
+                    scrolled ? "text-black" : "text-white"
+                  }`}
                 >
                   Availability
+                </button>
+              </Link>
+            ) : (
+              <Link href="/availability">
+                <button
+                  className={`text-sm font-normal bg-transparent text-black cursor-pointer`}
+                >
+                  Availability
+                </button>
+              </Link>
+            )}
+            {openDropdown === "availability" && (
+              <div className="absolute left-0 mt-2 w-32 bg-white border shadow-lg rounded-lg transition px-3">
+                <Link
+                  href="/shortlets"
+                  className="block text-sm py-2 transition"
+                >
+                  All Apartments
+                </Link>
+                <Link
+                  href="/shortlets?room_option_id=self&20con"
+                  className="block text-sm py-2 transition"
+                >
+                  Studio
+                </Link>
+                <Link
+                  href="/shortlets?room_option_id=1%20bed"
+                  className="block text-sm py-2 transition"
+                >
+                  1 Bedroom
+                </Link>
+                <Link
+                  href="/shortlets?room_option_id=2%20bed"
+                  className="block text-sm py-2 transition"
+                >
+                  2 Bedroom
+                </Link>
+                <Link
+                  href="/shortlets?room_option_id=3%20bed"
+                  className="block text-sm py-2 transition"
+                >
+                  3 Bedroom
                 </Link>
               </div>
             )}
           </div>
-        </div> */}
+        </div>
 
         <NavigationMenuItem>
           <Link
