@@ -20,12 +20,14 @@ import { addDays, format } from "date-fns";
 import { useRescheduleBookingMutation } from "@/redux/services/booking";
 import { LoadingButton } from "@/components/_shared/loading-button";
 import { errorHandler } from "@/_shared/constants";
+import { useRouter } from "next/navigation";
 
 // Add a default/fallback image constant at the top of the file
 const DEFAULT_IMAGE = "/images/placeholder.jpg"; // Replace with your fallback image path
 
 type FormValues = z.infer<typeof bookingUpdateSchema>;
 const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
+  const router = useRouter();
   const [getAvailableDate, { data: availableDates }] =
     useGetAvailableDateMutation();
   const { toast } = useToast();
@@ -144,6 +146,18 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
     }
   }, [form.watch("check_in_day"), selectedApt?.number_of_days]);
 
+  // Function to navigate to similar apartments
+  const viewSimilarApartments = () => {
+    if (selectedApt?.shortlet) {
+      const roomType = selectedApt.shortlet.no_of_bedrooms + "%20bed";
+      // Navigate to shortlets with the same room type
+      router.push(`/shortlets?room_option_id=${roomType}`);
+    } else {
+      // Fallback if no apartment details
+      router.push("/shortlets");
+    }
+  };
+
   return (
     <div>
       <div className=" ">
@@ -197,7 +211,10 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
           </div>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={(e) => {
+                e.preventDefault();
+                form.handleSubmit(onSubmit)(e);
+              }}
               onClick={(e) => e.stopPropagation()}
             >
               <section className="flex flex-col gap-2  mt-4">
@@ -234,10 +251,6 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
                         placeholder="YYYY-MM-DD"
                         onDateChange={(date) => {
                           if (date) {
-                            // Prevent the event from propagating to avoid form submission
-                            event?.preventDefault?.();
-                            event?.stopPropagation?.();
-
                             // Update form values without submitting
                             form.setValue(
                               "check_in_day",
@@ -282,6 +295,12 @@ const RescheduleModal = ({ onClose }: { onClose: () => void }) => {
                 <Button
                   className="text-primary-1 cursor-pointer underline text-xs font-normal p-0 justify-start items-start"
                   variant={"text"}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    viewSimilarApartments();
+                  }}
+                  type="button" // Explicitly set type to button to prevent form submission
                 >
                   View similar apartments Available
                 </Button>
