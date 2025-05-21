@@ -355,8 +355,8 @@ export const apartmentOptions: ApartmentOption[] = [
 export const navItems = [
   { name: "Home", path: "/" },
   {
-    name: "Adventures",
+    name: "Availability",
     path: "/availability",
-    subNav: [{ name: "Availability", path: "/availability" }],
+    subNav: [{ name: "All Apartments", path: "/availability" }, { name: "Studio", path: "/availability/shortlets" }, { name: "1 Bedroom", path: "/availability/shortlets" }, { name: "2 Bedroom", path: "/availability/shortlets" }, { name: "3 Bedroom", path: "/availability/shortlets" }],
   },
 ];
