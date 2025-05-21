@@ -1,5 +1,4 @@
 /** @format */
-
 import {
   errorHandler,
   formatCurrency,
@@ -30,8 +29,13 @@ import { Textarea } from "@/components/_shared/textarea";
 import { useToast } from "@/components/_shared/toast/use-toast";
 import PaginationTable from "@/components/pagination";
 import StatusBadge from "@/components/status-badge";
-import { useEscalateMutation } from "@/redux/services/request";
+import {
+  useEscalateMutation,
+  useGetAdditionalRequestQuery,
+  useGetRequestQuery,
+} from "@/redux/services/request";
 import { useEscalateAdditionalServicesMutation } from "@/redux/services/request";
+
 import { UserRequest, UserRequestsResponse } from "@/types/type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
@@ -83,18 +87,54 @@ const RequestTable = ({
     setShowModal(false);
   }
 
+  // Define currentParams based on your pagination and filtering needs
+  const currentParams = {
+    page: pageIndex,
+    pageSize: pageSize,
+    // Add other params if needed
+  };
+
+  const { refetch: refetchRequests } = useGetRequestQuery(currentParams, {
+    skip: pathName === "/additional-services", // Only use this query on the regular requests page
+  });
+
+  const { refetch: refetchAdditionalRequests } = useGetAdditionalRequestQuery(
+    currentParams,
+    {
+      skip: pathName !== "/additional-services", // Only use this query on the additional services page
+    }
+  );
+
   const onSubmit = async (values: z.infer<typeof escalataSchema>) => {
     if (!singleData?.request_id) return;
     try {
       const response = await escalate({
         request_id: singleData.id,
-        body: values.escalation_reason,
+        body: { escalation_reason: values.escalation_reason },
       }).unwrap();
+
       toast({
         variant: "default",
         title: response?.message || "",
         description: "Escalation request sent successfully",
       });
+
+      // Refresh the requests data
+      refetchRequests().then(() => {
+        // After refetching, find the updated request in the new data and update singleData
+        if (requestData && requestData.data) {
+          const updatedRequest = requestData.data.find(
+            (req) => req.id === singleData.id
+          );
+          if (updatedRequest) {
+            setSingleData(updatedRequest);
+          }
+        }
+      });
+
+      // Update the is_escalated flag in the current singleData
+      setSingleData((prev) => (prev ? { ...prev, is_escalated: 1 } : prev));
+
       handleClose(); // Close modal after success
     } catch (error) {
       errorHandler(error as any);
@@ -104,17 +144,35 @@ const RequestTable = ({
   const onSubmitAdditionalService = async (
     values: z.infer<typeof escalataSchema>
   ) => {
-    if (!singleData?.request_id) return; // Changed from additional_service_id to id
+    if (!singleData?.request_id) return;
     try {
       const response = await escalateAdditional({
-        additional_service_id: singleData.id, // Using singleData.id directly
-        body: values.escalation_reason,
+        additional_service_id: singleData.id,
+        body: { escalation_reason: values.escalation_reason },
       }).unwrap();
+
       toast({
         variant: "default",
         title: response?.message || "",
         description: "Escalation request sent successfully",
       });
+
+      // Refresh the additional services data
+      refetchAdditionalRequests().then(() => {
+        // After refetching, find the updated request in the new data and update singleData
+        if (requestData && requestData.data) {
+          const updatedRequest = requestData.data.find(
+            (req) => req.id === singleData.id
+          );
+          if (updatedRequest) {
+            setSingleData(updatedRequest);
+          }
+        }
+      });
+
+      // Update the is_escalated flag in the current singleData
+      setSingleData((prev) => (prev ? { ...prev, is_escalated: 1 } : prev));
+
       handleClose(); // Close modal after success
     } catch (error) {
       errorHandler(error as any);
