@@ -72,6 +72,7 @@ const BookingsComponent = ({
   const pathName = usePathname();
   const [show, setShow] = useState(false);
   const [modalType, setModalType] = useState("");
+  const [tableSearchTerm, setTableSearchTerm] = useState(""); // Add new state for table filtering
   const [reBookStartDate, setReBookStartDate] = useState<string | undefined>();
   const [reBookEndDate, setReBookEndDate] = useState<string | undefined>();
   const [selectedBank, setSelectedBank] = useState({ code: "", name: "" });
@@ -238,6 +239,47 @@ const BookingsComponent = ({
     }
   }, [selectedBank]);
 
+  // Filter bookings based on search term
+  const filteredBookingData = bookingData
+    ? {
+        ...bookingData,
+        bookings: {
+          ...bookingData.bookings,
+          data: bookingData.bookings?.data?.filter((booking) => {
+            console.log("Filtering booking:", booking);
+            console.log("Current search term:", tableSearchTerm);
+
+            if (!tableSearchTerm) return true;
+
+            const searchLower = tableSearchTerm.toLowerCase();
+
+            // Fix the typeMatch to be a boolean comparison
+            const nameMatch = booking.shortlet?.name
+              ?.toLowerCase()
+              .includes(searchLower);
+            const typeMatch = booking.shortlet?.no_of_bedrooms
+              ?.toString()
+              .includes(searchLower); // Fixed to be a boolean comparison
+            const nightsMatch = booking.number_of_days
+              ?.toString()
+              .includes(searchLower);
+
+            const isMatch = nameMatch || typeMatch || nightsMatch;
+            console.log("Keep this booking?", isMatch);
+
+            return isMatch;
+          }),
+        },
+      }
+    : null;
+
+  // Fix the path to access data lengths
+  console.log("Original data length:", bookingData?.bookings?.data?.length);
+  console.log(
+    "Filtered data length:",
+    filteredBookingData?.bookings?.data?.length
+  );
+
   return (
     <div className="mt-10">
       <h1 className="font-medium text-lg">Bookings Breakdown</h1>
@@ -277,11 +319,19 @@ const BookingsComponent = ({
       <Card className="shadow-sm mt-6  p-4">
         <div className="flex items-center justify-between">
           <h1 className="font-medium">Booking History</h1>
-          <SearchInput
+          {/* <SearchInput
             className="w-[28rem]"
             placeholder="Search apartment by  name, apartment type, No of Nights"
             onChange={(e) => setSearch(e.target.value)}
-          />
+          /> */}
+          <div className="mt-4 mb-4">
+            <SearchInput
+              className="w-[28rem]"
+              placeholder="Search apartment by  name, apartment type, No of Nights"
+              value={tableSearchTerm}
+              onChange={(e) => setTableSearchTerm(e.target.value)}
+            />
+          </div>
           <section className="flex  items-center gap-3">
             <Button
               variant={"text"}
@@ -324,10 +374,13 @@ const BookingsComponent = ({
             </div>
           </section>
         </div>
+
+        {/* Add new search input specifically for table filtering */}
+
         <BookingTable
           headers={headers}
           handleClickModal={handleClickModal}
-          bookingData={bookingData}
+          bookingData={filteredBookingData} // Use filtered data instead of original data
           isLoading={isLoading}
           setPageIndex={setPageIndex}
           setPageSize={setPageSize}
