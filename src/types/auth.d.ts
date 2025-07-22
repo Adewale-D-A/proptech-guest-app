@@ -1,11 +1,11 @@
 /** @format */
 
-interface GeneralResponse {
+export interface GeneralResponse {
   error: boolean;
   message: string;
 }
 
-interface CreateBookingResponse extends GeneralResponse {
+export interface CreateBookingResponse extends GeneralResponse {
   data: {
     reference: string;
     payment: string;
@@ -53,7 +53,7 @@ interface AuthVerifyOtpData extends GeneralResponse {
   };
 }
 
-interface GetFeeResponseData extends GeneralResponse {
+export interface GetFeeResponseData extends GeneralResponse {
   data: {
     base_cost: number;
     caution_fee: number;
@@ -74,13 +74,23 @@ interface UpdateUserDocPayload {
   identity_document: File | null;
 }
 
-interface RatingPayload {
+export interface GetFeesPayload {
+  shortlet_id: number;
+  check_in_day: string;
+  check_out_day: string;
+  check_in_time: string;
+  check_out_time: string;
+  number_of_guests: number;
+  discount_code?: string;
+}
+
+export interface RatingPayload {
   booking_id: number;
   rating: number;
   review: string;
 }
 
-interface TransferPayload {
+export interface TransferPayload {
   booking_id: number;
   email: string;
 }
