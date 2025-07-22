@@ -56,7 +56,7 @@ interface ReferralResponseData {
   total: number;
 }
 
-interface ReferralResponse {
+export interface ReferralResponse {
   error: boolean;
   message: string;
   data: ReferralResponseData;
@@ -80,7 +80,7 @@ interface ReBookType {
   minCheckoutDate: Date | undefined;
 }
 
-interface OfferResponse {
+export interface OfferResponse {
   error: boolean;
   message: string;
   data: {
@@ -132,4 +132,34 @@ interface Link {
   url: string | null;
   label: string;
   active: boolean;
+}
+
+// New types for referral endpoints
+export interface ReferralQueryParams {
+  page?: number;
+  limit?: number;
+  sort?: "asc" | "desc";
+  start_date?: string;
+  end_date?: string;
+  search?: string;
+}
+
+export interface UpdateReferralCodePayload {
+  referral_code: string;
+}
+
+export interface ReferralCodeResponse {
+  error: boolean;
+  message: string;
+  data: {
+    referral_code: string;
+  };
+}
+
+export interface UpdateReferralCodeResponse {
+  error: boolean;
+  message: string;
+  data: {
+    referral_code: string;
+  };
 }
