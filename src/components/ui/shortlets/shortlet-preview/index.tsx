@@ -32,7 +32,14 @@ import { formatCurrency, getToken } from "@/_shared";
 import { DatePickerTime } from "@/components/date-picker-time";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/components/_shared/toast/use-toast";
-import { Form } from "@/components/_shared/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/_shared/form";
 import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
 import { selectCurrentUser } from "@/redux/slices/authSlice";
 import { bookingSchema } from "@/_shared/validate";
@@ -84,6 +91,7 @@ const ShortLetPreviewComponent = ({
     cautionPrice: null as number | null,
     taxFee: null as number | null,
     baseCost: null as number | null,
+    discountAmount: null as number | null,
   });
   const email = use99Selector(selectEmail);
   const [booking, { isLoading }] = useCreateBookingMutation();
@@ -190,6 +198,7 @@ const ShortLetPreviewComponent = ({
     const checkOutDay = form.watch("check_out_day");
     const checkOutTime = time_stamp;
     const numberOfGuests = form.watch("number_of_guests");
+    const discountCode = form.watch("discount_code");
     // if (!token) {
     //   toast({
     //     variant: "destructive",
@@ -210,8 +219,11 @@ const ShortLetPreviewComponent = ({
         check_in_time: time_stamp,
         check_out_day: checkOutDay ?? "",
         check_out_time: time_stamp,
-        number_of_guests: numberOfGuests ?? "",
-        shortlet_id: params?.id,
+        number_of_guests: parseInt(numberOfGuests ?? "1"),
+        shortlet_id: parseInt(
+          Array.isArray(params?.id) ? params.id[0] : params?.id || "0"
+        ),
+        ...(discountCode && { discount_code: discountCode }),
       };
 
       (async () => {
@@ -222,6 +234,7 @@ const ShortLetPreviewComponent = ({
             cautionPrice: res?.data?.caution_fee,
             taxFee: res?.data?.tax_fee,
             baseCost: res?.data?.base_cost,
+            discountAmount: res?.data?.discount_amount,
           });
         } catch (err) {
           errorHandler(err as any);
@@ -234,6 +247,7 @@ const ShortLetPreviewComponent = ({
     form.watch("check_out_day"),
     time_stamp,
     form.watch("number_of_guests"),
+    form.watch("discount_code"),
   ]);
 
   useEffect(() => {
@@ -506,6 +520,17 @@ const ShortLetPreviewComponent = ({
                                       costName="Tax (7.5%)"
                                       currency="NGN"
                                     />
+
+                                    {priceDetails.discountAmount !== null &&
+                                      priceDetails.discountAmount > 0 && (
+                                        <ListCard
+                                          amt={-priceDetails.discountAmount}
+                                          costName="Discount Applied"
+                                          currency="NGN"
+                                          isDiscount={true}
+                                        />
+                                      )}
+
                                     <Separator />
                                     <ListCard
                                       amt={priceDetails.totalPrice}
@@ -519,25 +544,60 @@ const ShortLetPreviewComponent = ({
                           </>
                         )}
                       </section>
-                      <section>
-                        <Label className="text-sm font-normal">
-                          Promo Code
-                        </Label>
-                        <section className="relative">
-                          <Input
-                            placeholder="Enter promo code"
-                            className="mt-2 rounded-full h-10"
-                          />
-                          <div className="absolute top-1 right-1">
-                            <Button
-                              type="button"
-                              className="bg-[#F4F6FF] h-8 text-black rounded-l-none "
-                            >
-                              Apply
-                            </Button>
-                          </div>
-                        </section>
-                      </section>
+                      <FormField
+                        control={form.control}
+                        name="discount_code"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-normal">
+                              Promo Code
+                            </FormLabel>
+                            <div className="relative">
+                              <FormControl>
+                                <Input
+                                  placeholder="Enter promo code"
+                                  className={`mt-2 rounded-full h-10 ${
+                                    priceDetails.discountAmount !== null &&
+                                    priceDetails.discountAmount > 0
+                                      ? "border-green-500 bg-green-50"
+                                      : ""
+                                  }`}
+                                  {...field}
+                                />
+                              </FormControl>
+                              <div className="absolute top-1 right-1">
+                                <Button
+                                  type="button"
+                                  className="bg-[#F4F6FF] h-8 text-black rounded-l-none "
+                                >
+                                  Apply
+                                </Button>
+                              </div>
+                            </div>
+
+                            {priceDetails.discountAmount !== null &&
+                              priceDetails.discountAmount > 0 && (
+                                <div className="text-green-600 text-xs mt-1 flex items-center gap-1">
+                                  <svg
+                                    className="w-3 h-3"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      fillRule="evenodd"
+                                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                      clipRule="evenodd"
+                                    />
+                                  </svg>
+                                  Discount applied: ₦
+                                  {priceDetails.discountAmount.toLocaleString()}
+                                </div>
+                              )}
+
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                       <div className=" pb-4">
                         {token ? (
                           <LoadingButton loading={isLoading} className="w-full">

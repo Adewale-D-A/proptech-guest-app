@@ -6,6 +6,14 @@ import {
   ShortletDataResponse,
   VisitorResponse,
 } from "@/types/type";
+import {
+  CreateBookingResponse,
+  GetFeeResponseData,
+  GetFeesPayload,
+  GeneralResponse,
+  RatingPayload,
+  TransferPayload,
+} from "@/types/auth";
 import { injectEndpoints } from "../base/base";
 import { Endpoints, Methods } from "../base/service";
 import { BookingsResponseData } from "@/types/book";
@@ -19,7 +27,7 @@ const bookingEndpoints = injectEndpoints({
         url: `${Endpoints.api}user/booking`,
       }),
     }),
-    getBookingPrice: builder.mutation<GetFeeResponseData, any>({
+    getBookingPrice: builder.mutation<GetFeeResponseData, GetFeesPayload>({
       query: (body) => ({
         body,
         method: Methods.post,

@@ -3,6 +3,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
+type User = {
+  referral_code: string;
+  [key: string]: any;
+};
+
 type AuthType = {
   user: User | null;
   token: string | undefined;
@@ -21,6 +26,11 @@ const authSlice = createSlice({
   reducers: {
     setUserDetails: (state, { payload: user }: PayloadAction<any>) => {
       state.user = user;
+    },
+    updateUserReferralCode: (state, { payload: referralCode }: PayloadAction<string>) => {
+      if (state.user) {
+        state.user.referral_code = referralCode;
+      }
     },
     setUserToken: (
       state,
@@ -41,7 +51,7 @@ const authSlice = createSlice({
 });
 
 const { actions, reducer } = authSlice;
-export const { setUserDetails, setUserToken, logout, setClearToken } = actions;
+export const { setUserDetails, updateUserReferralCode, setUserToken, logout, setClearToken } = actions;
 
 // selector to select user details from the store
 export const selectUserToken = (state: RootState) => state.auth.token;
