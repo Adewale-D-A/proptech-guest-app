@@ -32,7 +32,14 @@ import { formatCurrency, getToken } from "@/_shared";
 import { DatePickerTime } from "@/components/date-picker-time";
 import { useForm } from "react-hook-form";
 import { useToast } from "@/components/_shared/toast/use-toast";
-import { Form } from "@/components/_shared/form";
+import { 
+  Form, 
+  FormControl, 
+  FormField, 
+  FormItem, 
+  FormLabel, 
+  FormMessage 
+} from "@/components/_shared/form";
 import { use99Dispatch, use99Selector } from "@/redux/hooks/hooks";
 import { selectCurrentUser } from "@/redux/slices/authSlice";
 import { bookingSchema } from "@/_shared/validate";
@@ -190,6 +197,7 @@ const ShortLetPreviewComponent = ({
     const checkOutDay = form.watch("check_out_day");
     const checkOutTime = time_stamp;
     const numberOfGuests = form.watch("number_of_guests");
+    const discountCode = form.watch("discount_code");
     // if (!token) {
     //   toast({
     //     variant: "destructive",
@@ -210,8 +218,9 @@ const ShortLetPreviewComponent = ({
         check_in_time: time_stamp,
         check_out_day: checkOutDay ?? "",
         check_out_time: time_stamp,
-        number_of_guests: numberOfGuests ?? "",
-        shortlet_id: params?.id,
+        number_of_guests: parseInt(numberOfGuests ?? "1"),
+        shortlet_id: parseInt(Array.isArray(params?.id) ? params.id[0] : params?.id || "0"),
+        ...(discountCode && { discount_code: discountCode }),
       };
 
       (async () => {
@@ -234,6 +243,7 @@ const ShortLetPreviewComponent = ({
     form.watch("check_out_day"),
     time_stamp,
     form.watch("number_of_guests"),
+    form.watch("discount_code"),
   ]);
 
   useEffect(() => {
@@ -519,25 +529,35 @@ const ShortLetPreviewComponent = ({
                           </>
                         )}
                       </section>
-                      <section>
-                        <Label className="text-sm font-normal">
-                          Promo Code
-                        </Label>
-                        <section className="relative">
-                          <Input
-                            placeholder="Enter promo code"
-                            className="mt-2 rounded-full h-10"
-                          />
-                          <div className="absolute top-1 right-1">
-                            <Button
-                              type="button"
-                              className="bg-[#F4F6FF] h-8 text-black rounded-l-none "
-                            >
-                              Apply
-                            </Button>
-                          </div>
-                        </section>
-                      </section>
+                      <FormField
+                        control={form.control}
+                        name="discount_code"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-normal">
+                              Promo Code
+                            </FormLabel>
+                            <div className="relative">
+                              <FormControl>
+                                <Input
+                                  placeholder="Enter promo code"
+                                  className="mt-2 rounded-full h-10"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <div className="absolute top-1 right-1">
+                                <Button
+                                  type="button"
+                                  className="bg-[#F4F6FF] h-8 text-black rounded-l-none "
+                                >
+                                  Apply
+                                </Button>
+                              </div>
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                       <div className=" pb-4">
                         {token ? (
                           <LoadingButton loading={isLoading} className="w-full">

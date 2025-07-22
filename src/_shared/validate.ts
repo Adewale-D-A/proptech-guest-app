@@ -55,6 +55,7 @@ export const bookingSchema = z.object({
   check_out_day: z.string().nonempty("Check-out date is required"),
   check_out_time: z.string().nonempty("Check-out time is required"),
   number_of_guests: z.string().nonempty("Number of guests is required"),
+  discount_code: z.string().optional(),
 });
 export const bookingUpdateSchema = z.object({
   check_in_day: z.string().nonempty("Check-in date is required"),
