@@ -56,9 +56,12 @@ interface AuthVerifyOtpData extends GeneralResponse {
 export interface GetFeeResponseData extends GeneralResponse {
   data: {
     base_cost: number;
+    discount_amount: number;
     caution_fee: number;
     tax_fee: number;
     total_cost: number;
+    referrer_id: number | null;
+    coupon_id: number | null;
   };
 }
 
