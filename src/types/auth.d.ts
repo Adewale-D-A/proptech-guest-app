@@ -12,7 +12,7 @@ export interface CreateBookingResponse extends GeneralResponse {
   };
 }
 
-interface User {
+export interface User {
   id: number;
   first_name: string;
   last_name: string;
@@ -39,7 +39,7 @@ interface User {
   referral_code: string;
 }
 
-interface AuthResponseData extends GeneralResponse {
+export interface AuthResponseData extends GeneralResponse {
   data: {
     access_token: string;
     expires_in: number;
@@ -47,7 +47,7 @@ interface AuthResponseData extends GeneralResponse {
     user: User;
   };
 }
-interface AuthVerifyOtpData extends GeneralResponse {
+export interface AuthVerifyOtpData extends GeneralResponse {
   data: {
     token: string;
   };
@@ -65,7 +65,7 @@ export interface GetFeeResponseData extends GeneralResponse {
   };
 }
 
-interface UpdateUserPayload {
+export interface UpdateUserPayload {
   first_name: string;
   last_name: string;
   email: string;
@@ -73,7 +73,7 @@ interface UpdateUserPayload {
   phone: string;
   dob: string | null;
 }
-interface UpdateUserDocPayload {
+export interface UpdateUserDocPayload {
   identity_document: File | null;
 }
 

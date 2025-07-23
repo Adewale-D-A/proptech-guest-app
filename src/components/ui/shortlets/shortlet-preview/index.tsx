@@ -93,6 +93,7 @@ const ShortLetPreviewComponent = ({
     baseCost: null as number | null,
     discountAmount: null as number | null,
   });
+  const [appliedDiscountCode, setAppliedDiscountCode] = useState<string>("");
   const email = use99Selector(selectEmail);
   const [booking, { isLoading }] = useCreateBookingMutation();
   const [bookingPrice, { isLoading: priceLoading }] =
@@ -192,13 +193,32 @@ const ShortLetPreviewComponent = ({
     }
   };
 
+  const handleApplyPromoCode = () => {
+    const currentPromoCode = form.getValues("discount_code");
+    if (currentPromoCode && currentPromoCode.trim() !== "") {
+      const trimmedCode = currentPromoCode.trim();
+      // Only apply if it's different from the currently applied code
+      if (trimmedCode !== appliedDiscountCode) {
+        setAppliedDiscountCode(trimmedCode);
+      }
+    } else {
+      // Clear applied discount if input is empty
+      setAppliedDiscountCode("");
+      // Reset discount amount in price details
+      setPriceDetails(prev => ({
+        ...prev,
+        discountAmount: null,
+      }));
+    }
+  };
+
   useEffect(() => {
     const checkInDay = form.watch("check_in_day");
     const checkInTime = time_stamp;
     const checkOutDay = form.watch("check_out_day");
     const checkOutTime = time_stamp;
     const numberOfGuests = form.watch("number_of_guests");
-    const discountCode = form.watch("discount_code");
+    const discountCode = appliedDiscountCode;
     // if (!token) {
     //   toast({
     //     variant: "destructive",
@@ -247,7 +267,7 @@ const ShortLetPreviewComponent = ({
     form.watch("check_out_day"),
     time_stamp,
     form.watch("number_of_guests"),
-    form.watch("discount_code"),
+    appliedDiscountCode,
   ]);
 
   useEffect(() => {
@@ -568,6 +588,7 @@ const ShortLetPreviewComponent = ({
                               <div className="absolute top-1 right-1">
                                 <Button
                                   type="button"
+                                  onClick={handleApplyPromoCode}
                                   className="bg-[#F4F6FF] h-8 text-black rounded-l-none "
                                 >
                                   Apply

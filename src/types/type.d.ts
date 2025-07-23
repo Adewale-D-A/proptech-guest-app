@@ -479,6 +479,25 @@ interface MakeARequestResponseData extends Pagination {
   endDate: string | undefined;
   startDate: string | undefined;
 }
+
+interface ReBookType {
+  handleRebook: () => void;
+  reBookingLoading: boolean;
+  handleDateSelect: (
+    date: Date | undefined,
+    setter: (date: string | undefined) => void
+  ) => void;
+  reBookEndDate: string | undefined;
+  setReBookStartDate: (date: string | undefined) => void;
+  setReBookEndDate: (date: string | undefined) => void;
+  reBookStartDate: string | undefined;
+  onClose: () => void;
+  availableDates: any;
+  handleEndDateSelect: (date: Date | undefined) => void;
+  handleStartDateSelect: (date: Date | undefined) => void;
+  minCheckoutDate: Date | undefined;
+}
+
 interface ErrorResponse {
   status: number;
   data: {
