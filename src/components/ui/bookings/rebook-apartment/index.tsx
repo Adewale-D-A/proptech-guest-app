@@ -5,6 +5,7 @@ import { Calendar } from "@/components/_shared/calander";
 import { LoadingButton } from "@/components/_shared/loading-button";
 import { parseISO } from "date-fns";
 import React from "react";
+import { ReBookType } from "@/types/type";
 
 const RebookApartment = ({
   handleRebook,
