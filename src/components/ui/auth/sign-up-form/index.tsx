@@ -74,7 +74,7 @@ const SignUpForm = ({
       toast({
         variant: "default",
         title: response?.message || "Success!",
-        description: "Welcome to 99Apartment 🚀",
+        description: "Welcome to The sootLagos 🚀",
       });
       handleOpen(true, "otp", userEmail);
     } catch (err: any) {
@@ -137,7 +137,7 @@ const SignUpForm = ({
           Create an Account
         </h1>
         <p className="text-xs font-light mt-1 w-72 mx-auto text-center">
-          We are happy to have you. To use 99Apartment, you need to create an
+          We are happy to have you. To use The SpotLagos, you need to create an
           account first
         </p>
         <Form {...form}>

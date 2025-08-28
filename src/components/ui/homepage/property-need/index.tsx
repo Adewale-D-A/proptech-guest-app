@@ -37,7 +37,7 @@ const PropertyNeeds = () => {
               <p className="text-sm font-medium text-primary">WHAT WE OFFER</p>
             </div>
             <h1 className="font-semibold text-2xl">
-              99 Solutions for all your Property Needs
+              100 Solutions for all your Property Needs
             </h1>
             <p className="text-[13px] sm:text-center md:text-left w-full md:w-96 text-gray-100 font-light">
               We are a property technology company building an on demand real

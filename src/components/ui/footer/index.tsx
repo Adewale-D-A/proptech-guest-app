@@ -23,7 +23,11 @@ const Footer = () => {
           <div className="flex md:flex-row items-center md:items-start flex-col justify-between ">
             <div className="">
               <div className="md:block flex justify-center flex-col items-center">
-                <Logo width={202} height={30} />
+                <Logo
+                  width={202}
+                  height={30}
+                  className=" w-28 h-auto rounded-lg"
+                />
                 <p className="text-[13px] mt-2 text-center md:text-start text-white md:w-2/3">
                   Designed to solved all property and rental problems.
                 </p>
@@ -51,7 +55,7 @@ const Footer = () => {
           <Separator className="bg-white" />
           <div className="flex md:flex-row flex-col-reverse gap-3 md:gap-0 justify-between items-center">
             <p className="text-[13px]  text-white">
-              © {new Date().getFullYear()} The 99Apartments
+              © {new Date().getFullYear()} The spotlagos
             </p>
             <div className="flex items-center gap-2">
               {socialData.map((social, index) => (

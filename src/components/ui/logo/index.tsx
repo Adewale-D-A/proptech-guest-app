@@ -9,7 +9,7 @@ type LogoProps = {
   className?: string;
   width?: number | `${number}` | undefined;
   height?: number | `${number}` | undefined;
-  default?:boolean
+  default?: boolean;
 };
 
 const Logo = (props: LogoProps) => (
@@ -27,7 +27,7 @@ const Logo = (props: LogoProps) => (
         width={props.width ?? 92}
         height={props.height ?? 116}
         style={{ margin: 0 }}
-        alt="99Apartment"
+        alt="The spotlagos"
         loading="lazy"
         className={props.className}
       />

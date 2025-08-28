@@ -5,9 +5,21 @@
 
 const nextConfig = {
   images: {
-    domains: [
-      "99apt-shortlet.fra1.digitaloceanspaces.com",
-      "via.placeholder.com",
+    // domains: [
+    //   "99apt-shortlet.fra1.digitaloceanspaces.com",
+    //   "via.placeholder.com",
+    // ],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "99apt-shortlet.fra1.digitaloceanspaces.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
+        pathname: "**",
+      },
     ],
   },
   webpack(

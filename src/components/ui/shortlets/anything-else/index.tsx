@@ -32,7 +32,7 @@ const AnythingElse = () => {
                     </p>
                   </div>
                   <p className="text-primary-1 text-sm font-medium sm:mt-6 mt-2">
-                    hello@the99apartments.com
+                    hello@thespotlagos.com
                   </p>
                 </div>
 

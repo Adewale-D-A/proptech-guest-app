@@ -151,6 +151,7 @@ const HomeNavBar = () => {
                   width={202}
                   height={30}
                   default={scrolled ? true : false}
+                  className=" w-16 h-auto rounded-lg"
                 />
               ) : (
                 <Logo width={202} height={30} default={true} />
