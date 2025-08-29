@@ -55,7 +55,7 @@ const HeroSection = () => {
 
         <div className="relative flex flex-col items-center justify-center w-full h-full z-30 px-4">
           <h1 className="text-white text-6xl font-semibold">
-            <GradualSpacing text={"Shortlets"} />{" "}
+            <GradualSpacing text={"The Spot Lagos"} />{" "}
           </h1>
           <AnimatedContainer>
             <p className="text-white text-center text-xl mt-4">
