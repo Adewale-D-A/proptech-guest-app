@@ -50,7 +50,7 @@ _env/.env
 
 env
 env.*
-
+.env*
 # Ignore app build manifests
 app-build-manifest*.json
 
