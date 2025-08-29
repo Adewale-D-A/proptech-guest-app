@@ -52,7 +52,7 @@ const NavSectionTabs = ({
   return (
     <NavigationMenu>
       <NavigationMenuList>
-        <NavigationMenuItem>
+        {/* <NavigationMenuItem>
           <Link href="/" legacyBehavior passHref>
             {isMainRoute ? (
               <NavigationMenuLink
@@ -70,7 +70,7 @@ const NavSectionTabs = ({
               </NavigationMenuLink>
             )}
           </Link>
-        </NavigationMenuItem>
+        </NavigationMenuItem> */}
         {/* <NavigationMenuItem>
           <Link href="#" legacyBehavior passHref>
             {isMainRoute ? (
