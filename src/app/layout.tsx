@@ -11,12 +11,12 @@ const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700"],
 });
 export const metadata: Metadata = {
-  metadataBase: new URL("https://staging-guest.the99apartments.com"),
-  title: "99Apartment - Book Your Dream Apartment with Ease",
+  metadataBase: new URL("https://proptech-guest-app.vercel.app/"),
+  title: "The Spotlagos - Book Your Dream Apartment with Ease",
   description:
-    "Discover and book top apartments effortlessly with 99Apartment. Whether short-term or long-term rentals, find your ideal home with ease.",
+    "Discover and book top apartments effortlessly with The Spotlagos. Whether short-term or long-term rentals, find your ideal home with ease.",
   keywords: [
-    "99Apartment",
+    "The Spotlagos",
     "apartment booking",
     "real estate",
     "housing",
@@ -26,49 +26,49 @@ export const metadata: Metadata = {
     "property management",
     "vacation rentals",
   ],
-  applicationName: "99Apartment",
+  applicationName: "The Spotlagos",
   robots: "index, follow",
   category: "Real Estate, Apartment Booking, Housing",
   authors: [
-    { name: "99Apartment", url: "https://staging-guest.the99apartments.com" },
+    { name: "The Spotlagos", url: "https://proptech-guest-app.vercel.app" },
   ],
   openGraph: {
-    title: "99Apartment - Book Your Dream Apartment with Ease",
+    title: "The Spotlagos - Book Your Dream Apartment with Ease",
     description:
-      "Discover and book top apartments effortlessly with 99Apartment. Whether short-term or long-term rentals, find your ideal home with ease.",
-    url: "https://staging-guest.the99apartments.com",
-    siteName: "99Apartment",
+      "Discover and book top apartments effortlessly with The Spotlagos. Whether short-term or long-term rentals, find your ideal home with ease.",
+    url: "https://proptech-guest-app.vercel.app",
+    siteName: "The Spotlagos",
     images: [
       {
-        url: "https://staging-guest.the99apartments.com/images/logo-color.png",
+        url: "https://proptech-guest-app.vercel.app/images/logo-color.png",
         width: 1200,
         height: 630,
-        alt: "99Apartment",
+        alt: "The Spotlagos",
       },
     ],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "99Apartment - Book Your Dream Apartment with Ease",
+    title: "The Spotlagos - Book Your Dream Apartment with Ease",
     description:
-      "Discover and book top apartments effortlessly with 99Apartment. Whether short-term or long-term rentals, find your ideal home with ease.",
-    images: ["https://staging-guest.the99apartments.com/images/logo-color.png"],
+      "Discover and book top apartments effortlessly with The Spotlagos. Whether short-term or long-term rentals, find your ideal home with ease.",
+    images: ["https://proptech-guest-app.vercel.app/images/logo-color.png"],
   },
   other: {
     "google-site-verification": "",
     "schema:Organization": JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Organization",
-      name: "99Apartment",
-      url: "https://staging-guest.the99apartments.com",
-      logo: "https://staging-guest.the99apartments.com/images/logo.png",
+      name: "The Spotlagos",
+      url: "https://proptech-guest-app.vercel.app",
+      logo: "https://proptech-guest-app.vercel.app/images/logo.png",
       description:
-        "99Apartment is the go-to platform for finding and booking apartments, providing seamless experiences for renters and homeowners alike.",
+        "The Spotlagos is the go-to platform for finding and booking apartments, providing seamless experiences for renters and homeowners alike.",
     }),
   },
   alternates: {
-    canonical: "https://staging-guest.the99apartments.com",
+    canonical: "https://proptech-guest-app.vercel.app",
   },
 };
 
