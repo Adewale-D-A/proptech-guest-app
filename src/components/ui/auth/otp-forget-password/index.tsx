@@ -55,7 +55,7 @@ const ForgetPasswordOtp = ({
       toast({
         variant: "default",
         title: response?.message || "Success!",
-        description: "Welcome to 99Apartment 🚀",
+        description: "Welcome to The Spotlagos 🚀",
       });
       handleOpen(true, "change-password");
     } catch (err) {

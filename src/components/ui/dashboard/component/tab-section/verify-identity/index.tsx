@@ -114,7 +114,7 @@ const VerifyAccount = () => {
           <h1 className="text-2xl">Identity Verified</h1>
           <p className="text-gray-100 text-center w-80 text-xs">
             Your identity verification is complete. You can now enjoy the full
-            99Apartment experience.
+            The Spotlagos experience.
           </p>
         </div>
       ) : (

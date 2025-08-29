@@ -68,7 +68,7 @@ const SignInform = ({
       if (identityVerified === false) {
         toast({
           variant: "default",
-          title: "Welcome to 99Apartment 🚀",
+          title: "Welcome to The Spotlagos 🚀",
           description: "Kindly verify your identity to continue.",
         });
 
@@ -79,7 +79,7 @@ const SignInform = ({
         toast({
           variant: "default",
           title: response?.message,
-          description: "Welcome to 99Apartment 🚀",
+          description: "Welcome to The Spotlagos 🚀",
         });
         handleClose();
       }

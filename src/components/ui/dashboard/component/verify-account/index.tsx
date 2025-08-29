@@ -18,7 +18,7 @@ const VerifyAccount = () => {
                 <div>
                   <h2 className="text-sm font-medium">Verify your Account</h2>
                   <p className="text-xs text-[#6D6D6D]">
-                    Complete your account set-up to enjoy the full 99Apartment
+                    Complete your account set-up to enjoy the full The Spotlagos
                     experience.
                   </p>
                 </div>

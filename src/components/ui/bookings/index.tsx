@@ -404,7 +404,7 @@ const BookingsComponent = ({
                   <div className="bg-[#E7EAEC] border-gray-100 w-10 h-10 rounded-sm flex items-center justify-center">
                     <House size={24} />
                   </div>
-                  <p>Rate your Stay with 99Apartment</p>
+                  <p>Rate your Stay with The Spotlagos</p>
                 </div>
                 <X
                   className="text-gray-100 cursor-pointer"
