@@ -45,7 +45,7 @@ const AuthModal = ({
         showModal={showModal}
         onClose={handleClose}
         setShowModal={setShowModal}
-        className={`relative p-4 xs:p-6 ${
+        className={`relative overflow-y-auto p-4 xs:p-6 ${
           type === "sign-in" ||
           type === "forgot-password" ||
           type === "otp" ||

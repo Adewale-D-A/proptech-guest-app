@@ -57,8 +57,8 @@ const config: Config = {
           100: "#6D6D6D",
         },
         primary: {
-          DEFAULT: "#284499",
-          1: "#293e8e",
+          DEFAULT: "#8f7f65",
+          1: "#8f7f65",
         },
       },
     },

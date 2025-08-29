@@ -116,14 +116,14 @@ const SignInform = ({
     <div className="w-full">
       <div className="w-full">
         <div className="flex justify-center">
-          <Logo default height={31} width={180} />
+          <Logo default height={31} width={180} className=" h-16 w-auto" />
         </div>
         <h1 className="text-lg text-center font-medium mt-4">Sign In</h1>
         <p className="text-xs font-light mt-1 w-72 mx-auto text-center">
           To continue using your account, please enter your sign-in details.
         </p>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="mt-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="mt-6 ">
             <div className="flex flex-col gap-2">
               <FormField
                 control={form.control}

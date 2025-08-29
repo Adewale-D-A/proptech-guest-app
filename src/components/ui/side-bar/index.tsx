@@ -94,14 +94,14 @@ const SideBarScreen = ({ isOpen, isTab, setIsOpen }: Props) => {
       >
         <div className="mb-3 px-3 ">
           {isOpen ? (
-            <Logo width={200} height={26} />
+            <Logo width={200} height={26} className="w-24 h-auto rounded-lg" />
           ) : (
             <Image
               src={"/images/99-logo.png"}
               width={50}
               height={50}
               alt="logo"
-              className="cursor-pointer"
+              className="cursor-pointer w-24 h-auto rounded-lg"
             />
           )}
         </div>
@@ -116,7 +116,7 @@ const SideBarScreen = ({ isOpen, isTab, setIsOpen }: Props) => {
                     ? `bg-[#9B9B9B]/20  border-white text-white ${
                         isOpen ? " border-l-[3px] " : "border-b-[3px]"
                       }`
-                    : "text-[#CFCFCF]"
+                    : "text-[#e8e4e4]"
                 }`}
                 onClick={() => handleTabClick(data)}
               >

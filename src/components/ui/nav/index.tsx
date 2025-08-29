@@ -154,7 +154,12 @@ const HomeNavBar = () => {
                   className=" w-16 h-auto rounded-lg"
                 />
               ) : (
-                <Logo width={202} height={30} default={true} />
+                <Logo
+                  width={202}
+                  height={30}
+                  default={true}
+                  className=" w-16 h-auto rounded-lg"
+                />
               )}
             </div>
             <div className="lg:flex hidden">
