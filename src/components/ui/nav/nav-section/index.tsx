@@ -71,8 +71,8 @@ const NavSectionTabs = ({
             )}
           </Link>
         </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link href="/pricing" legacyBehavior passHref>
+        {/* <NavigationMenuItem>
+          <Link href="#" legacyBehavior passHref>
             {isMainRoute ? (
               <NavigationMenuLink
                 className={`${navigationMenuTriggerStyle()} bg-none font-normal  ${
@@ -89,7 +89,7 @@ const NavSectionTabs = ({
               </NavigationMenuLink>
             )}
           </Link>
-        </NavigationMenuItem>
+        </NavigationMenuItem> */}
         {/* <NavigationMenuItem>
           <Link href="/availability" legacyBehavior passHref>
             {isMainRoute ? (
@@ -110,7 +110,7 @@ const NavSectionTabs = ({
           </Link>
         </NavigationMenuItem> */}
 
-        <div ref={dropdownRef} className="px-4">
+        {/* <div ref={dropdownRef} className="px-4">
           <div
             className="relative"
             ref={dropdownRef}
@@ -171,9 +171,9 @@ const NavSectionTabs = ({
               </div>
             )}
           </div>
-        </div>
+        </div> */}
 
-        <NavigationMenuItem>
+        {/* <NavigationMenuItem>
           <Link
             href="/pricing"
             className="bg-transparent"
@@ -196,8 +196,8 @@ const NavSectionTabs = ({
               </NavigationMenuLink>
             )}
           </Link>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
+        </NavigationMenuItem> */}
+        {/* <NavigationMenuItem>
           <Link href="/pricing" legacyBehavior passHref>
             {isMainRoute ? (
               <NavigationMenuLink
@@ -215,7 +215,7 @@ const NavSectionTabs = ({
               </NavigationMenuLink>
             )}
           </Link>
-        </NavigationMenuItem>
+        </NavigationMenuItem> */}
       </NavigationMenuList>
     </NavigationMenu>
   );
